@@ -1203,15 +1203,15 @@ hr {
 .panel-cover {
 	display: block;
 	position: fixed;
-	z-index: 9;
-	width: 1%;
-	max-width: 9;
+	z-index: 50;
+	width: 100%;
+	max-width: 50;
 	height: 100%;
 	background: url(../images/background-cover.jpg) top left no-repeat #666666;
 	background-size: cover; }
 
 .panel-cover--collapsed {
-	width: 40%;
+	width: 80%;
 	max-width: 800px; }
 
 .panel-cover--overlay {
