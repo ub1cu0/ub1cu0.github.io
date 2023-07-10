@@ -1056,7 +1056,7 @@ pre {
 
 .excerpt {
 	margin: 0;
-	font-size: .9em;
+	font-size: 18px;
 	color: #999999; }
 
 .intro {
@@ -1203,16 +1203,16 @@ hr {
 .panel-cover {
 	display: block;
 	position: fixed;
-	z-index: 900;
-	width: 100%;
-	max-width: none;
+	z-index: 9;
+	width: 1%;
+	max-width: 9;
 	height: 100%;
 	background: url(../images/background-cover.jpg) top left no-repeat #666666;
 	background-size: cover; }
 
 .panel-cover--collapsed {
 	width: 40%;
-	max-width: 530px; }
+	max-width: 400px; }
 
 .panel-cover--overlay {
 	display: block;
