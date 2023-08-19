@@ -1205,14 +1205,14 @@ hr {
 	position: fixed;
 	z-index: 900;
 	width: 100%;
-	max-width: none;
+	max-width: 1000px;
 	height: 10%;
 	background: url(/images/cover1.jpg) top left no-repeat #666666;
 	background-size: cover; }
 
 .panel-cover--collapsed {
 	width: 100%;
-	max-width: 530px; }
+	max-width: 1000px; }
 
 .panel-cover--overlay {
 	display: block;
@@ -1584,7 +1584,7 @@ input[type="tel"] {
 
 	.panel-cover--collapsed {
 		width: 100%;
-		max-width: none; }
+		max-width: 1000px; }
 
 	.panel-main__inner {
 		display: table-cell;
@@ -1592,7 +1592,7 @@ input[type="tel"] {
 
 	.panel-cover__description {
 		display: block;
-		max-width: 600px;
+		max-width: 1000px;
 		margin: 0 auto; }
 
 	.panel-cover__divider--secondary {
