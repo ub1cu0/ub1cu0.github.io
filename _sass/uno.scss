@@ -1205,14 +1205,14 @@ hr {
 	position: fixed;
 	z-index: 900;
 	width: 100%;
-	max-width: 1000px;
-	height: 10%;
-	background: url(/images/cover1.jpg) top left no-repeat #666666;
+	max-width: 900px;
+	height: 100%;
+	background: url(../images/background-cover.jpg) top left no-repeat #666666;
 	background-size: cover; }
 
 .panel-cover--collapsed {
-	width: 100%;
-	max-width: 1000px; }
+	width: 40%;
+	max-width: 400px; }
 
 .panel-cover--overlay {
 	display: block;
