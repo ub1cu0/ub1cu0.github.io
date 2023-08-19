@@ -5902,8 +5902,14 @@ hr {
 }
 
 .panel-cover {
-	width: 40%;
-	max-width: 400px
+	display: table;
+	position: fixed;
+	z-index: 100;
+	width: 100%;
+	max-width: 400px;
+	height: 100%;
+	background: url(../images/background-cover.jpg) top left;
+	background-size: cover
 }
 
 .panel-cover--collapsed {
