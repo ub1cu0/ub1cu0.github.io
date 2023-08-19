@@ -1203,9 +1203,9 @@ hr {
 .panel-cover {
 	display: block;
 	position: fixed;
-	z-index: 9;
+	z-index: 900;
 	width: 100%;
-	max-width: none;
+	max-width: 400px;
 	height: 100%;
 	background: url(/images/cover1.jpg) top left no-repeat #666666;
 	background-size: 1000px; }
