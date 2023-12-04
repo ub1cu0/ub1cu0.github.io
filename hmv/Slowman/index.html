@@ -160,16 +160,16 @@ Nmap done: 1 IP address (1 host up) scanned in 26.58 seconds
 
 <a href="/hmv/Slowman/1.png" target="_blank"><div><p><img src="/hmv/Slowman/1.png"></p></div></a>
 
-<p class="plain-text">También podemos ver que tiene el puerto 21 abierto (en este caso no haremos un escaneo con los scripts básicos de nmap porque no nos reportara nada interesante),  por lo que podemos probar a conectarnos a ver si tiene algún recurso compartido </p>
+<p class="plain-text">También podemos ver que tiene el puerto <code class="language-plaintext highlighter-rouge">21</code> abierto (en este caso no haremos un escaneo con los scripts básicos de nmap porque no nos reportara nada interesante),  por lo que podemos probar a conectarnos a ver si tiene algún recurso compartido </p>
 
 <a href="/hmv/Slowman/2.png" target="_blank"><div><p><img src="/hmv/Slowman/2.png"></p></div></a>
 
-<p class="plain-text">Si nos descargamos este archivo y lo abrimos veremos un usuario de la base de datos mySQL (la cual esta corriendo en el puerto 3306) </p>
+<p class="plain-text">Si nos descargamos este archivo y lo abrimos veremos un usuario de la base de datos mySQL (la cual esta corriendo en el puerto <code class="language-plaintext highlighter-rouge">3306</code>) </p>
 
 <a href="/hmv/Slowman/3.png" target="_blank"><div><p><img src="/hmv/Slowman/3.png"></p></div></a>
 
 <section class="post" id="mysql">
-<br><h3 class="post-title">Fuerza bruta al mySQL</h3><br>
+<br><h3 class="post-title">Fuerza bruta al <code class="language-plaintext highlighter-rouge">mySQL</code></h3><br>
 
 <p class="plain-text">Teniendo un usuario podemos intentar hacer fuerza bruta co hydra, en este caso usare el rockyou.txt </p>
 
@@ -179,7 +179,7 @@ Nmap done: 1 IP address (1 host up) scanned in 26.58 seconds
 
 <a href="/hmv/Slowman/5.png" target="_blank"><div><p><img src="/hmv/Slowman/5.png"></p></div></a>
 
-<p class="plain-text">En la base de datos trainers_db podemos ver que hay una tabla llamada users, si vemos la información de esta veremos un usuario y una contraseña, junta a una ruta para iniciar sesión</p>
+<p class="plain-text">En la base de datos <code class="language-plaintext highlighter-rouge">trainers_db</code> podemos ver que hay una tabla llamada users, si vemos la información de esta veremos un usuario y una contraseña, junta a una ruta para iniciar sesión</p>
 
 <a href="/hmv/Slowman/6.png" target="_blank"><div><p><img src="/hmv/Slowman/6.png"></p></div></a>
 
@@ -198,8 +198,8 @@ Nmap done: 1 IP address (1 host up) scanned in 26.58 seconds
 
 <a href="/hmv/Slowman/9.png" target="_blank"><div><p><img src="/hmv/Slowman/9.png"></p></div></a>
 
-<p class="plain-text">Podemos probar john para hacer fuerza bruta en este zip </p>
-<p class="plain-text">Para esto primero usamos zip2john</p>
+<p class="plain-text">Podemos probar <code class="language-plaintext highlighter-rouge">john</code> para hacer fuerza bruta en este zip </p>
+<p class="plain-text">Para esto primero usamos <code class="language-plaintext highlighter-rouge">zip2john</code></p>
 
 <a href="/hmv/Slowman/10.png" target="_blank"><div><p><img src="/hmv/Slowman/10.png"></p></div></a>
 
@@ -211,7 +211,7 @@ Nmap done: 1 IP address (1 host up) scanned in 26.58 seconds
 
 <a href="/hmv/Slowman/12.png" target="_blank"><div><p><img src="/hmv/Slowman/12.png"></p></div></a>
 
-<p class="plain-text">Viendo que ca contraseña esta hasheada podemos deshashearla con john</p>
+<p class="plain-text">Viendo que ca contraseña esta hasheada podemos deshashearla con <code class="language-plaintext highlighter-rouge">john</code></p>
 
 <a href="/hmv/Slowman/13.png" target="_blank"><div><p><img src="/hmv/Slowman/13.png"></p></div></a>
 
@@ -223,7 +223,7 @@ Nmap done: 1 IP address (1 host up) scanned in 26.58 seconds
 <br><h3 class="post-title">Escalada de privilegios</h3><br>
 
 <p class="plain-text">Ahora podemos empezar la escalada de privilegios, para eso miraremos lo típico (SUID, kernel, capabilities, sudo -l) </p>
-<p class="plain-text">Podemos ver que el python tiene la capabilitie cap_setuid=ep, esto nos dejara escalar privilegios</p>
+<p class="plain-text">Podemos ver que el python tiene la capabilitie <code class="language-plaintext highlighter-rouge">cap_setuid=ep</code>, esto nos dejara escalar privilegios</p>
 
 <a href="/hmv/Slowman/15.png" target="_blank"><div><p><img src="/hmv/Slowman/15.png"></p></div></a>
 
@@ -232,7 +232,7 @@ Nmap done: 1 IP address (1 host up) scanned in 26.58 seconds
 
 <a href="/hmv/Slowman/16.png" target="_blank"><div><p><img src="/hmv/Slowman/16.png"></p></div></a>
 
-<p class="plain-text">Con esto ya somos root, y tenemos la flag en el /root/root.txt </p>
+<p class="plain-text">Con esto ya somos root, y tenemos la flag en el <code class="language-plaintext highlighter-rouge">/root/root.txt</code> </p>
 
 </section>
 
