@@ -1,112 +1,431 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ub1cu0</title>
+  <title>ub1cu0 — Exploit Dev</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
   <style>
-    html {
-      font-size: 150%;
-    }
+    :root{--bg:#0a0a0c;--panel:#0f0f13;--panel-2:#121219;--text:#e8e8ee;--muted:#a7a7b4;--red:#ff163f;--line:#242432;--radius:18px;--glow:0 0 22px rgba(255,22,63,.25)}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:"JetBrains Mono",ui-monospace,monospace;color:var(--text);background:radial-gradient(1200px 600px at 85% -10%, rgba(255,22,63,.06), transparent 60%),linear-gradient(#09090b,#08080a 40%,#070709)}
+    .rain{position:fixed;inset:0;pointer-events:none;opacity:.07;mask-image:radial-gradient(70% 60% at 60% 10%,#000 40%,transparent 100%)}
+    .rain i{position:absolute;font-style:normal;color:#fff}
+    .wrap{width:min(980px,94vw);margin:80px auto 50px}
 
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #0d0d0d;
-      color: #f0f0f0;
-      font-family: 'Courier New', Courier, monospace;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 80px;
-    }
+    .id{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:end;margin-bottom:12px}
+    .name{font-size:clamp(2.8rem,7vw,5rem);line-height:1;font-weight:800;letter-spacing:.5px;text-shadow:0 0 24px rgba(255,22,63,.25)}
+    .tag{color:var(--muted);font-size:clamp(.95rem,2.2vw,1.05rem)}
+    .status{display:inline-flex;gap:8px;padding:8px 12px;border-radius:999px;font-size:.82rem;background:linear-gradient(90deg,rgba(255,22,63,.9),rgba(255,22,63,.35));box-shadow:0 0 30px rgba(255,22,63,.25)}
 
-    .terminal {
-      background-color: #1a1a1a;
-      border: 1px solid #ff0055;
-      border-radius: 8px;
-      padding: 25px 40px;
-      color: #ff0055;
-      font-size: 1.2rem;
-      margin-bottom: 40px;
-    }
+    .panel{border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,var(--panel),var(--panel-2));box-shadow:inset 0 0 0 1px rgba(255,255,255,.02),var(--glow);padding:26px;position:relative;overflow:hidden}
+    #landing-panel{padding:20px}
+    .panel::before{content:"";position:absolute;inset:-1px;pointer-events:none;opacity:.08;background:linear-gradient(transparent 95%, rgba(255,22,63,.6) 100%),linear-gradient(90deg, transparent 95%, rgba(255,22,63,.6) 100%);background-size:22px 22px,22px 22px}
+    .panel + .panel{margin-top:28px}
 
-    .terminal span {
-      color: #ffffff;
-    }
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0;align-items:stretch;grid-auto-rows:1fr}
+    @media (max-width:720px){.grid{grid-template-columns:1fr}}
+    .tile{display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);border-radius:16px;padding:20px;min-height:120px;height:100%;text-decoration:none;color:var(--text);background:linear-gradient(180deg,#101018,#0e0e14);transition:transform .18s,box-shadow .18s,border-color .18s;position:relative;overflow:hidden}
+    .tile:hover{transform:translateY(-4px);border-color:#2a2a38;box-shadow:var(--glow)}
+    .tile h3{margin:0;font-size:1.12rem;display:flex;align-items:center;gap:10px}
+    .badge{display:inline-flex;gap:6px;align-items:center;padding:3px 10px;border-radius:999px;font-size:.86rem;color:#fff;background:linear-gradient(90deg,rgba(255,22,63,.9),rgba(255,22,63,.35))}
+    .tile p{margin:0;color:var(--muted);font-size:.92rem}
 
-    .subtitle {
-      color: #aaaaaa;
-      font-size: 1rem;
-      margin-bottom: 30px;
-    }
+    .sbtn{width:38px;height:38px;display:grid;place-items:center;border-radius:11px;border:1px solid rgba(255,22,63,.45);background:#111118;color:#fff;text-decoration:none;transition:.18s}
+    .sbtn:hover{box-shadow:0 0 22px rgba(255,22,63,.35);border-color:rgba(255,22,63,.9)}
+    .sbtn svg{width:20px;height:20px;display:block;margin:auto}
+    .sbtn .svg-lnk{transform:translateX(1px)}
 
-    .links {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      align-items: center;
-      text-align: center;
-    }
+    footer{width:min(980px,94vw);margin:24px auto 60px;color:var(--muted);font-size:.9rem;display:flex;justify-content:flex-start;align-items:center;gap:4px}
 
-    a {
-      color: #ff0055;
-      text-decoration: none;
-      font-size: 1.1rem;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .hidden{display:none!important}
+    body.mode-viewer #landing-id,body.mode-viewer #landing-panel{display:none!important}
+    body.mode-landing #viewer{display:none!important}
 
-    a:hover {
-      text-decoration: underline;
-    }
+    .breadcrumbs a{color:var(--red);text-decoration:none}
+    .breadcrumbs a:hover{text-decoration:underline}
+    .muted{color:var(--muted)}
+    .stats{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 14px}
+    .chip{border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:#12121a;font-size:.86rem}
+    .post-list{list-style:none;padding:0;margin:0}
+    .post-item{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px dashed #2a2a36}
+    .post-left{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .new{color:#fff;background:linear-gradient(90deg,rgba(255,22,63,.9),rgba(255,22,63,.35));border-radius:999px;font-size:.72rem;padding:2px 8px}
+    .markdown-body{background:#0f0f13;padding:20px;border-radius:10px}
+    pre{background:#1a1a1a;padding:12px;border-radius:6px;overflow:auto}
 
-    .github-icon svg {
-      fill: #f0f0f0;
-    }
+    .about .hdr{font-weight:800;font-size:1.3rem;margin-bottom:18px;letter-spacing:.5px}
+    .about .accent{color:#fff;border-bottom:1px dashed var(--red)}
+    .about-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:start}
+    .about-grid > *{align-self:start}
+    @media (max-width:900px){.about-grid{grid-template-columns:1fr}}
+    .about-text{color:var(--text);opacity:.95;margin:0 0 14px}
+    .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+    .pill{border:1px solid rgba(255,22,63,.35);border-radius:999px;padding:6px 12px;background:linear-gradient(90deg, rgba(255,22,63,.25), rgba(255,22,63,.12));color:#fff;font-size:.86rem;box-shadow:0 0 18px rgba(255,22,63,.15) inset}
 
-    .linkedin-icon svg {
-      fill: #0A66C2;
-    }
+    .codegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:14px}
+    @media (max-width:900px){.codegrid{grid-template-columns:1fr}}
+    .code-tile{position:relative;min-height:180px;border:1px solid var(--line);border-radius:16px;background:#0e0e14;box-shadow:var(--glow);overflow:hidden;transition:transform .18s,border-color .18s, box-shadow .18s}
+    .code-tile:hover{transform:translateY(-4px);border-color:#2a2a38;box-shadow:0 0 32px rgba(255,22,63,.25)}
+    .code-head{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #1c1c28;background:#0e0e14}
+    .code-head .ch{width:10px;height:10px;border-radius:2px;background:linear-gradient(90deg, rgba(255,22,63,.9), rgba(255,22,63,.35));box-shadow:var(--glow)}
+    .code-tile pre{margin:0;padding:14px 16px;max-height:220px;overflow:hidden}
+    .code-tile code{display:block;white-space:pre-wrap;word-break:break-word}
+    .code-tile .scan{position:absolute;left:0;right:0;top:-40%;height:40%;background:linear-gradient(to bottom, rgba(255,22,63,.0), rgba(255,22,63,.06), rgba(255,22,63,.0));animation:scan 5s linear infinite;pointer-events:none}
+    .code-tile:hover .scan{animation-duration:3s}
+    @keyframes scan{0%{transform:translateY(0)}100%{transform:translateY(350%)}}
 
-    svg, img {
-      width: 30px;
-      height: 30px;
-    }
+    .about-right{display:grid;grid-template-rows:1fr auto;gap:14px}
+
+    /* METAS → slider vertical */
+    .goals{display:flex;flex-direction:column;height:100%;border:1px solid var(--line);border-radius:14px;background:#0f0f13;overflow:hidden}
+    .goals-head{padding:10px 12px;border-bottom:1px solid #1c1c28;background:#0e0e14;color:var(--muted);font-size:.9rem;letter-spacing:.3px}
+    .metas-slider{display:block;padding:10px;height:100%}
+    .metas-viewport{position:relative;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;scroll-behavior:smooth;mask-image:linear-gradient(#000 0, #000 calc(100% - 24px), transparent 100%)}
+    .metas-viewport::-webkit-scrollbar{width:10px}
+    .metas-viewport::-webkit-scrollbar-track{background:#12121a;border-radius:10px}
+    .metas-viewport::-webkit-scrollbar-thumb{background:linear-gradient(180deg, rgba(255,22,63,.55), rgba(255,22,63,.25));border-radius:10px;border:1px solid rgba(255,22,63,.35)}
+    .metas-viewport::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg, rgba(255,22,63,.75), rgba(255,22,63,.35))}
+    .metas-track{display:flex;flex-direction:column;gap:12px;padding-right:4px}
+    .metas-track .goal{ flex:0 0 auto; scroll-snap-align:start; scroll-snap-stop:always; }
+    .goal{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#101018,#0e0e14)}
+    .goal .mark{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:.8rem}
+    .goal.done .mark{background:linear-gradient(90deg, rgba(255,22,63,.9), rgba(255,22,63,.35));color:#fff;box-shadow:var(--glow)}
+    .goal.done{background:linear-gradient(180deg, rgba(255,22,63,.14), rgba(255,22,63,.08));border-color:#2a2a38}
+    .goal.todo .mark{border:1px solid #2a2a38;color:var(--muted)}
+    .g-body{display:flex;flex-direction:column}
+    .g-body strong{letter-spacing:.2px}
+    .g-sub{font-size:.82rem}
+    .links-card{border:1px solid var(--line);border-radius:14px;background:#0f0f13;padding:14px}
+    .links-row{display:flex;justify-content:center;gap:14px;margin-top:0}
+    .links-row .sbtn{width:44px;height:44px;border-radius:12px;border-color:rgba(255,22,63,.55)}
   </style>
 </head>
-<body>
-  <div class="terminal">
-    $ ./usr/bin/whoami<br>
-    <span>&gt; ub1cu0</span>
-  </div>
+<body class="mode-landing">
+  <div class="rain" aria-hidden="true" id="rain"></div>
+  <main class="wrap">
+    <section class="id" aria-label="Identidad" id="landing-id">
+      <div>
+        <div class="name">ub1cu0</div>
+        <div class="tag">&nbsp;Exploit Developer · Low-level Programmer</div>
+      </div>
+      <span class="status">Status: destroying CTFs</span>
+    </section>
 
-  <div class="subtitle">Exploit Developer | PWN</div>
+    <section class="panel" aria-label="Contenido principal" id="landing-panel">
+      <div class="grid">
+        <a class="tile" href="#/pwn" rel="noopener">
+          <h3>Writeups PWN <span class="badge" id="pwnCount">28</span></h3>
+          <p>Explotación de binarios paso a paso en español.</p>
+        </a>
+        <a class="tile" href="#/htb" rel="noopener">
+          <h3>Writeups HTB <span class="badge" id="htbCount">4</span></h3>
+          <p>Resolución de máquinas de HackTheBox en español.</p>
+        </a>
+      </div>
+    </section>
 
-  <div class="links">
-    <a href="https://ub1cu0.gitbook.io/pwn-writeups/" target="_blank">💀 Writeups PWN</a>
-    <a href="https://ub1cu0.gitbook.io/htb-writeups/" target="_blank">🩸 Writeups HTB</a>
+    <section class="panel about" id="about">
+      <div class="hdr reveal">About me</div>
+      <div class="about-grid">
+        <div class="about-left reveal">
+          <p class="about-text">Soy un exploit developer wannabe y un apasionado de la ciberserguridad y programación a bajo nivel. Soy miembro del Equipo de CTF <span class="accent">Caliphal Hounds</span>.</p>
+          <div class="pills">
+            <span class="pill">CEH</span>
+            <span class="pill">eJPTv2</span>
+            <span class="pill">B2</span>
+          </div>
+          <div class="codegrid" id="skills">
+            <article class="code-tile" data-lang="c">
+              <div class="code-head"><span class="ch"></span><span>C</span></div>
+              <pre><code id="code-c"></code></pre>
+              <i class="scan"></i>
+            </article>
+            <article class="code-tile" data-lang="cpp">
+              <div class="code-head"><span class="ch"></span><span>C++</span></div>
+              <pre><code id="code-cpp"></code></pre>
+              <i class="scan"></i>
+            </article>
+            <article class="code-tile" data-lang="py">
+              <div class="code-head"><span class="ch"></span><span>Python</span></div>
+              <pre><code id="code-py"></code></pre>
+              <i class="scan"></i>
+            </article>
+            <article class="code-tile" data-lang="sh">
+              <div class="code-head"><span class="ch"></span><span>Bash</span></div>
+              <pre><code id="code-sh"></code></pre>
+              <i class="scan"></i>
+            </article>
+          </div>
+        </div>
 
-    <a href="https://app.hackthebox.com/profile/1623120" target="_blank">
-      <img src="htb.svg" alt="HTB logo" />
-      Hack The Box
-    </a>
+        <div class="about-right reveal">
+          <div class="goals">
+            <div class="goals-head">Metas</div>
+            <div class="metas-slider">
+              <div class="metas-viewport" id="metasViewport">
+                <div class="metas-track" id="metasTrack">
+                  <div class="goal done"><span class="mark">✔</span><div class="g-body"><strong>eJPTv2</strong><span class="g-sub muted">completado</span></div></div>
+                  <div class="goal done"><span class="mark">✔</span><div class="g-body"><strong>CEH</strong><span class="g-sub muted">completado</span></div></div>
+                  <div class="goal todo"><span class="mark"></span><div class="g-body"><strong>100% PicoCTF</strong><span class="g-sub muted">en progreso</span></div></div>
+                  <div class="goal todo"><span class="mark"></span><div class="g-body"><strong>100% ROP Emporium</strong><span class="g-sub muted">siguiente</span></div></div>
+                  <div class="goal todo"><span class="mark"></span><div class="g-body"><strong>Publicar un CVE</strong><span class="g-sub muted">objetivo 2025</span></div></div>
+                  <div class="goal todo"><span class="mark"></span><div class="g-body"><strong>OSED</strong><span class="g-sub muted">planificado</span></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-    <a href="https://www.linkedin.com/in/moiseshermo/" target="_blank" class="linkedin-icon">
-      <svg viewBox="0 0 24 24">
-        <path d="M4.98 3.5C4.98 4.88 3.88 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8.25h4V24h-4V8.25zM8.5 8.25h3.62v2.14h.05c.51-.97 1.76-2 3.63-2 3.88 0 4.6 2.56 4.6 5.89V24h-4v-7.75c0-1.85-.03-4.23-2.58-4.23-2.58 0-2.98 2.01-2.98 4.09V24h-4V8.25z"/>
-      </svg>
-      LinkedIn
-    </a>
+          <div class="links-card">
+            <div class="links-row">
+              <a class="sbtn" href="https://github.com/ub1cu0" target="_blank" aria-label="GitHub" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.26.82-.577v-2.234c-3.338.724-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.085 1.84 1.238 1.84 1.238 1.07 1.834 2.805 1.304 3.492.997.107-.775.42-1.305.763-1.605-2.665-.305-5.467-1.332-5.467-5.93 0-1.31.467-2.38 1.235-3.22-.124-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23a11.49 11.49 0 0 1 3-.404c1.02.005 2.045.138 3 .404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.873.12 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.624-5.48 5.92.43.372.823 1.102.823 2.222v3.293c0 .32.218.694.825.576C20.565 21.796 24 17.297 24 12c0-6.63-5.373-12-12-12z"/></svg>
+              </a>
+              <a class="sbtn" href="https://www.linkedin.com/in/moiseshermo/" target="_blank" aria-label="LinkedIn" rel="noopener">
+                <svg class="svg-lnk" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5C4.98 4.88 3.88 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8.25h4V24h-4V8.25zM8.5 8.25h3.62v2.14h.05c.51-.97 1.76-2 3.63-2 3.88 0 4.6 2.56 4.6 5.89V24h-4v-7.75c0-1.85-.03-4.23-2.58-4.23-2.58 0-2.98 2.01-2.98 4.09V24h-4V8.25z"/></svg>
+              </a>
+              <a class="sbtn" href="https://app.hackthebox.com/profile/1623120" target="_blank" aria-label="Hack The Box" rel="noopener">
+                <svg viewBox="0 0 64 64" fill="currentColor" aria-hidden="true"><path d="M32 2l28 16v28L32 62 4 46V18zM10.8 22.3L32 34.7l21.2-12.4L32 9.9 10.8 22.3zm42.4 4.9L34 39.7v16l19.2-11.1V27.2zM30 39.7L10.8 27.2v17.4L30 55.7v-16z"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <a href="https://github.com/ub1cu0" target="_blank" class="github-icon">
-      <svg viewBox="0 0 24 24">
-        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.26.82-.577v-2.234c-3.338.724-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.085 1.84 1.238 1.84 1.238 1.07 1.834 2.805 1.304 3.492.997.107-.775.42-1.305.763-1.605-2.665-.305-5.467-1.332-5.467-5.93 0-1.31.467-2.38 1.235-3.22-.124-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23a11.49 11.49 0 0 1 3-.404c1.02.005 2.045.138 3 .404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.873.12 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.624-5.48 5.92.43.372.823 1.102.823 2.222v3.293c0 .32.218.694.825.576C20.565 21.796 24 17.297 24 12c0-6.63-5.373-12-12-12z"/>
-      </svg>
-      GitHub
-    </a>
+    <section id="viewer" class="hidden">
+      <section class="id" aria-label="Cabecera categoría" id="viewer-id">
+        <div>
+          <div class="name" id="viewerTitle">Writeups</div>
+          <div class="tag" id="viewerTag">Estadísticas y listado</div>
+        </div>
+        <span class="status" id="viewerStatus">Status: destroying CTFs</span>
+      </section>
+      <section class="panel" aria-label="Lista/Contenido">
+        <div class="breadcrumbs" id="crumbs"></div>
+        <div class="stats" id="stats"></div>
+        <div id="viewerContent" style="margin-top:12px"></div>
+      </section>
+    </section>
+  </main>
 
-  </div>
+  <footer><span>©</span><span id="year"></span><span>ub1cu0</span></footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/14.0.0/markdown-it.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>
+    const METAS_VISIBLE = 5; // cuántas metas visibles sin deslizar
+    document.getElementById('year').textContent=new Date().getFullYear();
+    (function(){const r=document.getElementById('rain');const c=Math.floor(window.innerWidth/60);const w=Math.floor(window.innerHeight/24);const h='0123456789abcdef'.split('');let x='';for(let i=0;i<c;i++){for(let j=0;j<w;j++){const ch=h[(i*7+j*13)%h.length];x+=`<i style="left:${i*60+10}px; top:${j*24+6}px;">${ch}</i>`}}r.innerHTML=x})();
+    function $(id){return document.getElementById(id)}
+    const PATHS={pwn:'pwn',htb:'htb'}
+
+    function setView(showLanding){
+      document.body.classList.remove('mode-landing','mode-viewer');
+      document.body.classList.add(showLanding?'mode-landing':'mode-viewer');
+      const a=$('landing-id'),b=$('landing-panel'),c=$('viewer'),d=$('about');
+      if(a){a.classList[showLanding?'remove':'add']('hidden');a.style.display=showLanding?'':'none'}
+      if(b){b.classList[showLanding?'remove':'add']('hidden');b.style.display=showLanding?'':'none'}
+      if(d){d.classList[showLanding?'remove':'add']('hidden');d.style.display=showLanding?'':'none'}
+      if(c){c.classList[showLanding?'add':'remove']('hidden');c.style.display=showLanding?'none':''}
+    }
+
+    function route(){
+      const raw=location.hash||'#/',parts=raw.split('/');
+      const path=parts[1]||'',a=parts[2],b=parts[3];
+      if(path===''){setView(true);return}
+      setView(false);
+      if(path==='pwn'||path==='htb'){renderList(path)}
+      else if(path==='post'&&(a==='pwn'||a==='htb')&&b){renderPost(a,decodeURIComponent(b))}
+      else{
+        $('viewerTitle')&&($('viewerTitle').textContent='Writeups');
+        $('viewerTag')&&($('viewerTag').textContent='Estadísticas y listado');
+        $('crumbs')&&($('crumbs').innerHTML='<a href="#/">Inicio</a>');
+        $('stats')&&($('stats').innerHTML='');
+        $('viewerContent')&&($('viewerContent').innerHTML='<p class="muted">Ruta no encontrada.</p>');
+      }
+    }
+
+    async function renderList(cat){
+      $('viewerTitle')&&($('viewerTitle').textContent=cat.toUpperCase()+' — Writeups');
+      $('viewerTag')&&($('viewerTag').textContent='Conteo por dificultad, lectura media y listado');
+      $('crumbs')&&($('crumbs').innerHTML=`<a href="#/">Inicio</a> / ${cat.toUpperCase()}`);
+      $('viewerContent')&&($('viewerContent').innerHTML='<p class="muted">Cargando…</p>');
+      $('stats')&&($('stats').innerHTML='');
+      try{
+        const res=await fetch(`${PATHS[cat]}/index.json`,{cache:'no-store'});
+        if(!res.ok)throw new Error('x');
+        let posts=await res.json();
+        if(!Array.isArray(posts))posts=[];
+        const now=Date.now();
+        const diffs={easy:0,medium:0,hard:0,insane:0};
+        let totalMin=0,haveMin=0;
+        posts.forEach(p=>{
+          const t=Array.isArray(p.tags)?p.tags:[];
+          const d=t.find(z=>/^diff:/.test(z));
+          const v=d?d.split(':')[1]:null;
+          if(v&&diffs.hasOwnProperty(v))diffs[v]++;
+          let m=Number(p.read_minutes);
+          if(!m&&p.words)m=Math.ceil(Number(p.words)/200);
+          if(m){ totalMin+=m; haveMin++; p._minutes=m }
+          p._isNew=false;
+          if(p.date){
+            const dt=Date.parse(p.date);
+            if(!isNaN(dt)&&(now-dt)<86400000)p._isNew=true
+          }
+        });
+        const avg=haveMin?Math.round(totalMin/haveMin):null;
+        const chips=[];
+        chips.push(`<span class="chip">Total: ${posts.length}</span>`);
+        Object.entries(diffs).forEach(([k,v])=>chips.push(`<span class="chip">${k}: ${v}</span>`));
+        chips.push(`<span class="chip">Lectura media: ${avg?avg+' min':'—'}</span>`);
+        $('stats')&&($('stats').innerHTML=chips.join(''));
+        posts.sort((a,b)=>(Date.parse(b.date||0)||0)-(Date.parse(a.date||0)||0));
+        const list=posts.map(p=>{
+          const s=(p.slug||'').replace(/\.md$/i,'');
+          const mins=p._minutes?`<span class="muted"> · ${p._minutes} min</span>`:'';
+          const dt=p.date?`<span class="muted"> · ${p.date}</span>`:'';
+          const badge=p._isNew?`<span class="new">NEW</span>`:'';
+          return `<li class="post-item"><div class="post-left">${badge}<a href=\"#/post/${cat}/${encodeURIComponent(s)}\">${p.title}</a>${mins}${dt}</div><div class=\"muted\">${(p.tags||[]).filter(x=>!x.startsWith('diff:')).slice(0,3).join(' · ')}</div></li>`;
+        }).join('');
+        $('viewerContent')&&($('viewerContent').innerHTML=`<ul class="post-list">${list}</ul>`);
+      }catch(e){
+        $('viewerContent')&&($('viewerContent').innerHTML='<p class="muted">No se pudo cargar el índice.</p>');
+      }
+    }
+
+    async function renderPost(cat,slug){
+      $('viewerTitle')&&($('viewerTitle').textContent=(cat.toUpperCase())+' — '+slug);
+      $('viewerTag')&&($('viewerTag').textContent='Writeup');
+      $('crumbs')&&($('crumbs').innerHTML=`<a href="#/">Inicio</a> / <a href="#/${cat}">${cat.toUpperCase()}</a> / ${slug}`);
+      $('stats')&&($('stats').innerHTML='');
+      $('viewerContent')&&($('viewerContent').innerHTML='<p class="muted">Cargando…</p>');
+      try{
+        if(typeof window.markdownit!=='function'){
+          await new Promise((ok,ko)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/markdown-it@14/dist/markdown-it.min.js';s.async=true;s.onload=ok;s.onerror=ko;document.head.appendChild(s)});
+        }
+        if(typeof window.hljs==='undefined'){
+          await new Promise((ok,ko)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/common.min.js';s.async=true;s.onload=ok;s.onerror=ko;document.head.appendChild(s)});
+        }
+        const res=await fetch(`${PATHS[cat]}/${slug}.md`,{cache:'no-store'});
+        if(!res.ok)throw new Error('x');
+        const text=await res.text();
+        const md=window.markdownit({html:true,linkify:true,highlight:function(str,lang){
+          if(lang&&window.hljs&&hljs.getLanguage(lang)){
+            try{return '<pre><code class="hljs">'+hljs.highlight(str,{language:lang,ignoreIllegals:true}).value+'</code></pre>'}catch(_){}
+          }
+          return '<pre><code class="hljs">'+str.replace(/[&<>]/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[s]))+'</code></pre>'
+        }});
+        $('viewerContent')&&($('viewerContent').innerHTML='<div class="markdown-body">'+md.render(text)+'</div>');
+        window.hljs&&hljs.highlightAll()
+      }catch(e){
+        $('viewerContent')&&($('viewerContent').innerHTML=`<p class=\"muted\">No se pudo cargar <code>${slug}.md</code>.</p>`);
+      }
+    }
+
+  function metasSliderInit(){
+    const vp=document.getElementById('metasViewport');
+    const track=document.getElementById('metasTrack');
+    if(!vp||!track) return;
+
+    function gapPx(){
+      const g=getComputedStyle(track).gap;
+      const v=parseInt(g,10);
+      return Number.isFinite(v)?v:12;
+    }
+    function cardEl(){ return track.querySelector('.goal'); }
+    function cardH(){
+      const c=cardEl();
+      return c? c.getBoundingClientRect().height : 64;
+    }
+    function step(){ return cardH()+gapPx(); }
+
+    function setViewportHeight(){
+      const n=Math.max(1, Number(METAS_VISIBLE||3));
+      const h=n*cardH()+gapPx()*(n-1);
+      vp.style.maxHeight=h+'px';
+      vp.style.minHeight=h+'px';
+    }
+
+    setViewportHeight();
+    window.addEventListener('resize', setViewportHeight);
+
+    vp.addEventListener('wheel',(e)=>{
+      e.preventDefault();
+      const dir = e.deltaY>0 ? 1 : -1;
+      vp.scrollBy({top: dir*step(), behavior:'smooth'});
+    }, {passive:false});
+
+    vp.addEventListener('keydown',(e)=>{
+      if(e.key==='ArrowDown' || e.key==='PageDown'){ e.preventDefault(); vp.scrollBy({top: step(),behavior:'smooth'}); }
+      if(e.key==='ArrowUp'   || e.key==='PageUp'){   e.preventDefault(); vp.scrollBy({top:-step(),behavior:'smooth'}); }
+    });
+    vp.tabIndex = 0; // para que reciba teclado
+  }
+
+    function init(){
+      window.addEventListener('hashchange',route);
+      route();
+      metasSliderInit();
+    }
+
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init)}else{init()}
+
+    const IO=(function(){if(!('IntersectionObserver'in window))return null;return new IntersectionObserver((ent)=>{ent.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');IO&&IO.unobserve(e.target);}})},{root:null,threshold:0.12})})();
+    Array.from(document.querySelectorAll('.reveal')).forEach(el=>{if(IO)IO.observe(el);else el.classList.add('in')});
+
+    const SNIPPETS={
+      c:`#include <stdio.h>
+int main(){
+  puts("pwned");
+  return 0;
+}`,
+      cpp:`#include <iostream>
+int main(){
+  std::cout << "pwned" << std::endl;
+  return 0;
+}`,
+      py:`#!/usr/bin/env python3
+def main():
+    print("pwned")
+if __name__ == "__main__":
+    main()`,
+      sh:`#!/usr/bin/env bash
+main(){
+  echo "pwned"
+}
+main`
+    };
+    const LANGMAP={c:'c',cpp:'cpp',py:'python',sh:'bash'};
+
+    function bootTilesImmediate(){
+      const tiles=Array.from(document.querySelectorAll('.code-tile'));
+      tiles.forEach(t=>{
+        const lang=t.getAttribute('data-lang');
+        const id=`code-${lang}`;
+        const el=document.getElementById(id);
+        if(!el) return;
+        el.className='language-'+(LANGMAP[lang]||'');
+        el.textContent=SNIPPETS[lang]||'';
+        if(window.hljs){ try{ hljs.highlightElement(el); }catch(_){ }}
+      });
+    }
+    function runTests(){
+      try{
+        const langs=['c','cpp','py','sh'];
+        langs.forEach(k=>{
+          const s=SNIPPETS[k];
+          console.assert(typeof s === 'string','snippet string',k);
+          const lines=s.replace(/\n+$/,'').split('\n');
+          console.assert(lines.length===5,'snippet 5 lines',k,lines.length);
+        });
+        console.assert(document.querySelectorAll('.code-tile').length===4,'4 tiles exist');
+      }catch(e){ console.warn('tests failed', e); }
+    }
+    bootTilesImmediate();
+    runTests();
+  </script>
 </body>
 </html>
