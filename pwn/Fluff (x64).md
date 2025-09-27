@@ -1,33 +1,29 @@
 Este ejercicio es prácticamente igual que [write4](https://ub1cu0.gitbook.io/pwn-writeups/ropemporium/4.-write4-x86_64) pero con una diferencia. La diferencia es que no tenemos ningún rop que haga un `mov DWORD ptr` con lo cual no podemos guardar `flag.txt` en el `.bss`. Como hacemos entonces? pues si miramos las funciones del binario vamos a poder ver lo siguiente:
 
-{% code fullWidth="false" %}
-
 ```c
 0000000000400628 <questionableGadgets>:
-  400628:	d7                   	xlat   BYTE PTR ds:[rbx]
-  400629:	c3                   	ret
-  40062a:	5a                   	pop    rdx
-  40062b:	59                   	pop    rcx
-  40062c:	48 81 c1 f2 3e 00 00 	add    rcx,0x3ef2
-  400633:	c4 e2 e8 f7 d9       	bextr  rbx,rcx,rdx
-  400638:	c3                   	ret
-  400639:	aa                   	stos   BYTE PTR es:[rdi],al
-  40063a:	c3                   	ret
-  40063b:	0f 1f 44 00 00       	nop    DWORD PTR [rax+rax*1+0x0]
+  400628:  d7                    xlat   BYTE PTR ds:[rbx]
+  400629:  c3                    ret
+  40062a:  5a                    pop    rdx
+  40062b:  59                    pop    rcx
+  40062c:  48 81 c1 f2 3e 00 00  add    rcx,0x3ef2
+  400633:  c4 e2 e8 f7 d9        bextr  rbx,rcx,rdx
+  400638:  c3                    ret
+  400639:  aa                    stos   BYTE PTR es:[rdi],al
+  40063a:  c3                    ret
+  40063b:  0f 1f 44 00 00        nop    DWORD PTR [rax+rax*1+0x0]
 ```
-
-{% endcode %}
 
 Usando únicamente lo que hay en esta función podemos conseguir mandar al segmento de memoria `.bss` el string `flag.txt` de la siguiente manera:
 
 Vamos a centrarnos en los 3 gadgets que nos van a hacer falta:
 
 ```c
-400628:	d7                   	xlat   BYTE PTR ds:[rbx]
+400628:  d7                    xlat   BYTE PTR ds:[rbx]
 . . .
-400633:	c4 e2 e8 f7 d9       	bextr  rbx,rcx,rdx
+400633:  c4 e2 e8 f7 d9        bextr  rbx,rcx,rdx
 . . .
-400639:	aa                   	stos   BYTE PTR es:[rdi],al
+400639:  aa                    stos   BYTE PTR es:[rdi],al
 ```
 
 Que es cada uno?
@@ -45,8 +41,6 @@ Como lo usaríamos y en que orden? Este sería la manera en la que manipulariamo
 
 Vamos a necesitar como datos los siguientes:
 
-{% code fullWidth="false" %}
-
 ```python
 bss = exe.bss() # Primera dirección del BSS (asumimos que está vacío)
 xlat = exe.symbols['questionableGadgets'] # Dirección a la función questionableGadgets
@@ -58,8 +52,6 @@ al_antiguo = 0xb # Antes de llegar a nuestro rop el programa tiene esto en al. S
 blob = read(exe.path) # Con esto blob contiene todos los datos del binario y puede buscar caracteres en él.
 flag = b'flag.txt'
 ```
-
-{% endcode %}
 
 Ahora que tenemos todos los datos podemos pasar al solve:
 

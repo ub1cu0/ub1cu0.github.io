@@ -158,13 +158,9 @@ Existen herramientas para explotar usuarios con este grupo pero necesitamos las 
 
 SI miramos el historial de PowerShell del usuario legacy podemos observar la contraseña del usuario svc\_deploy:
 
-{% code overflow="wrap" %}
-
 ```bash
 type C:\Users\legacyy\Appdata\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
 ```
-
-{% endcode %}
 
 <figure><img src="https://3021530757-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fi2UzPPwLQcMVfFsR8VSd%2Fuploads%2FnvXTY1V59haWizRPNTk8%2Fimage.png?alt=media&#x26;token=5b8497ee-64c3-4f32-820b-b1f581a59902" alt=""><figcaption></figcaption></figure>
 
