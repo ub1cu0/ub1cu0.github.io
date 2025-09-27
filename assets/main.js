@@ -22,7 +22,7 @@ function route(){
   else if(path==='post'&&(a==='pwn'||a==='htb')&&b){renderPost(a,decodeURIComponent(b))}
   else{
     $('viewerTitle')&&($('viewerTitle').textContent='Writeups');
-    $('viewerTag')&&($('viewerTag').textContent='Estadísticas y listado');
+    $('viewerTag')&&($('viewerTag').textContent='');
     $('crumbs')&&($('crumbs').innerHTML='<a href="#/">Inicio</a>');
     $('stats')&&($('stats').innerHTML='');
     $('viewerContent')&&($('viewerContent').innerHTML='<p class="muted">Ruta no encontrada.</p>');
@@ -30,7 +30,8 @@ function route(){
 }
 async function renderList(cat){
   $('viewerTitle')&&($('viewerTitle').textContent=cat.toUpperCase()+' — Writeups');
-  $('viewerTag')&&($('viewerTag').textContent='Conteo por dificultad, lectura media y listado');
+  $('viewerTag')&&($('viewerTag').textContent='');
+  $('viewerStatus')&&($('viewerStatus').classList.add('hidden'));
   $('crumbs')&&($('crumbs').innerHTML=`<a href="#/">Inicio</a> / ${cat.toUpperCase()}`);
   $('viewerContent')&&($('viewerContent').innerHTML='<p class="muted">Cargando…</p>');
   $('stats')&&($('stats').innerHTML='');
@@ -40,13 +41,11 @@ async function renderList(cat){
     let posts=await res.json();
     if(!Array.isArray(posts))posts=[];
     const now=Date.now();
-    const diffs={easy:0,medium:0,hard:0,insane:0};
+    // Contar tags usados
+    let tagCount = {};
     let totalMin=0,haveMin=0;
     posts.forEach(p=>{
-      const t=Array.isArray(p.tags)?p.tags:[];
-      const d=t.find(z=>/^diff:/.test(z));
-      const v=d?d.split(':')[1]:null;
-      if(v&&diffs.hasOwnProperty(v))diffs[v]++;
+      (p.tags||[]).forEach(t=>{tagCount[t]=(tagCount[t]||0)+1});
       let m=Number(p.read_minutes);
       if(!m&&p.words)m=Math.ceil(Number(p.words)/200);
       if(m){ totalMin+=m; haveMin++; p._minutes=m }
@@ -57,27 +56,84 @@ async function renderList(cat){
       }
     });
     const avg=haveMin?Math.round(totalMin/haveMin):null;
-    const chips=[];
-    chips.push(`<span class="chip">Total: ${posts.length}</span>`);
-    Object.entries(diffs).forEach(([k,v])=>chips.push(`<span class="chip">${k}: ${v}</span>`));
-    chips.push(`<span class="chip">Lectura media: ${avg?avg+' min':'—'}</span>`);
-    $('stats')&&($('stats').innerHTML=chips.join(''));
+    // Extraer tags de origen y tipo
+    const ORIGENES = ["picoCTF", "HackTheBox", "SnakeCTF", "imaginaryCTF", "WWCTF", "ropemporium"];
+    let origenTags = new Set();
+    let tipoTags = new Set();
+    posts.forEach(p => {
+      (p.tags||[]).forEach(t => {
+        if (ORIGENES.map(x=>x.toLowerCase()).includes(t.toLowerCase())) origenTags.add(t);
+        else tipoTags.add(t);
+      });
+    });
+    // Crear desplegables
+    let origenOptions = `<option value="all">Plataforma: Todos</option>` + Array.from(origenTags)
+      .sort((a,b)=>(tagCount[b]||0)-(tagCount[a]||0))
+      .map(t=>`<option value="${t}">${t} (${tagCount[t]||0})</option>`).join('');
+    let tipoOptions = `<option value="all">Tags: Todos</option>` + Array.from(tipoTags)
+      .sort((a,b)=>(tagCount[b]||0)-(tagCount[a]||0))
+      .map(t=>`<option value="${t}">${t} (${tagCount[t]||0})</option>`).join('');
+    $('stats').innerHTML = `<select id="origenSelect" style="margin-right:10px;">${origenOptions}</select><select id="tipoSelect">${tipoOptions}</select>`;
     posts.sort((a,b)=>(Date.parse(b.date||0)||0)-(Date.parse(a.date||0)||0));
-    const list=posts.map(p=>{
-      const s=(p.slug||'').replace(/\.md$/i,'');
-      const mins=p._minutes?`<span class="muted"> · ${p._minutes} min</span>`:'';
-      const dt=p.date?`<span class="muted"> · ${p.date}</span>`:'';
-      const badge=p._isNew?`<span class="new">NEW</span>`:'';
-      return `<li class="post-item"><div class="post-left">${badge}<a href=\"#/post/${cat}/${encodeURIComponent(s)}\">${p.title}</a>${mins}${dt}</div><div class=\"muted\">${(p.tags||[]).filter(x=>!x.startsWith('diff:')).slice(0,3).join(' · ')}</div></li>`;
-    }).join('');
-    $('viewerContent')&&($('viewerContent').innerHTML=`<ul class="post-list">${list}</ul>`);
+    // Filtrado
+    let activeOrigen = 'all';
+    let activeTipo = 'all';
+    function renderFiltered(){
+      let filtered = posts.filter(p => {
+        let tags = p.tags||[];
+        let origenOk = activeOrigen==='all' || tags.map(x=>x.toLowerCase()).includes(activeOrigen.toLowerCase());
+        let tipoOk = activeTipo==='all' || tags.map(x=>x.toLowerCase()).includes(activeTipo.toLowerCase());
+        return origenOk && tipoOk;
+      });
+      const list=filtered.map(p=>{
+        const s=(p.slug||'').replace(/\.md$/i,'');
+        const title = s;
+  const mins=p._minutes?`<span class=\"muted\">${p._minutes} min</span>`:'';
+  const dt=p.date?`<span class=\"muted\"> · ${p.date}</span>`:'';
+        const badge=p._isNew?`<span class=\"new\">NEW</span>`:'';
+        const tags=(p.tags||[]).filter(t=>!ORIGENES.map(x=>x.toLowerCase()).includes(t.toLowerCase())).map(t=>`<span class=\"pill\">${t}</span>`).join(' ');
+        // Imagen de plataforma
+        let platform = (p.tags||[]).find(t=>ORIGENES.map(x=>x.toLowerCase()).includes(t.toLowerCase()));
+        let img = '';
+        if(platform){
+          let imgName = platform.replace(/ctf$/i,'CTF').replace(/emporium$/i,'Emporium');
+          imgName = imgName.replace(/[^a-zA-Z0-9]/g,'');
+          if(imgName==='HackTheBox') imgName='HTB';
+          if(imgName==='SnakeCTF') imgName='snakeCTF';
+          if(imgName==='WWCTF') imgName='WWCTF';
+          if(imgName==='imaginaryCTF') imgName='imaginaryCTF';
+          if(imgName==='picoCTF') imgName='picoCTF';
+          if(imgName==='ropemporium'||imgName==='ropEmporium') imgName='ropEmporium';
+          img = `/img/${imgName}.png`;
+        }
+        const bg = img ? `style=\"--platform-img:url('${img}');\"` : '';
+        return `<a class=\"tile\" href=\"#/post/${cat}/${encodeURIComponent(s)}\" ${bg}>
+          <h3 style=\"margin:0;display:flex;align-items:center;gap:8px;\">${title} ${badge}</h3>
+          <div style=\"margin:6px 0 0 0;display:flex;flex-wrap:wrap;gap:6px;\">${tags}</div>
+          <div style=\"margin-top:4px;font-size:.92rem;color:#a7a7b4;\">${mins}${dt}</div>
+        </a>`;
+      }).join('');
+      $('viewerContent')&&($('viewerContent').innerHTML=`<div class=\"grid\">${list}</div>`);
+    }
+    renderFiltered();
+    // Filtrado por cambio en desplegables
+    document.getElementById('origenSelect').onchange = function(){
+      activeOrigen = this.value;
+      renderFiltered();
+    };
+    document.getElementById('tipoSelect').onchange = function(){
+      activeTipo = this.value;
+      renderFiltered();
+    };
   }catch(e){
     $('viewerContent')&&($('viewerContent').innerHTML='<p class="muted">No se pudo cargar el índice.</p>');
   }
 }
 async function renderPost(cat,slug){
-  $('viewerTitle')&&($('viewerTitle').textContent=(cat.toUpperCase())+' — '+slug);
-  $('viewerTag')&&($('viewerTag').textContent='Writeup');
+  $('viewerTitle')&&($('viewerTitle').textContent=slug);
+  // Ocultar status y subtítulo
+  $('viewerTag')&&($('viewerTag').textContent='');
+  $('viewerStatus')&&($('viewerStatus').classList.add('hidden'));
   $('crumbs')&&($('crumbs').innerHTML=`<a href="#/">Inicio</a> / <a href="#/${cat}">${cat.toUpperCase()}</a> / ${slug}`);
   $('stats')&&($('stats').innerHTML='');
   $('viewerContent')&&($('viewerContent').innerHTML='<p class="muted">Cargando…</p>');
@@ -90,7 +146,12 @@ async function renderPost(cat,slug){
     }
     const res=await fetch(`${PATHS[cat]}/${slug}.md`,{cache:'no-store'});
     if(!res.ok)throw new Error('x');
-    const text=await res.text();
+    let text=await res.text();
+    // Eliminar frontmatter y espacios extra al inicio
+    text = text.replace(/^---[\s\S]*?---\s*/i, '');
+    text = text.replace(/^\s+/, '');
+    // Si el primer caracter es salto de línea, quitarlo
+    if (text[0] === '\n') text = text.slice(1);
     const md=window.markdownit({html:true,linkify:true,highlight:function(str,lang){
       if(lang&&window.hljs&&hljs.getLanguage(lang)){
         try{return '<pre><code class="hljs">'+hljs.highlight(str,{language:lang,ignoreIllegals:true}).value+'</code></pre>'}catch(_){}
@@ -127,7 +188,7 @@ function metasSliderInit(){
   // Recalcula siempre que la ventana cambie de tamaño o se recargue
   function updateHeightOnReady() {
     setViewportHeight();
-    // Si el DOM cambia (por ejemplo tras recargar), recalcula
+    // Si el DOM cambia (por ejemplo tras recarg), recalcula
     setTimeout(setViewportHeight, 100);
   }
   updateHeightOnReady();
@@ -147,6 +208,16 @@ function init(){
   window.addEventListener('hashchange',route);
   route();
   metasSliderInit();
+  // Actualizar contador de writeups en la página principal
+  function updateCounts() {
+    fetch('pwn/index.json').then(r=>r.json()).then(arr=>{
+      document.getElementById('pwnCount').textContent = Array.isArray(arr) ? arr.length : 0;
+    });
+    fetch('htb/index.json').then(r=>r.json()).then(arr=>{
+      document.getElementById('htbCount').textContent = Array.isArray(arr) ? arr.length : 0;
+    });
+  }
+  if (document.getElementById('pwnCount') && document.getElementById('htbCount')) updateCounts();
 }
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init)}else{init()}
 const IO=(function(){if(!('IntersectionObserver'in window))return null;return new IntersectionObserver((ent)=>{ent.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');IO&&IO.unobserve(e.target);}})},{root:null,threshold:0.12})})();

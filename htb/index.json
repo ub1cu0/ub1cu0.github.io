@@ -1,0 +1,6 @@
+[
+    {"slug": "EscapeTwo", "tags": ["HackTheBox", "windows", "active directory", "mssql"], "date": "2025-05-14", "words": 1705},
+    {"slug":"Nocturnal","tags":["HackTheBox", "linux","web","command injection","ispcfg"],"date":"2025-05-16","words":1306},
+    {"slug":"Timelapse","tags":["HackTheBox","windows", "active directory","laps","pfx"],"date":"2025-05-15","words":1143},
+    {"slug":"Jeeves","tags":["HackTheBox", "windows", "jenkins","seimpersonate","juicypotato"],"date":"2025-05-13","words":1033}
+]
