@@ -57,7 +57,7 @@ async function renderList(cat){
     });
     const avg=haveMin?Math.round(totalMin/haveMin):null;
     // Extraer tags de origen y tipo
-    const ORIGENES = ["picoCTF", "HackTheBox", "SnakeCTF", "imaginaryCTF", "WWCTF", "ropemporium", "pwnable"];
+    const ORIGENES = ["picoCTF", "HackTheBox", "SnakeCTF", "imaginaryCTF", "WWCTF", "ropemporium", "pwnable", "NavajaNegra"];
     let origenTags = new Set();
     let tipoTags = new Set();
     posts.forEach(p => {
@@ -104,6 +104,7 @@ async function renderList(cat){
           if(imgName==='imaginaryCTF') imgName='imaginaryCTF';
           if(imgName==='picoCTF') imgName='picoCTF';
           if(imgName==='pwnable') imgName='pwnable';
+          if(imgName==='NavajaNegra') imgName='nn';
           if(imgName==='ropemporium'||imgName==='ropEmporium') imgName='ropEmporium';
           img = `/img/${imgName}.png`;
         }
