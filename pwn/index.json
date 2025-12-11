@@ -37,5 +37,9 @@
     {"slug": "Addition", "tags": ["imaginaryCTF", "got", "ret2libc"], "date": "2025-09-07", "words": 588},
     {"slug": "Start", "tags": ["pwnable", "shellcode", "ret2shellcode"], "date": "2025-10-14", "words": 907},
     {"slug": "Armeria", "tags": ["NavajaNegra", "ret2win"], "date": "2025-10-17", "words": 595},
-    {"slug": "4enRaya", "tags": ["NavajaNegra", "out of bounds", "got"], "date": "2025-10-17", "words": 1144}
+    {"slug": "4enRaya", "tags": ["NavajaNegra", "out of bounds", "got"], "date": "2025-10-17", "words": 1144},
+    {"slug": "Input Injection 1", "tags": ["picoCTF", "buffer overflow"], "date": "2025-12-9", "words": 319},
+    {"slug": "Input Injection 2", "tags": ["picoCTF", "buffer overflow", "heap"], "date": "2025-12-9", "words": 348},
+    {"slug": "wine", "tags": ["picoCTF", "buffer overflow", "ret2win", "windows"], "date": "2025-12-11", "words": 545},
+    {"slug": "Stack Cache", "tags": ["picoCTF", "stack leak", "ROP"], "date": "2025-12-11", "words": 641}
 ]
