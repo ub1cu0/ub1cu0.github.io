@@ -42,5 +42,7 @@
     {"slug": "Input Injection 2", "tags": ["picoCTF", "buffer overflow", "heap"], "date": "2025-12-9", "words": 348},
     {"slug": "Wine", "tags": ["picoCTF", "buffer overflow", "ret2win", "windows"], "date": "2025-12-11", "words": 545},
     {"slug": "Stack Cache", "tags": ["picoCTF", "stack leak", "ROP"], "date": "2025-12-11", "words": 641},
-    {"slug": "Babygame02", "tags": ["picoCTF", "OOB"], "date": "2025-12-14", "words": 853}
+    {"slug": "Babygame02", "tags": ["picoCTF", "OOB"], "date": "2025-12-14", "words": 853},
+    {"slug": "Handoff", "tags": ["picoCTF", "OOB", "ret2reg", "shellcode"], "date": "2025-12-17", "words": 1017},
+    {"slug": "Zero_to_hero", "tags": ["picoCTF", "tcache", "null byte", "ret2libc", "heap"], "date": "2025-12-20", "words": 1766}
 ]
