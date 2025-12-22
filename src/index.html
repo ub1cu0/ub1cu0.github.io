@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ub1cu0 — Portfolio / Blog</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E💀%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+<body class="mode-landing">
+  <div class="rain" aria-hidden="true" id="rain"></div>
+  <main class="wrap">
+    
+    <section class="id" aria-label="Identidad" id="landing-id">
+      <div>
+        <div class="name">ub1cu0</div>
+        <div class="tag">&nbsp;Exploit Developer · Low-level Programmer</div>
+      </div>
+      <span class="status">Status: destroying CTFs</span>
+    </section>
+
+    <section class="panel" aria-label="Contenido principal" id="landing-panel">
+      <div class="grid">
+        <a class="tile" href="#/pwn" rel="noopener">
+          <h3>Writeups PWN <span class="badge" id="pwnCount">-</span></h3>
+          <p>Explotación de binarios paso a paso en español.</p>
+        </a>
+        <a class="tile" href="#/htb" rel="noopener">
+          <h3>Writeups HTB <span class="badge" id="htbCount">-</span></h3>
+          <p>Resolución de máquinas de HackTheBox en español.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="panel about" id="about">
+      <div class="hdr reveal">About me</div>
+      <div class="about-grid">
+        <div class="about-left reveal">
+          <p class="about-text">Aspirante a exploit developer y un apasionado de la ciberserguridad y programación a bajo nivel. Soy miembro del Equipo de CTF <span class="accent">Caliphal Hounds</span>.</p>
+          <div class="pills">
+            <span class="pill">CEH</span>
+            <span class="pill">eJPTv2</span>
+            <span class="pill">B2</span>
+          </div>
+          
+          <div class="codegrid" id="skills">
+              <article class="code-tile" data-lang="c">
+                  <div class="code-head"><span class="ch"></span><span>C</span></div>
+                  <pre><code></code></pre>
+                  <i class="scan"></i>
+              </article>
+              <article class="code-tile" data-lang="cpp">
+                  <div class="code-head"><span class="ch"></span><span>C++</span></div>
+                  <pre><code></code></pre>
+                  <i class="scan"></i>
+              </article>
+              <article class="code-tile" data-lang="py">
+                  <div class="code-head"><span class="ch"></span><span>Python</span></div>
+                  <pre><code></code></pre>
+                  <i class="scan"></i>
+              </article>
+              <article class="code-tile" data-lang="sh">
+                  <div class="code-head"><span class="ch"></span><span>Bash</span></div>
+                  <pre><code></code></pre>
+                  <i class="scan"></i>
+              </article>
+          </div>
+        </div>
+
+        <div class="about-right reveal">
+          <div class="goals">
+            <div class="goals-head">Metas</div>
+            <div class="metas-slider">
+              <div class="metas-viewport" id="metasViewport">
+                <div class="metas-track" id="metasTrack">
+                  <div class="goal done"><span class="mark">✔</span><div class="g-body"><strong>eJPTv2</strong><span class="g-sub muted">completado</span></div></div>
+                  <div class="goal done"><span class="mark">✔</span><div class="g-body"><strong>CEH</strong><span class="g-sub muted">completado</span></div></div>
+                  <div class="goal done"><span class="mark">✔</span><div class="g-body"><strong>100% ROP Emporium</strong><span class="g-sub muted">completado</span></div></div>
+                  <div class="goal todo"><span class="mark"></span><div class="g-body"><strong>Aprender Kernel</strong><span class="g-sub muted">objetivo febrero-2026</span></div></div>
+                  <div class="goal todo"><span class="mark"></span><div class="g-body"><strong>Aprender Windows Userland</strong><span class="g-sub muted">objetivo marzo-2026</span></div></div>
+                  <div class="goal todo"><span class="mark"></span><div class="g-body"><strong>Aprender Embedded/Hardware</strong><span class="g-sub muted">objetivo abril-2026</span></div></div>
+                  <div class="goal todo"><span class="mark"></span><div class="g-body"><strong>Aprender V8</strong><span class="g-sub muted">objetivo junio-2026</span></div></div>
+                  <div class="goal todo"><span class="mark"></span><div class="g-body"><strong>Publicar un CVE (>7.0)</strong><span class="g-sub muted">objetivo 2026</span></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="links-card">
+            <div class="links-row">
+              <a class="sbtn" href="https://github.com/ub1cu0" target="_blank" aria-label="GitHub">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.26.82-.577v-2.234c-3.338.724-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.085 1.84 1.238 1.84 1.238 1.07 1.834 2.805 1.304 3.492.997.107-.775.42-1.305.763-1.605-2.665-.305-5.467-1.332-5.467-5.93 0-1.31.467-2.38 1.235-3.22-.124-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23a11.49 11.49 0 0 1 3-.404c1.02.005 2.045.138 3 .404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.873.12 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.624-5.48 5.92.43.372.823 1.102.823 2.222v3.293c0 .32.218.694.825.576C20.565 21.796 24 17.297 24 12c0-6.63-5.373-12-12-12z"/></svg>
+              </a>
+              <a class="sbtn" href="https://www.linkedin.com/in/moiseshermo/" target="_blank" aria-label="LinkedIn">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M4.98 3.5C4.98 4.88 3.88 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8.25h4V24h-4V8.25zM8.5 8.25h3.62v2.14h.05c.51-.97 1.76-2 3.63-2 3.88 0 4.6 2.56 4.6 5.89V24h-4v-7.75c0-1.85-.03-4.23-2.58-4.23-2.58 0-2.98 2.01-2.98 4.09V24h-4V8.25z"/></svg>
+              </a>
+              <a class="sbtn" href="https://app.hackthebox.com/profile/1623120" target="_blank" aria-label="Hack The Box">
+                <svg viewBox="0 0 64 64" fill="currentColor" width="24" height="24"><path d="M32 2l28 16v28L32 62 4 46V18zM10.8 22.3L32 34.7l21.2-12.4L32 9.9 10.8 22.3zm42.4 4.9L34 39.7v16l19.2-11.1V27.2zM30 39.7L10.8 27.2v17.4L30 55.7v-16z"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="viewer" class="hidden">
+      <section class="id" aria-label="Cabecera categoría" id="viewer-id">
+        <div>
+          <div class="name" id="viewerTitle">Writeups</div>
+        </div>
+        <span class="status" id="viewerStatus">Status: reading...</span>
+      </section>
+      <section class="panel" aria-label="Lista/Contenido">
+        <div class="breadcrumbs" id="crumbs"></div>
+        <div class="stats" id="stats"></div>
+        <div id="viewerContent" style="margin-top:12px"></div>
+      </section>
+    </section>
+
+  </main>
+  <footer><span>©</span><span id="year"></span><span>ub1cu0</span></footer>
+
+  <script type="module" src="assets/js/main.js"></script>
+</body>
+</html>
