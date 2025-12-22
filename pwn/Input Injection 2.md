@@ -1,3 +1,9 @@
+---
+title: "Input Injection 2"
+date: "2025-12-09"
+tags: ["picoCTF", "buffer overflow", "heap"]
+---
+
 
 En este ejercicio nos dan un ejercicio y un binario. Vamos a mirar el código:
 

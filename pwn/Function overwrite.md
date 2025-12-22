@@ -1,3 +1,9 @@
+---
+title: "Function overwrite"
+date: "2025-07-25"
+tags: ["picoCTF", "function overwrite", "array indexing"]
+---
+
 En este ejercicio nos dan un binario y su código fuente.
 
 ```c

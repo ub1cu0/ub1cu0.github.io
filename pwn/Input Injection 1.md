@@ -1,3 +1,9 @@
+---
+title: "Input Injection 1"
+date: "2025-12-09"
+tags: ["picoCTF", "buffer overflow"]
+---
+
 En este ejercicio nos dan un binario y su código. Examinando rápidamente si código podemos ver que es un ejercicio sencillo:
 
 ```c

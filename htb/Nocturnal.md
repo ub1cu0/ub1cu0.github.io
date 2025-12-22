@@ -1,3 +1,9 @@
+---
+title: "Nocturnal"
+date: "2025-05-16"
+tags: ["HackTheBox", "linux", "web", "command injection", "ispcfg"]
+---
+
 # Nocturnal
 
 <figure><img src="https://3021530757-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fi2UzPPwLQcMVfFsR8VSd%2Fuploads%2FDTXvhbrSVu6BjRQEMpUm%2FNocturnal.png?alt=media&#x26;token=354c25bd-06a6-4ee9-ad53-3eb2abd0965c" alt=""><figcaption></figcaption></figure>

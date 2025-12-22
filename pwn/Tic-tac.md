@@ -1,3 +1,9 @@
+---
+title: "Tic-tac"
+date: "2025-08-04"
+tags: ["picoCTF", "race condition"]
+---
+
 En este ejercicio nos dan las credenciales a una shell con un binario.
 
 El binario tiene el siguiente código:

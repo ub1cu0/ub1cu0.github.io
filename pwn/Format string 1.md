@@ -1,3 +1,9 @@
+---
+title: "Format string 1"
+date: "2025-07-16"
+tags: ["picoCTF", "format string"]
+---
+
 En este ejercicio nos dan un binario y su código en C.
 
 El programa comprueba si existen tres archivos en el directorio actual:

@@ -1,3 +1,9 @@
+---
+title: "Local target"
+date: "2025-07-15"
+tags: ["picoCTF", "buffer overflow"]
+---
+
 El ejercicio nos proporciona un binario y su correspondiente código fuente.
 
 Si ejecutamos el binario, observamos que solicita una cadena de texto y nos informa que `num = 64`:

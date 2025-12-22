@@ -1,3 +1,9 @@
+---
+title: "Start"
+date: "2025-10-14"
+tags: ["pwnable", "shellcode", "ret2shellcode"]
+---
+
 En este ejercicio nos dan un binario con las siguientes características y protecciones:
 
 ```c

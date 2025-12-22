@@ -1,3 +1,9 @@
+---
+title: "Buffer overflow 3"
+date: "2025-07-24"
+tags: ["picoCTF", "buffer overflow", "canary", "ret2win"]
+---
+
 Este ejercicio nos ofrece un binario y su código en C.
 
 ```c

@@ -1,3 +1,9 @@
+---
+title: "EscapeTwo"
+date: "2025-05-14"
+tags: ["HackTheBox", "windows", "active directory", "mssql"]
+---
+
 # EscapeTwo
 
 <figure><img src="htb/img/EscapeTwo/EscapeTwo.png" alt=""><figcaption></figcaption></figure>

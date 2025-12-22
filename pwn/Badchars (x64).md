@@ -1,3 +1,9 @@
+---
+title: "Badchars (x64)"
+date: "2025-08-09"
+tags: ["RopEmporium", "ROP", "badchars"]
+---
+
 Este ejercicio es el mismo que [write4](https://ub1cu0.gitbook.io/pwn-writeups/ropemporium/4.-write4-x86_64) con una pequeña diferencia.
 
 En este ejercicio la función donde teníamos el buffer overflow hay un bucle que, si nuestro payload tiene ciertos  valores los cambiará a otro valor, lo cual romperá nuestro Rop:

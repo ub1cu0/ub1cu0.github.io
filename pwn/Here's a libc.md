@@ -1,3 +1,9 @@
+---
+title: "Here's a libc"
+date: "2025-07-23"
+tags: ["picoCTF", "ret2libc", "ROP"]
+---
+
 En este ejercicio se nos presenta un binario, un libc y un makefile.
 
 ```c

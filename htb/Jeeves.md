@@ -1,3 +1,9 @@
+---
+title: "Jeeves"
+date: "2025-05-13"
+tags: ["HackTheBox", "windows", "jenkins", "seimpersonate", "juicypotato"]
+---
+
 # Jeeves
 
 ## Enumeración

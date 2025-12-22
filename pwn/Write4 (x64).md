@@ -1,3 +1,9 @@
+---
+title: "Write4 (x64)"
+date: "2025-08-08"
+tags: ["RopEmporium", "ROP"]
+---
+
 Este ejercicio es casi el mismo que [callme](https://ub1cu0.gitbook.io/pwn-writeups/ropemporium/3.-callme-x86_64). La diferencia principal es que en lugar de tener que llamar a unas funciones de la libc externa con x parámetros para desencriptar hay que llamar una función, también de la libc que nos dan, y pasarle por parámetro un puntero al string "flag.txt", vamos a verlo:
 
 ```c

@@ -1,3 +1,9 @@
+---
+title: "Heap 2"
+date: "2025-07-17"
+tags: ["picoCTF", "heap", "buffer overflow", "function pointer"]
+---
+
 Este ejercicio se parece mucho al ejercicio de Heap 1. Nos dan un programa y su código.
 
 ```c

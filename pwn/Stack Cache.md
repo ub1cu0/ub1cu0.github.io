@@ -1,3 +1,9 @@
+---
+title: "Stack Cache"
+date: "2025-12-11"
+tags: ["picoCTF", "stack leak", "ROP"]
+---
+
 En este ejercicio nos dan un binario y su código fuente:
 
 ```c

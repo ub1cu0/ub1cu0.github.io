@@ -1,3 +1,9 @@
+---
+title: "Guessing game 2"
+date: "2025-07-31"
+tags: ["picoCTF", "format string", "canary", "ret2libc"]
+---
+
 En este ejercicio nos dan un binario y su código fuente.
 
 ```c

@@ -1,3 +1,9 @@
+---
+title: "RSP"
+date: "2025-07-14"
+tags: ["picoCTF", "string injection", "input validation"]
+---
+
 El ejercicio nos ofrece el código de un binario. Al observarlo, podemos ver que es un juego de piedra, papel o tijeras.
 
 Indagando en el programa podemos encontrar lo siguiente:

@@ -1,3 +1,9 @@
+---
+title: "Unsubscriptions are free"
+date: "2025-08-03"
+tags: ["picoCTF", "use after free", "function pointer"]
+---
+
 En este ejercicio nos dan un binario y su código fuente.
 
 ```c

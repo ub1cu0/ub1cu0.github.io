@@ -1,3 +1,9 @@
+---
+title: "Callme (x64)"
+date: "2025-08-07"
+tags: ["RopEmporium", "ROP"]
+---
+
 En este ejercicio nos dan varias cosas:
 
 * El binario

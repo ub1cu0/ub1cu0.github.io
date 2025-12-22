@@ -1,3 +1,9 @@
+---
+title: "X sixty what"
+date: "2025-07-14"
+tags: ["picoCTF", "buffer overflow", "ret2win"]
+---
+
 # X-Sixty-What
 
 ```c

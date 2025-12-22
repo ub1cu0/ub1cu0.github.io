@@ -1,3 +1,9 @@
+---
+title: "Ret2csu (x64)"
+date: "2025-09-14"
+tags: ["RopEmporium", "ROP", "ret2csu"]
+---
+
 Este ejercicio es como el [callme](https://ub1cu0.gitbook.io/pwn-writeups/ropemporium/3.-callme-x86_64) pero sin tener que hacer saltos a 3 funciones. Simplemente hay que hacer un salto a la función `ret2win`. Vamos a intentarlo para ver cual es el muro que tenemos ahora:
 
 ```c

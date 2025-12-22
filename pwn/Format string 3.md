@@ -1,3 +1,9 @@
+---
+title: "Format string 3"
+date: "2025-07-20"
+tags: ["picoCTF", "format string", "GOT overwrite"]
+---
+
 En este ejercicio nos dan 4 cosas:
 
 * Binario

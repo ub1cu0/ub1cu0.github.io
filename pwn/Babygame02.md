@@ -1,3 +1,9 @@
+---
+title: "Babygame02"
+date: "2025-12-14"
+tags: ["picoCTF", "OOB"]
+---
+
 Nos dan un binario sin su código. 
 
 ```c

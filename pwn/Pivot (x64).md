@@ -1,3 +1,9 @@
+---
+title: "Pivot (x64)"
+date: "2025-08-12"
+tags: ["RopEmporium", "ROP", "stack pivot"]
+---
+
 En este ejercicio nos vuelven a dar un binario y una libc.
 
 ```c

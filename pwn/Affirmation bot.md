@@ -1,3 +1,9 @@
+---
+title: "Affirmation bot"
+date: "2025-07-29"
+tags: ["WWCTF", "format string", "buffer overflow"]
+---
+
 En este ejercicio nos dan un binario y su código fuente.
 
 ```c

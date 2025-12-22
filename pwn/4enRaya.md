@@ -1,3 +1,9 @@
+---
+title: "4enRaya"
+date: "2025-10-17"
+tags: ["NavajaNegra", "OOB", "got"]
+---
+
 En este ejercicio nos dan un binario que hace lo siguiente:
 
 ```c

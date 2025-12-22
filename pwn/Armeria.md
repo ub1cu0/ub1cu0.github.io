@@ -1,3 +1,9 @@
+---
+title: "Armeria"
+date: "2025-10-17"
+tags: ["NavajaNegra", "ret2win"]
+---
+
 En este ejercicio nos dan un binario que hace lo siguiente:
 
 ```c

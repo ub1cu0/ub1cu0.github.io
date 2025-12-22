@@ -1,3 +1,9 @@
+---
+title: "VNE"
+date: "2025-07-15"
+tags: ["picoCTF", "env"]
+---
+
 Este ejercicio nos da las credenciales para acceder por SSH como un usuario en una máquina.
 
 En el directorio inicial encontramos un binario llamado `bin`:

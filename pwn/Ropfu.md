@@ -1,3 +1,9 @@
+---
+title: "Ropfu"
+date: "2025-07-22"
+tags: ["picoCTF", "ROP", "buffer overflow", "ret2syscall"]
+---
+
 Bienvenidos al primer ejercicio hard que hago de PicoCTF!
 
 En este caso nos dan un binario y su código:

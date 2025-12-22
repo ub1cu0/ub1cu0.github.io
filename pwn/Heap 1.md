@@ -1,3 +1,9 @@
+---
+title: "Heap 1"
+date: "2025-07-16"
+tags: ["picoCTF", "heap", "buffer overflow"]
+---
+
 Como podemos ver, el ejercicio nos ofrece dos direcciones en memoria con su respectivo valor.
 
 ```c

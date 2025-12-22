@@ -1,3 +1,9 @@
+---
+title: "Pie time 2"
+date: "2025-07-21"
+tags: ["picoCTF", "PIE", "format string"]
+---
+
 En este ejercicio nos ofrecen un binario y su código en C.
 
 ```c

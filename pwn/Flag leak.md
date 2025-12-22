@@ -1,3 +1,9 @@
+---
+title: "Flag leak"
+date: "2025-07-14"
+tags: ["picoCTF", "format string"]
+---
+
 ```bash
 file vuln
 vuln: ELF 32-bit LSB executable, Intel i386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, BuildID\[sha1]=17bb7adc72aff4022d6a1c451eb9adcf34df2f8c, for GNU/Linux 3.2.0, not stripped

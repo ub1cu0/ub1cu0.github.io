@@ -1,3 +1,9 @@
+---
+title: "Handoff"
+date: "2025-12-17"
+tags: ["picoCTF", "OOB", "ret2reg", "shellcode"]
+---
+
 En este ejercicio nos dan un binario y su código fuente:
 
 ```c

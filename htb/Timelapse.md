@@ -1,3 +1,9 @@
+---
+title: "Timelapse"
+date: "2025-05-15"
+tags: ["HackTheBox", "windows", "active directory", "laps", "pfx"]
+---
+
 # Timelapse
 
 <figure><img src="https://3021530757-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fi2UzPPwLQcMVfFsR8VSd%2Fuploads%2FUX8f4cQMP0lzRlzPKfy6%2FTimelapse.png?alt=media&#x26;token=23875d92-3665-4aa4-99da-8c9ecf64aa3c" alt=""><figcaption></figcaption></figure>

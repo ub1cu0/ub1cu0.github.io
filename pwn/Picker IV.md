@@ -1,3 +1,9 @@
+---
+title: "Picker IV"
+date: "2025-07-16"
+tags: ["picoCTF", "ret2win"]
+---
+
 En este ejercicio nos dan un binario junto con su código en C.
 
 Si ejecutamos el binario, podemos ver que nos pide una dirección en hexadecimal a la que saltar:

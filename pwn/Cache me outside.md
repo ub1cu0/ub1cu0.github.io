@@ -1,3 +1,9 @@
+---
+title: "Cache me outside"
+date: "2025-09-16"
+tags: ["picoCTF", "tcache", "heap"]
+---
+
 En este ejercicio nos ofrecen tres archivos:
 
 * heapedit (el binario)

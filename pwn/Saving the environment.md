@@ -1,3 +1,9 @@
+---
+title: "Saving the environment"
+date: "2025-09-08"
+tags: ["snakeCTF", "seccomp", "timing", "shellcode"]
+---
+
 Este ejercicio nos da un programa que imprime las variables de entorno del usuario que lo ejecute.\
 El usuario que ejecuta el binario en remoto tiene la variable `FLAG=laflag`, donde está la flag que queremos conseguir. Parece que simplemente hay que ejecutar el programa y ya, pero si lo hacemos, donde debería aparecer la flag, saldrá `FLAG=... Lets not print this one...`.  Esto se debe a lo siguiente:
 

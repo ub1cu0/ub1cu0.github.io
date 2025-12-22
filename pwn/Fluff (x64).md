@@ -1,3 +1,9 @@
+---
+title: "Fluff (x64)"
+date: "2025-08-11"
+tags: ["RopEmporium", "ROP"]
+---
+
 Este ejercicio es prácticamente igual que [write4](https://ub1cu0.gitbook.io/pwn-writeups/ropemporium/4.-write4-x86_64) pero con una diferencia. La diferencia es que no tenemos ningún rop que haga un `mov DWORD ptr` con lo cual no podemos guardar `flag.txt` en el `.bss`. Como hacemos entonces? pues si miramos las funciones del binario vamos a poder ver lo siguiente:
 
 ```c

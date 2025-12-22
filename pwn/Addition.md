@@ -1,3 +1,9 @@
+---
+title: "Addition"
+date: "2025-09-07"
+tags: ["imaginaryCTF", "got", "ret2libc"]
+---
+
 En esta ocasión nos dan un binario que parece estar en un bucle, en donde nos piden una dirección y un valor.
 
 ```c

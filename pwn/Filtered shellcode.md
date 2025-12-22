@@ -1,3 +1,9 @@
+---
+title: "Filtered shellcode"
+date: "2025-09-18"
+tags: ["picoCTF", "shellcode"]
+---
+
 En el ejercicio nos dan un binario. Al ejecutarlo podemos ver lo siguiente:
 
 ```c

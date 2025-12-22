@@ -1,3 +1,9 @@
+---
+title: "Zero_to_hero"
+date: "2025-12-20"
+tags: ["picoCTF", "tcache", "null byte", "ret2libc", "heap"]
+---
+
 
 En este ejercicio nos dan el pack completo menos el código:
 

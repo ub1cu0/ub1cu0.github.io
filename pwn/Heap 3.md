@@ -1,3 +1,9 @@
+---
+title: "Heap 3"
+date: "2025-07-17"
+tags: ["picoCTF", "use after free", "heap"]
+---
+
 Este ejercicio nos da un programa y su código fuente. El programa ofrece las siguientes opciones:
 
 ```c

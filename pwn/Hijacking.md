@@ -1,3 +1,9 @@
+---
+title: "Hijacking"
+date: "2025-07-14"
+tags: ["picoCTF", "sudo", "python module hijack"]
+---
+
 Este ejercicio nos ofrece una sesión ssh.
 
 Si hacemos un poco de enumeración por la maquina podemos ver 2 cosas interesantes:

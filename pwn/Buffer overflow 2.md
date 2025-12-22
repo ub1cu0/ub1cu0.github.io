@@ -1,3 +1,9 @@
+---
+title: "Buffer overflow 2"
+date: "2025-07-14"
+tags: ["picoCTF", "buffer overflow", "ret2win"]
+---
+
 ```bash
 file vuln  
 vuln: ELF 32-bit LSB executable, Intel i386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, BuildID[sha1]=a429aa852db1511dec3f0143d93e5b1e80e4d845, for GNU/Linux 3.2.0, not stripped  

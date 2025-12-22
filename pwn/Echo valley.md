@@ -1,3 +1,9 @@
+---
+title: "Echo valley"
+date: "2025-07-19"
+tags: ["picoCTF", "format string", "PIE", "canary"]
+---
+
 En este ejercicio nos dan un binario y su respectivo código en C.
 
 ```c

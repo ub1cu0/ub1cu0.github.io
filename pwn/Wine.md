@@ -1,3 +1,9 @@
+---
+title: "Wine"
+date: "2025-12-11"
+tags: ["picoCTF", "buffer overflow", "ret2win", "windows"]
+---
+
 Nos dan un ejecutable de windows de 32 bits y su codigo:
 
 ```c

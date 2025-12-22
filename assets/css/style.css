@@ -43,7 +43,22 @@ select option {
 .panel + .panel{margin-top:28px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0;align-items:stretch;grid-auto-rows:1fr}
 @media (max-width:720px){.grid{grid-template-columns:1fr}}
-.tile{display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);border-radius:16px;padding:20px;min-height:120px;height:100%;text-decoration:none;color:var(--text);background:linear-gradient(180deg,#101018,#0e0e14);transition:transform .18s,box-shadow .18s,border-color .18s;position:relative;overflow:hidden}
+.tile {
+  display: flex;
+  flex-direction: column; /* Organiza el contenido en columna vertical */
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px;
+  min-height: 120px;
+  height: 100%; /* Ocupa toda la altura que le de el Grid */
+  text-decoration: none;
+  color: var(--text);
+  background: linear-gradient(180deg, #101018, #0e0e14);
+  transition: transform .18s, box-shadow .18s, border-color .18s;
+  position: relative;
+  overflow: hidden;
+}
 .tile[style*="url("]::after {
   content: "";
   position: absolute;
@@ -66,6 +81,9 @@ select option {
 .tile h3{margin:0;font-size:1.12rem;display:flex;align-items:center;gap:10px}
 .badge{display:inline-flex;gap:6px;align-items:center;padding:3px 10px;border-radius:999px;font-size:.86rem;color:#fff;background:linear-gradient(90deg,rgba(255,22,63,.9),rgba(255,22,63,.35))}
 .tile p{margin:0;color:var(--muted);font-size:.92rem}
+.tile > div:last-child {
+  margin-top: auto; /* <--- LA MAGIA: Empuja este elemento al fondo */
+}
 .sbtn{width:38px;height:38px;display:grid;place-items:center;border-radius:11px;border:1px solid rgba(255,22,63,.45);background:#111118;color:#fff;text-decoration:none;transition:.18s}
 .sbtn:hover{box-shadow:0 0 22px rgba(255,22,63,.35);border-color:rgba(255,22,63,.9)}
 .sbtn svg{width:20px;height:20px;display:block;margin:auto}
@@ -136,6 +154,25 @@ body.mode-landing #viewer{display:none!important}
 .links-card{border:1px solid var(--line);border-radius:14px;background:#0f0f13;padding:14px}
 .links-row{display:flex;justify-content:center;gap:14px;margin-top:0}
 .links-row .sbtn{width:44px;height:44px;border-radius:12px;border-color:rgba(255,22,63,.55)}
+.tile-tags {
+  margin: 8px 0 0 0;
+  display: flex;
+  flex-wrap: wrap; /* Permite que bajen a la siguiente línea */
+  gap: 6px;        /* Espacio entre tags */
+  max-width: 60%;  /* EL TRUCO: Deja un 15% de espacio a la derecha para el logo */
+  position: relative;
+  z-index: 2;
+.tile-meta {
+  margin-top: auto;  /* <--- ESTO es lo que lo ancla abajo del todo */
+  padding-top: 10px; /* Un poco de aire extra por si los tags están muy cerca */
+  font-size: .92rem;
+  color: #a7a7b4;
+  
+  /* Asegura que no se solape con el logo si la fecha es muy larga */
+  position: relative; 
+  z-index: 2;
+}
+}
 body{
   background:
     radial-gradient(900px 420px at 50% -180px, rgba(255,22,63,.04), transparent 60%),

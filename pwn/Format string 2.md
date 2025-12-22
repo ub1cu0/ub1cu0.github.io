@@ -1,3 +1,9 @@
+---
+title: "Format string 2"
+date: "2025-07-18"
+tags: ["picoCTF", "format string"]
+---
+
 # Format String 2
 
 En este ejercicio tenemos un binario y su código en C.
