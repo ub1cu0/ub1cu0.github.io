@@ -4,7 +4,7 @@ import fm from 'front-matter';
 import { glob } from 'glob';
 
 // CONFIGURACIÓN
-const SECTIONS = ['pwn', 'htb', 'cve']; 
+const SECTIONS = ['pwn', 'htb', 'poc', 'cve']; 
 const DOMAIN = 'https://ub1cu0.github.io'; // <--- TU DOMINIO EXACTO
 
 const SRC_DIR = './src/content';
@@ -85,7 +85,9 @@ Promise.all(SECTIONS.map(processSection)).then(() => {
     const mainUrls = [
         { loc: `${DOMAIN}/`, lastmod: new Date().toISOString().split('T')[0] },
         { loc: `${DOMAIN}/#/pwn`, lastmod: new Date().toISOString().split('T')[0] },
-        { loc: `${DOMAIN}/#/htb`, lastmod: new Date().toISOString().split('T')[0] }
+        { loc: `${DOMAIN}/#/htb`, lastmod: new Date().toISOString().split('T')[0] },
+        { loc: `${DOMAIN}/#/poc`, lastmod: new Date().toISOString().split('T')[0] },
+        { loc: `${DOMAIN}/#/cve`, lastmod: new Date().toISOString().split('T')[0] }
     ];
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
