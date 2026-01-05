@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://ub1cu0.github.io/</loc><lastmod>2025-12-22</lastmod></url>
-  <url><loc>https://ub1cu0.github.io/#/pwn</loc><lastmod>2025-12-22</lastmod></url>
-  <url><loc>https://ub1cu0.github.io/#/htb</loc><lastmod>2025-12-22</lastmod></url>
+  <url><loc>https://ub1cu0.github.io/</loc><lastmod>2026-01-05</lastmod></url>
+  <url><loc>https://ub1cu0.github.io/#/pwn</loc><lastmod>2026-01-05</lastmod></url>
+  <url><loc>https://ub1cu0.github.io/#/htb</loc><lastmod>2026-01-05</lastmod></url>
+  <url><loc>https://ub1cu0.github.io/#/poc</loc><lastmod>2026-01-05</lastmod></url>
+  <url><loc>https://ub1cu0.github.io/#/cve</loc><lastmod>2026-01-05</lastmod></url>
   <url><loc>https://ub1cu0.github.io/#/post/pwn/Zero_to_hero</loc><lastmod>2025-12-20</lastmod></url>
   <url><loc>https://ub1cu0.github.io/#/post/pwn/X%20sixty%20what</loc><lastmod>2025-07-14</lastmod></url>
   <url><loc>https://ub1cu0.github.io/#/post/pwn/Write4%20(x64)</loc><lastmod>2025-08-08</lastmod></url>
