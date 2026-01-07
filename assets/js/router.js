@@ -120,7 +120,8 @@ function setupFiltersAndRender(posts, category) {
                     'ropemporium': 'RopEmporium.png',
                     'pwnable': 'pwnable.png',
                     'imaginaryctf': 'imaginaryCTF.png',
-                    'wwctf': 'WWCTF.png'
+                    'wwctf': 'WWCTF.png',
+                    'Xpdf': 'Xpdf.png'
                 };
 
                 const filename = FILE_MAP[platformTag.toLowerCase()];
