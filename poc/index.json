@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "slug": "Xpdf",
+    "title": "Xpdf 3.02",
+    "tags": [
+      "imaginaryCTF",
+      "got",
+      "ret2libc"
+    ],
+    "date": "2026-01-08",
+    "words": 671
+  }
+]
