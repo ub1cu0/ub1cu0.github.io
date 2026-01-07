@@ -1,7 +1,7 @@
 ---
-title: "Xpdf 3.02"
+title: "Xpdf"
 date: "2026-01-08"
-tags: ["imaginaryCTF", "got", "ret2libc"]
+tags: ["Xpdf", "DoS", "logic"]
 ---
 
 ## Xpdf 3.02 - Crash por referencia cíclica
@@ -53,7 +53,6 @@ Backtrace (crash):
 7  XRef::fetch(num=3, gen=0) at XRef.cc:823
 8  Object::fetch(...)        at Object.cc:106
 9  Dict::lookup(...)         at Dict.cc:76
-
 ```
 
 ## Root cause

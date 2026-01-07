@@ -1,11 +1,11 @@
 [
   {
     "slug": "Xpdf",
-    "title": "Xpdf 3.02",
+    "title": "Xpdf",
     "tags": [
-      "imaginaryCTF",
-      "got",
-      "ret2libc"
+      "Xpdf",
+      "DoS",
+      "logic"
     ],
     "date": "2026-01-08",
     "words": 671
