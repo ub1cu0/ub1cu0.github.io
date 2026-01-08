@@ -3,7 +3,6 @@ title: "Xpdf"
 date: "2026-01-08"
 tags: ["Xpdf", "DoS", "logic"]
 ---
-
 ## Xpdf 3.02 - Crash por referencia cíclica
 
 Si preparamos un PDF específico, en el que ponemos como longitud de un objeto una referencia a sí mismo, provoca una autorreferencia (re-entrada) durante la resolución de referencias, que termina en un crash.
