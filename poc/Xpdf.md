@@ -1,7 +1,7 @@
 ---
 title: "Xpdf"
 date: "2026-01-08"
-tags: ["Xpdf", "DoS", "logic"]
+tags: ["Xpdf", "DoS", "converter"]
 ---
 ## Xpdf 3.02 - Crash por referencia cíclica
 

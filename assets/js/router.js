@@ -121,7 +121,8 @@ function setupFiltersAndRender(posts, category) {
                     'pwnable': 'pwnable.png',
                     'imaginaryctf': 'imaginaryCTF.png',
                     'wwctf': 'WWCTF.png',
-                    'xpdf': 'Xpdf.png'
+                    'xpdf': 'Xpdf.png',
+                    'sumatrapdfreader': 'sumatrapdfreader.png'
                 };
 
                 const filename = FILE_MAP[platformTag.toLowerCase()];
