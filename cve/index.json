@@ -1,7 +1,7 @@
 [
   {
-    "slug": "SumatraPDFreader - CVE-2026-23951",
-    "title": "SumatraPDFreader - CVE-2026-23951",
+    "slug": "SumatraPDFreader CVE-2026-23951",
+    "title": "SumatraPDFreader CVE-2026-23951",
     "tags": [
       "sumatrapdfreader",
       "underflow",
