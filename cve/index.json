@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "slug": "SumatraPDFreader - CVE-2026-23951",
+    "title": "SumatraPDFreader - CVE-2026-23951",
+    "tags": [
+      "sumatrapdfreader",
+      "underflow",
+      "oob"
+    ],
+    "date": "2026-01-23",
+    "words": 552
+  }
+]
