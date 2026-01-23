@@ -7,7 +7,7 @@ export const CONFIG = {
         'poc': { title: 'POCs', label: 'Code' }     // Ejemplo de nueva sección
     },
     // Tags que se consideran "Origen" para el filtro (copiado de tu lógica)
-    ORIGIN_TAGS: ["picoCTF", "HackTheBox", "SnakeCTF", "imaginaryCTF", "WWCTF", "ropemporium", "pwnable", "NavajaNegra", "CVE", "Xpdf"],
+    ORIGIN_TAGS: ["picoCTF", "HackTheBox", "SnakeCTF", "imaginaryCTF", "WWCTF", "ropemporium", "pwnable", "NavajaNegra", "CVE", "Xpdf", "sumatrapdfreader"],
     METAS_VISIBLE: 5
 };
 
