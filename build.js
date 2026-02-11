@@ -4,7 +4,7 @@ import fm from 'front-matter';
 import { glob } from 'glob';
 
 // CONFIGURACIÓN
-const SECTIONS = ['pwn', 'htb', 'poc', 'cve']; 
+const SECTIONS = ['pwn', 'htb', 'poc', 'cve', 'proyectos'];
 const DOMAIN = 'https://ub1cu0.github.io'; // <--- TU DOMINIO EXACTO
 
 const SRC_DIR = './src/content';
@@ -32,11 +32,13 @@ async function processSection(section) {
         const content = fs.readFileSync(file, 'utf8');
         const parsed = fm(content);
         const fileName = path.basename(file);
-        
+
         const wordCount = parsed.body.split(/\s+/).length;
-        
+
         let date = parsed.attributes.date;
-        if (!date) {
+        if (date instanceof Date) {
+            date = date.toISOString().split('T')[0];
+        } else if (!date) {
             const stats = fs.statSync(file);
             date = stats.mtime.toISOString().split('T')[0];
         }
@@ -53,7 +55,7 @@ async function processSection(section) {
             tags: safeTags,
             date: date,
             words: wordCount,
-            ...parsed.attributes 
+            ...parsed.attributes
         });
 
         fs.copyFileSync(file, path.join(OUT_DIR, section, fileName));
@@ -68,19 +70,19 @@ async function processSection(section) {
     indexData.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     fs.writeFileSync(
-        path.join(OUT_DIR, section, 'index.json'), 
+        path.join(OUT_DIR, section, 'index.json'),
         JSON.stringify(indexData, null, 2)
     );
-    
+
     console.log(`✅ Sección [${section}] procesada.`);
 }
 
 // Ejecutar todo y generar Sitemap
 Promise.all(SECTIONS.map(processSection)).then(() => {
-    
+
     // --- GENERADOR DE SITEMAP ---
     console.log('🗺️  Generando sitemap.xml...');
-    
+
     // Añadir páginas estáticas principales
     const mainUrls = [
         { loc: `${DOMAIN}/`, lastmod: new Date().toISOString().split('T')[0] },

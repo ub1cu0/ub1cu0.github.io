@@ -3,8 +3,8 @@ import { $, CONFIG } from './utils.js';
 export async function route() {
     const raw = location.hash || '#/';
     const parts = raw.split('/').filter(p => p && p !== '#');
-    const root = parts[0] || ''; 
-    
+    const root = parts[0] || '';
+
     if (root === '') {
         setView('landing');
         return;
@@ -37,7 +37,7 @@ function setView(mode) {
     const isLanding = mode === 'landing';
     document.body.classList.remove('mode-landing', 'mode-viewer');
     document.body.classList.add(isLanding ? 'mode-landing' : 'mode-viewer');
-    
+
     const landingGroup = [$('landing-id'), $('landing-panel'), $('about')];
     const viewerGroup = [$('viewer')];
 
@@ -47,18 +47,18 @@ function setView(mode) {
 
 async function renderList(category) {
     const catConfig = CONFIG.SECTIONS[category];
-    if($('viewerTitle')) $('viewerTitle').textContent = `${catConfig.title} — ${catConfig.label}`;
-    if($('crumbs')) $('crumbs').innerHTML = `<a href="#/">Inicio</a> / ${catConfig.title}`;
-    if($('viewerContent')) $('viewerContent').innerHTML = '<p class="muted">Cargando…</p>';
-    if($('stats')) $('stats').innerHTML = '';
+    if ($('viewerTitle')) $('viewerTitle').textContent = `${catConfig.title} — ${catConfig.label}`;
+    if ($('crumbs')) $('crumbs').innerHTML = `<a href="#/">Inicio</a> / ${catConfig.title}`;
+    if ($('viewerContent')) $('viewerContent').innerHTML = '<p class="muted">Cargando…</p>';
+    if ($('stats')) $('stats').innerHTML = '';
 
     try {
-        const res = await fetch(`${category}/index.json`, {cache: 'no-store'});
-        if(!res.ok) throw new Error('Index not found');
+        const res = await fetch(`${category}/index.json`, { cache: 'no-store' });
+        if (!res.ok) throw new Error('Index not found');
         let posts = await res.json();
-        if(!Array.isArray(posts)) posts = [];
+        if (!Array.isArray(posts)) posts = [];
         setupFiltersAndRender(posts, category);
-    } catch(e) {
+    } catch (e) {
         console.error(e);
         renderError(`No se pudo cargar el índice de ${category}.`);
     }
@@ -71,7 +71,7 @@ function setupFiltersAndRender(posts, category) {
     const originsLower = CONFIG.ORIGIN_TAGS.map(t => t.toLowerCase());
 
     posts.forEach(p => {
-        if (typeof p.tags === 'string') p.tags = p.tags.split(',').map(s=>s.trim());
+        if (typeof p.tags === 'string') p.tags = p.tags.split(',').map(s => s.trim());
         if (!Array.isArray(p.tags)) p.tags = [];
 
         p.tags.forEach(t => {
@@ -83,9 +83,9 @@ function setupFiltersAndRender(posts, category) {
     });
 
     const createOptions = (set, label) => {
-        const sorted = Array.from(set).sort((a,b) => (tagCounts[b]||0) - (tagCounts[a]||0));
-        return `<option value="all">${label}: Todos</option>` + 
-               sorted.map(t => `<option value="${t}">${t} (${tagCounts[t]||0})</option>`).join('');
+        const sorted = Array.from(set).sort((a, b) => (tagCounts[b] || 0) - (tagCounts[a] || 0));
+        return `<option value="all">${label}: Todos</option>` +
+            sorted.map(t => `<option value="${t}">${t} (${tagCounts[t] || 0})</option>`).join('');
     };
 
     $('stats').innerHTML = `
@@ -107,8 +107,8 @@ function setupFiltersAndRender(posts, category) {
         const html = filtered.map(p => {
             const platformTag = p.tags.find(t => originsLower.includes(t.toLowerCase()));
             let imgStyle = '';
-            
-            if(platformTag) {
+
+            if (platformTag) {
                 // --- AQUÍ ESTÁ EL CAMBIO DE LIMPIEZA ---
                 // Mapeamos el tag (en minúsculas) al nombre EXACTO del archivo en tu carpeta img
                 const FILE_MAP = {
@@ -120,11 +120,13 @@ function setupFiltersAndRender(posts, category) {
                     'ropemporium': 'RopEmporium.png',
                     'pwnable': 'pwnable.png',
                     'imaginaryctf': 'imaginaryCTF.png',
-                    'wwctf': 'WWCTF.png'
+                    'wwctf': 'WWCTF.png',
+                    'xpdf': 'Xpdf.png',
+                    'sumatrapdfreader': 'sumatrapdfreader.png'
                 };
 
                 const filename = FILE_MAP[platformTag.toLowerCase()];
-                
+
                 if (filename) {
                     // Usamos ruta absoluta (con / al principio) para asegurar que la encuentra
                     imgStyle = `style="--platform-img:url('/assets/img/${filename}');"`;
@@ -134,8 +136,11 @@ function setupFiltersAndRender(posts, category) {
             const visibleTags = p.tags.filter(t => !originsLower.includes(t.toLowerCase()))
                 .map(t => `<span class="pill">${t}</span>`).join(' ');
 
+            const href = p.url ? p.url : `#/post/${category}/${encodeURIComponent(p.slug)}`;
+            const target = p.target ? `target="${p.target}"` : '';
+
             return `
-                <a class="tile" href="#/post/${category}/${encodeURIComponent(p.slug)}" ${imgStyle}>
+                <a class="tile" href="${href}" ${target} ${imgStyle}>
                     <h3 style="margin:0;display:flex;align-items:center;gap:8px;">
                         ${p.title || p.slug} 
                         ${p._isNew ? '<span class="new">NEW</span>' : ''}
@@ -144,12 +149,12 @@ function setupFiltersAndRender(posts, category) {
                     <div class="tile-tags">${visibleTags}</div>
                     
                     <div class="tile-meta">
-                        ${p.words ? `<span class="muted">${Math.ceil(p.words/200)} min</span>` : ''} 
+                        ${p.words ? `<span class="muted">${Math.ceil(p.words / 200)} min</span>` : ''} 
                         ${p.date ? `<span class="muted"> · ${p.date}</span>` : ''}
                     </div>
                 </a>`;
         }).join('');
-        
+
         $('viewerContent').innerHTML = `<div class="grid">${html}</div>`;
     };
 
@@ -161,44 +166,44 @@ function setupFiltersAndRender(posts, category) {
 
 async function renderPost(category, slug) {
     const catConfig = CONFIG.SECTIONS[category];
-    if($('viewerTitle')) $('viewerTitle').textContent = slug;
-    if($('crumbs')) $('crumbs').innerHTML = `<a href="#/">Inicio</a> / <a href="#/${category}">${catConfig.title}</a> / ${slug}`;
-    if($('stats')) $('stats').innerHTML = '';
-    if($('viewerContent')) $('viewerContent').innerHTML = '<p class="muted">Cargando markdown...</p>';
+    if ($('viewerTitle')) $('viewerTitle').textContent = slug;
+    if ($('crumbs')) $('crumbs').innerHTML = `<a href="#/">Inicio</a> / <a href="#/${category}">${catConfig.title}</a> / ${slug}`;
+    if ($('stats')) $('stats').innerHTML = '';
+    if ($('viewerContent')) $('viewerContent').innerHTML = '<p class="muted">Cargando markdown...</p>';
 
-    if(!window.markdownit) await loadScript('https://cdn.jsdelivr.net/npm/markdown-it@14/dist/markdown-it.min.js');
-    if(!window.hljs) await loadScript('https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/common.min.js');
+    if (!window.markdownit) await loadScript('https://cdn.jsdelivr.net/npm/markdown-it@14/dist/markdown-it.min.js');
+    if (!window.hljs) await loadScript('https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/common.min.js');
 
     try {
-        const res = await fetch(`${category}/${slug}.md`, {cache: 'no-store'});
-        if(!res.ok) throw new Error('Post not found');
+        const res = await fetch(`${category}/${slug}.md`, { cache: 'no-store' });
+        if (!res.ok) throw new Error('Post not found');
         let text = await res.text();
-        text = text.replace(/^---[\s\S]*?---\s*/i, ''); 
+        text = text.replace(/^---[\s\S]*?---\s*/i, '');
 
         const md = window.markdownit({
             html: true,
             linkify: true,
             highlight: (str, lang) => {
                 if (lang && window.hljs) {
-                    try { return `<pre><code class="hljs">${hljs.highlight(str, {language: lang, ignoreIllegals:true}).value}</code></pre>`; } catch (__) {}
+                    try { return `<pre><code class="hljs">${hljs.highlight(str, { language: lang, ignoreIllegals: true }).value}</code></pre>`; } catch (__) { }
                 }
                 return `<pre><code class="hljs">${str}</code></pre>`;
             }
         });
-        
+
         $('viewerContent').innerHTML = `<div class="markdown-body">${md.render(text)}</div>`;
-    } catch(e) {
+    } catch (e) {
         renderError(`No se pudo cargar ${slug}.md`);
     }
 }
 
 function renderError(msg) {
-    if($('viewerContent')) $('viewerContent').innerHTML = `<p class="muted">${msg}</p>`;
+    if ($('viewerContent')) $('viewerContent').innerHTML = `<p class="muted">${msg}</p>`;
 }
 
 function loadScript(src) {
     return new Promise((resolve, reject) => {
-        if(document.querySelector(`script[src="${src}"]`)) return resolve();
+        if (document.querySelector(`script[src="${src}"]`)) return resolve();
         const s = document.createElement('script');
         s.src = src;
         s.async = true;
