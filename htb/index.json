@@ -1,7 +1,7 @@
 [
   {
-    "slug": "Nocturnal",
     "title": "Nocturnal",
+    "date": "2025-05-16",
     "tags": [
       "HackTheBox",
       "linux",
@@ -9,12 +9,12 @@
       "command injection",
       "ispcfg"
     ],
-    "date": "2025-05-16",
+    "slug": "Nocturnal",
     "words": 894
   },
   {
-    "slug": "Timelapse",
     "title": "Timelapse",
+    "date": "2025-05-15",
     "tags": [
       "HackTheBox",
       "windows",
@@ -22,24 +22,24 @@
       "laps",
       "pfx"
     ],
-    "date": "2025-05-15",
+    "slug": "Timelapse",
     "words": 853
   },
   {
-    "slug": "EscapeTwo",
     "title": "EscapeTwo",
+    "date": "2025-05-14",
     "tags": [
       "HackTheBox",
       "windows",
       "active directory",
       "mssql"
     ],
-    "date": "2025-05-14",
+    "slug": "EscapeTwo",
     "words": 1309
   },
   {
-    "slug": "Jeeves",
     "title": "Jeeves",
+    "date": "2025-05-13",
     "tags": [
       "HackTheBox",
       "windows",
@@ -47,7 +47,7 @@
       "seimpersonate",
       "juicypotato"
     ],
-    "date": "2025-05-13",
+    "slug": "Jeeves",
     "words": 736
   }
 ]

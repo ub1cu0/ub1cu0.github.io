@@ -1,7 +1,7 @@
 [
   {
-    "slug": "Zero_to_hero",
     "title": "Zero_to_hero",
+    "date": "2025-12-20",
     "tags": [
       "picoCTF",
       "tcache",
@@ -9,494 +9,494 @@
       "ret2libc",
       "heap"
     ],
-    "date": "2025-12-20",
+    "slug": "Zero_to_hero",
     "words": 1744
   },
   {
-    "slug": "Handoff",
     "title": "Handoff",
+    "date": "2025-12-17",
     "tags": [
       "picoCTF",
       "OOB",
       "ret2reg",
       "shellcode"
     ],
-    "date": "2025-12-17",
+    "slug": "Handoff",
     "words": 968
   },
   {
-    "slug": "Babygame02",
     "title": "Babygame02",
+    "date": "2025-12-14",
     "tags": [
       "picoCTF",
       "OOB"
     ],
-    "date": "2025-12-14",
+    "slug": "Babygame02",
     "words": 837
   },
   {
-    "slug": "Wine",
     "title": "Wine",
+    "date": "2025-12-11",
     "tags": [
       "picoCTF",
       "buffer overflow",
       "ret2win",
       "windows"
     ],
-    "date": "2025-12-11",
+    "slug": "Wine",
     "words": 497
   },
   {
-    "slug": "Stack Cache",
     "title": "Stack Cache",
+    "date": "2025-12-11",
     "tags": [
       "picoCTF",
       "stack leak",
       "ROP"
     ],
-    "date": "2025-12-11",
+    "slug": "Stack Cache",
     "words": 576
   },
   {
-    "slug": "Input Injection 2",
     "title": "Input Injection 2",
+    "date": "2025-12-09",
     "tags": [
       "picoCTF",
       "buffer overflow",
       "heap"
     ],
-    "date": "2025-12-09",
+    "slug": "Input Injection 2",
     "words": 315
   },
   {
-    "slug": "Input Injection 1",
     "title": "Input Injection 1",
+    "date": "2025-12-09",
     "tags": [
       "picoCTF",
       "buffer overflow"
     ],
-    "date": "2025-12-09",
+    "slug": "Input Injection 1",
     "words": 301
   },
   {
-    "slug": "Armeria",
     "title": "Armeria",
+    "date": "2025-10-17",
     "tags": [
       "NavajaNegra",
       "ret2win"
     ],
-    "date": "2025-10-17",
+    "slug": "Armeria",
     "words": 588
   },
   {
-    "slug": "4enRaya",
     "title": "4enRaya",
+    "date": "2025-10-17",
     "tags": [
       "NavajaNegra",
       "OOB",
       "got"
     ],
-    "date": "2025-10-17",
+    "slug": "4enRaya",
     "words": 1067
   },
   {
-    "slug": "Start",
     "title": "Start",
+    "date": "2025-10-14",
     "tags": [
       "pwnable",
       "shellcode",
       "ret2shellcode"
     ],
-    "date": "2025-10-14",
+    "slug": "Start",
     "words": 856
   },
   {
-    "slug": "Filtered shellcode",
     "title": "Filtered shellcode",
+    "date": "2025-09-18",
     "tags": [
       "picoCTF",
       "shellcode"
     ],
-    "date": "2025-09-18",
+    "slug": "Filtered shellcode",
     "words": 1220
   },
   {
-    "slug": "Cache me outside",
     "title": "Cache me outside",
+    "date": "2025-09-16",
     "tags": [
       "picoCTF",
       "tcache",
       "heap"
     ],
-    "date": "2025-09-16",
+    "slug": "Cache me outside",
     "words": 696
   },
   {
-    "slug": "Ret2csu (x64)",
     "title": "Ret2csu (x64)",
+    "date": "2025-09-14",
     "tags": [
       "RopEmporium",
       "ROP",
       "ret2csu"
     ],
-    "date": "2025-09-14",
+    "slug": "Ret2csu (x64)",
     "words": 997
   },
   {
-    "slug": "Saving the environment",
     "title": "Saving the environment",
+    "date": "2025-09-08",
     "tags": [
       "snakeCTF",
       "seccomp",
       "timing",
       "shellcode"
     ],
-    "date": "2025-09-08",
+    "slug": "Saving the environment",
     "words": 660
   },
   {
-    "slug": "Addition",
     "title": "Addition",
+    "date": "2025-09-07",
     "tags": [
       "imaginaryCTF",
       "got",
       "ret2libc"
     ],
-    "date": "2025-09-07",
+    "slug": "Addition",
     "words": 587
   },
   {
-    "slug": "Pivot (x64)",
     "title": "Pivot (x64)",
+    "date": "2025-08-12",
     "tags": [
       "RopEmporium",
       "ROP",
       "stack pivot"
     ],
-    "date": "2025-08-12",
+    "slug": "Pivot (x64)",
     "words": 970
   },
   {
-    "slug": "Fluff (x64)",
     "title": "Fluff (x64)",
+    "date": "2025-08-11",
     "tags": [
       "RopEmporium",
       "ROP"
     ],
-    "date": "2025-08-11",
+    "slug": "Fluff (x64)",
     "words": 649
   },
   {
-    "slug": "Badchars (x64)",
     "title": "Badchars (x64)",
+    "date": "2025-08-09",
     "tags": [
       "RopEmporium",
       "ROP",
       "badchars"
     ],
-    "date": "2025-08-09",
+    "slug": "Badchars (x64)",
     "words": 402
   },
   {
-    "slug": "Write4 (x64)",
     "title": "Write4 (x64)",
+    "date": "2025-08-08",
     "tags": [
       "RopEmporium",
       "ROP"
     ],
-    "date": "2025-08-08",
+    "slug": "Write4 (x64)",
     "words": 495
   },
   {
-    "slug": "Callme (x64)",
     "title": "Callme (x64)",
+    "date": "2025-08-07",
     "tags": [
       "RopEmporium",
       "ROP"
     ],
-    "date": "2025-08-07",
+    "slug": "Callme (x64)",
     "words": 1057
   },
   {
-    "slug": "Tic-tac",
     "title": "Tic-tac",
+    "date": "2025-08-04",
     "tags": [
       "picoCTF",
       "race condition"
     ],
-    "date": "2025-08-04",
+    "slug": "Tic-tac",
     "words": 388
   },
   {
-    "slug": "Unsubscriptions are free",
     "title": "Unsubscriptions are free",
+    "date": "2025-08-03",
     "tags": [
       "picoCTF",
       "use after free",
       "function pointer"
     ],
-    "date": "2025-08-03",
+    "slug": "Unsubscriptions are free",
     "words": 646
   },
   {
-    "slug": "Guessing game 2",
     "title": "Guessing game 2",
+    "date": "2025-07-31",
     "tags": [
       "picoCTF",
       "format string",
       "canary",
       "ret2libc"
     ],
-    "date": "2025-07-31",
+    "slug": "Guessing game 2",
     "words": 1546
   },
   {
-    "slug": "Affirmation bot",
     "title": "Affirmation bot",
+    "date": "2025-07-29",
     "tags": [
       "WWCTF",
       "format string",
       "buffer overflow"
     ],
-    "date": "2025-07-29",
+    "slug": "Affirmation bot",
     "words": 654
   },
   {
-    "slug": "Function overwrite",
     "title": "Function overwrite",
+    "date": "2025-07-25",
     "tags": [
       "picoCTF",
       "function overwrite",
       "array indexing"
     ],
-    "date": "2025-07-25",
+    "slug": "Function overwrite",
     "words": 632
   },
   {
-    "slug": "Buffer overflow 3",
     "title": "Buffer overflow 3",
+    "date": "2025-07-24",
     "tags": [
       "picoCTF",
       "buffer overflow",
       "canary",
       "ret2win"
     ],
-    "date": "2025-07-24",
+    "slug": "Buffer overflow 3",
     "words": 641
   },
   {
-    "slug": "Here's a libc",
     "title": "Here's a libc",
+    "date": "2025-07-23",
     "tags": [
       "picoCTF",
       "ret2libc",
       "ROP"
     ],
-    "date": "2025-07-23",
+    "slug": "Here's a libc",
     "words": 509
   },
   {
-    "slug": "Ropfu",
     "title": "Ropfu",
+    "date": "2025-07-22",
     "tags": [
       "picoCTF",
       "ROP",
       "buffer overflow",
       "ret2syscall"
     ],
-    "date": "2025-07-22",
+    "slug": "Ropfu",
     "words": 1416
   },
   {
-    "slug": "Pie time 2",
     "title": "Pie time 2",
+    "date": "2025-07-21",
     "tags": [
       "picoCTF",
       "PIE",
       "format string"
     ],
-    "date": "2025-07-21",
+    "slug": "Pie time 2",
     "words": 461
   },
   {
-    "slug": "Format string 3",
     "title": "Format string 3",
+    "date": "2025-07-20",
     "tags": [
       "picoCTF",
       "format string",
       "GOT overwrite"
     ],
-    "date": "2025-07-20",
+    "slug": "Format string 3",
     "words": 884
   },
   {
-    "slug": "Echo valley",
     "title": "Echo valley",
+    "date": "2025-07-19",
     "tags": [
       "picoCTF",
       "format string",
       "PIE",
       "canary"
     ],
-    "date": "2025-07-19",
+    "slug": "Echo valley",
     "words": 1432
   },
   {
-    "slug": "Format string 2",
     "title": "Format string 2",
+    "date": "2025-07-18",
     "tags": [
       "picoCTF",
       "format string"
     ],
-    "date": "2025-07-18",
+    "slug": "Format string 2",
     "words": 487
   },
   {
-    "slug": "Heap 3",
     "title": "Heap 3",
+    "date": "2025-07-17",
     "tags": [
       "picoCTF",
       "use after free",
       "heap"
     ],
-    "date": "2025-07-17",
+    "slug": "Heap 3",
     "words": 409
   },
   {
-    "slug": "Heap 2",
     "title": "Heap 2",
+    "date": "2025-07-17",
     "tags": [
       "picoCTF",
       "heap",
       "buffer overflow",
       "function pointer"
     ],
-    "date": "2025-07-17",
+    "slug": "Heap 2",
     "words": 444
   },
   {
-    "slug": "Picker IV",
     "title": "Picker IV",
+    "date": "2025-07-16",
     "tags": [
       "picoCTF",
       "ret2win"
     ],
-    "date": "2025-07-16",
+    "slug": "Picker IV",
     "words": 278
   },
   {
-    "slug": "Heap 1",
     "title": "Heap 1",
+    "date": "2025-07-16",
     "tags": [
       "picoCTF",
       "heap",
       "buffer overflow"
     ],
-    "date": "2025-07-16",
+    "slug": "Heap 1",
     "words": 423
   },
   {
-    "slug": "Format string 1",
     "title": "Format string 1",
+    "date": "2025-07-16",
     "tags": [
       "picoCTF",
       "format string"
     ],
-    "date": "2025-07-16",
+    "slug": "Format string 1",
     "words": 431
   },
   {
-    "slug": "VNE",
     "title": "VNE",
+    "date": "2025-07-15",
     "tags": [
       "picoCTF",
       "env"
     ],
-    "date": "2025-07-15",
+    "slug": "VNE",
     "words": 200
   },
   {
-    "slug": "two-sum",
     "title": "two-sum",
+    "date": "2025-07-15",
     "tags": [
       "picoCTF",
       "integer overflow"
     ],
-    "date": "2025-07-15",
+    "slug": "two-sum",
     "words": 455
   },
   {
-    "slug": "Local target",
     "title": "Local target",
+    "date": "2025-07-15",
     "tags": [
       "picoCTF",
       "buffer overflow"
     ],
-    "date": "2025-07-15",
+    "slug": "Local target",
     "words": 217
   },
   {
-    "slug": "X sixty what",
     "title": "X sixty what",
+    "date": "2025-07-14",
     "tags": [
       "picoCTF",
       "buffer overflow",
       "ret2win"
     ],
-    "date": "2025-07-14",
+    "slug": "X sixty what",
     "words": 505
   },
   {
-    "slug": "RSP",
     "title": "RSP",
+    "date": "2025-07-14",
     "tags": [
       "picoCTF",
       "string injection",
       "input validation"
     ],
-    "date": "2025-07-14",
+    "slug": "RSP",
     "words": 242
   },
   {
-    "slug": "Hijacking",
     "title": "Hijacking",
+    "date": "2025-07-14",
     "tags": [
       "picoCTF",
       "sudo",
       "python module hijack"
     ],
-    "date": "2025-07-14",
+    "slug": "Hijacking",
     "words": 299
   },
   {
-    "slug": "Flag leak",
     "title": "Flag leak",
+    "date": "2025-07-14",
     "tags": [
       "picoCTF",
       "format string"
     ],
-    "date": "2025-07-14",
+    "slug": "Flag leak",
     "words": 318
   },
   {
-    "slug": "Buffer overflow 2",
     "title": "Buffer overflow 2",
+    "date": "2025-07-14",
     "tags": [
       "picoCTF",
       "buffer overflow",
       "ret2win"
     ],
-    "date": "2025-07-14",
+    "slug": "Buffer overflow 2",
     "words": 380
   },
   {
-    "slug": "Buffer overflow 1",
     "title": "Buffer overflow 1",
+    "date": "2025-07-14",
     "tags": [
       "picoCTF",
       "buffer overflow"
     ],
-    "date": "2025-07-14",
+    "slug": "Buffer overflow 1",
     "words": 463
   }
 ]
