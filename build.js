@@ -50,12 +50,12 @@ async function processSection(section) {
         const slug = fileName.replace('.md', '');
 
         indexData.push({
+            ...parsed.attributes,
             slug: slug,
             title: parsed.attributes.title || slug,
             tags: safeTags,
             date: date,
-            words: wordCount,
-            ...parsed.attributes
+            words: wordCount
         });
 
         fs.copyFileSync(file, path.join(OUT_DIR, section, fileName));
