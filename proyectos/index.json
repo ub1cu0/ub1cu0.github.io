@@ -1,0 +1,25 @@
+[
+  {
+    "slug": "wordle-c",
+    "title": "Cversing",
+    "tags": [
+      "reversing"
+    ],
+    "date": "2026-02-11T00:00:00.000Z",
+    "words": 8,
+    "url": "/assets/proyectos/wordle-c/index.html",
+    "target": "_blank"
+  },
+  {
+    "slug": "kchecksec",
+    "title": "kchecksec",
+    "tags": [
+      "Kernel",
+      "PWN"
+    ],
+    "date": "2024-05-20T00:00:00.000Z",
+    "words": 21,
+    "url": "https://github.com/ub1cu0/kchecksec",
+    "target": "_blank"
+  }
+]
