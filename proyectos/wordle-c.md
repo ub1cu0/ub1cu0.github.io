@@ -2,7 +2,7 @@
 title: Cversing
 date: 2026-02-11
 tags: [reversing]
-url: /assets/proyectos/wordle-c/index.html
+url: https://cversing.com
 target: _blank
 ---
 

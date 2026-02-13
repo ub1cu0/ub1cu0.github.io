@@ -1,11 +1,36 @@
 [
   {
+    "title": "ShellCrafter",
+    "date": "2026-02-13",
+    "tags": [
+      "shellcode",
+      "asm",
+      "tool"
+    ],
+    "url": "/assets/proyectos/shellcrafter/index.html",
+    "target": "_blank",
+    "slug": "shellcrafter",
+    "words": 0
+  },
+  {
+    "title": "Endian Converter",
+    "date": "2026-02-13",
+    "tags": [
+      "shellcode",
+      "tool"
+    ],
+    "url": "/assets/proyectos/endian/index.html",
+    "target": "_blank",
+    "slug": "endian-converter",
+    "words": 0
+  },
+  {
     "title": "Cversing",
     "date": "2026-02-11",
     "tags": [
       "reversing"
     ],
-    "url": "/assets/proyectos/wordle-c/index.html",
+    "url": "https://cversing.com",
     "target": "_blank",
     "slug": "wordle-c",
     "words": 8

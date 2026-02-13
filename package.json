@@ -1,0 +1,14 @@
+{
+    "name": "ub1cu0.github.io",
+    "version": "1.0.0",
+    "description": "Portfolio",
+    "scripts": {
+        "start": "npx http-server"
+    },
+    "devDependencies": {
+        "http-server": "^14.1.1"
+    },
+    "dependencies": {
+        "keystone-wasm": "^1.0.4"
+    }
+}

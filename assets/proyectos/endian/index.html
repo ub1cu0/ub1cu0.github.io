@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Endian Converter — ub1cu0</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .converter-wrap {
+            width: min(800px, 94vw);
+            margin: 0 auto;
+        }
+
+        .input-group {
+            margin-bottom: 30px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            background: #101018;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 16px;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--red);
+            box-shadow: var(--glow);
+        }
+
+        .output-group {
+            background: #0f0f13;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .output-label {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 12px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .output-value {
+            font-family: 'JetBrains Mono', monospace;
+            color: #ff8fa3;
+            word-break: break-all;
+            line-height: 1.6;
+        }
+
+        .chunk-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chunk-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            background: #15151c;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .chunk-val {
+            color: #fff;
+        }
+
+        .chunk-comment {
+            color: var(--muted);
+            font-size: 0.9em;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: 1px solid var(--line);
+            color: var(--muted);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            color: #fff;
+            border-color: var(--red);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--red);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: var(--muted);
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="converter-wrap">
+        <a href="../../../index.html#/proyectos" class="back-link">← Volver a Proyectos</a>
+
+        <h1>Endian Converter</h1>
+        <p>Convierte texto a hexadecimal y chunks de 4 bytes para Shellcoding.</p>
+
+        <div class="input-group">
+            <input type="text" id="inputText" placeholder="Escribe aquí... (ej: /bin/sh)" spellcheck="false"
+                autocomplete="off">
+        </div>
+
+        <div class="output-group">
+            <span class="output-label">Hex Stream (Original)</span>
+            <div class="output-value" id="hexStream">-</div>
+        </div>
+
+        <div class="output-group">
+            <span class="output-label">Hex Stream (Reversed)</span>
+            <div class="output-value" id="hexStreamRev">-</div>
+        </div>
+
+        <div class="output-group">
+            <span class="output-label">Little Endian Stack Push (32/64 bit)</span>
+            <div class="chunk-list" id="lePush">
+                <div class="chunk-item"><span class="chunk-comment">// Escribe para ver los push...</span></div>
+            </div>
+        </div>
+
+        <div class="output-group">
+            <span class="output-label">Big Endian Integers</span>
+            <div class="chunk-list" id="bePush">
+                <div class="chunk-item"><span class="chunk-comment">// Escribe para ver los valores...</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById('inputText');
+        const hexStream = document.getElementById('hexStream');
+        const hexStreamRev = document.getElementById('hexStreamRev');
+        const lePush = document.getElementById('lePush');
+        const bePush = document.getElementById('bePush');
+
+        input.addEventListener('input', update);
+
+        function update() {
+            const text = input.value;
+            if (!text) {
+                hexStream.textContent = '-';
+                hexStreamRev.textContent = '-';
+                lePush.innerHTML = '<div class="chunk-item"><span class="chunk-comment">// Escribe para ver los push...</span></div>';
+                bePush.innerHTML = '<div class="chunk-item"><span class="chunk-comment">// Escribe para ver los valores...</span></div>';
+                return;
+            }
+
+            // Converter to bytes
+            const encoder = new TextEncoder();
+            const bytes = encoder.encode(text);
+
+            // Hex Stream
+            hexStream.textContent = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join(' ');
+
+            // Hex Stream Reversed
+            hexStreamRev.textContent = Array.from(bytes).reverse().map(b => b.toString(16).padStart(2, '0')).join(' ');
+
+            // Chunking for stack push (pad with nulls if needed, or just / for path normalization if user wants, but 0 is safer for general strings)
+            // Ideally for shellcode paths we want multiples of 4 or 8.
+            // Let's pad with null bytes (0x00) to reach multiple of 4 for the converter logic.
+            const len = bytes.length;
+            const remainder = len % 4;
+            const padding = remainder === 0 ? 0 : 4 - remainder;
+
+            const paddedBytes = new Uint8Array(len + padding);
+            paddedBytes.set(bytes);
+            // Filled with 0 by default
+
+            // Create chunks
+            let leHtml = '';
+            let beHtml = '';
+
+            // Iterate backwards for Little Endian Push logic (Stack grows down, so we push last part first)
+            for (let i = paddedBytes.length - 4; i >= 0; i -= 4) {
+                const chunk = paddedBytes.slice(i, i + 4);
+                const strPart = new TextDecoder().decode(chunk).replace(/[\x00-\x1F\x7F-\x9F]/g, '.'); // Printable rep
+
+                // LE Value: Reverse bytes for integer representation
+                // Byte 0 is LSB. 
+                // e.g. "abcd" -> 0x61, 0x62, 0x63, 0x64. 
+                // In register EAX: 0x64636261 (LE)
+
+                const valLE =
+                    (chunk[3] << 24) |
+                    (chunk[2] << 16) |
+                    (chunk[1] << 8) |
+                    chunk[0];
+
+                const hexLE = '0x' + (valLE >>> 0).toString(16).padStart(8, '0');
+
+                // For BE, it's just the bytes in order
+                const valBE =
+                    (chunk[0] << 24) |
+                    (chunk[1] << 16) |
+                    (chunk[2] << 8) |
+                    chunk[3];
+                const hexBE = '0x' + (valBE >>> 0).toString(16).padStart(8, '0');
+
+                // Generate Assembly-like comments
+                const chars = Array.from(chunk).map(b => b === 0 ? '\\0' : String.fromCharCode(b)).join('');
+
+                leHtml += `
+                    <div class="chunk-item">
+                        <span class="chunk-val">${hexLE}</span>
+                        <span class="chunk-comment">; "${chars}"</span>
+                    </div>`;
+
+                beHtml += `
+                    <div class="chunk-item">
+                        <span class="chunk-val">${hexBE}</span>
+                        <span class="chunk-comment">; "${chars}"</span>
+                    </div>`;
+            }
+
+            lePush.innerHTML = leHtml;
+            bePush.innerHTML = beHtml;
+        }
+    </script>
+</body>
+
+</html>
