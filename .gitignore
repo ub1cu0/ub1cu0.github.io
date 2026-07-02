@@ -1,3 +1,4 @@
 generate_sitemap.py
 
 node_modules/
+dist/

@@ -4,23 +4,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ub1cu0 — Portfolio / Blog</title>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
-  <link rel="icon"
-    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E💀%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="assets/css/style.css">
-  <meta name="google-site-verification" content="TcazwE_vjVsfW2MRMH8DUh7GhoNp-aqNCNdUdudgAgQ" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <meta name="description"
-    content="Portfolio de ub1cu0. Writeups de PWN, HackTheBox y CVE research. Exploit Developer & Low-level Programmer.">
-  <meta name="keywords" content="CTF, Writeups, PWN, HackTheBox, Exploit, Ciberseguridad, Español">
-  <meta name="author" content="ub1cu0">
 
+  <!-- Redirección de enlaces antiguos con almohadilla (#/post/...) a las URLs nuevas -->
+  <script>
+    (function () {
+      var h = location.hash;
+      if (!h || h.length < 2) return;
+      var p = h.replace(/^#\/?/, '').split('/').filter(Boolean);
+      function sl(s) {
+        return decodeURIComponent(s).normalize('NFD').replace(/[̀-ͯ]/g, '')
+          .toLowerCase().replace(/['"`´’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      }
+      var u = null;
+      if (p[0] === 'post' && p[1] && p[2]) u = '/' + p[1].toLowerCase() + '/' + sl(p.slice(2).join('/')) + '/';
+      else if (p[0]) u = '/' + p[0].toLowerCase() + '/';
+      if (u) location.replace(u);
+    })();
+  </script>
+
+  <title>ub1cu0 — Vulnerability Researcher · Writeups de PWN, CVE y POCs</title>
+  <meta name="description"
+    content="Portfolio de ub1cu0. Writeups de PWN, HackTheBox y research de CVE. Exploit Developer y programador a bajo nivel. POCs en C/C++.">
+  <meta name="keywords" content="CTF, Writeups, PWN, HackTheBox, Exploit, CVE, POC, C++, Ciberseguridad, Español">
+  <meta name="author" content="ub1cu0">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://ub1cu0.github.io/">
+  <meta name="google-site-verification" content="TcazwE_vjVsfW2MRMH8DUh7GhoNp-aqNCNdUdudgAgQ" />
+
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="ub1cu0 — Exploit Dev & Writeups" />
-  <meta property="og:description" content="Colección de writeups de Pwn, HTB y research de seguridad." />
+  <meta property="og:description" content="Colección de writeups de Pwn, HTB, research de CVE y POCs en C/C++." />
   <meta property="og:image" content="https://ub1cu0.github.io/assets/img/miniatura.png" />
   <meta property="og:url" content="https://ub1cu0.github.io/" />
+  <meta property="og:site_name" content="ub1cu0" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ub1cu0 — Exploit Dev & Writeups" />
+  <meta name="twitter:description" content="Colección de writeups de Pwn, HTB, research de CVE y POCs en C/C++." />
+  <meta name="twitter:image" content="https://ub1cu0.github.io/assets/img/miniatura.png" />
+
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E💀%3C/text%3E%3C/svg%3E">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebSite","name":"ub1cu0","url":"https://ub1cu0.github.io/","inLanguage":"es","description":"Portfolio de ub1cu0: writeups de PWN, HackTheBox, CVE research y POCs en C/C++."}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Person","name":"ub1cu0","url":"https://ub1cu0.github.io/","jobTitle":"Vulnerability Researcher","sameAs":["https://github.com/ub1cu0","https://www.linkedin.com/in/moiseshermo/","https://app.hackthebox.com/profile/1623120"]}
+  </script>
 </head>
 
 <body class="mode-landing">
@@ -37,26 +71,26 @@
 
     <section class="panel" aria-label="Contenido principal" id="landing-panel">
       <div class="grid">
-        <a class="tile" href="#/pwn" rel="noopener">
-          <h3>Writeups PWN <span class="badge" id="pwnCount">-</span></h3>
+        <a class="tile" href="/pwn/" rel="noopener">
+          <h3>Writeups PWN <span class="badge" data-count="pwn">-</span></h3>
           <p>Explotación de binarios paso a paso en español.</p>
         </a>
         <!--
-        <a class="tile" href="#/htb" rel="noopener">
-          <h3>Writeups HTB <span class="badge" id="htbCount">-</span></h3>
+        <a class="tile" href="/htb/" rel="noopener">
+          <h3>Writeups HTB <span class="badge" data-count="htb">-</span></h3>
           <p>Resolución de máquinas de HackTheBox en español.</p>
         </a>
         -->
-        <a class="tile" href="#/proyectos" rel="noopener">
-          <h3>Proyectos <span class="badge" id="proyectosCount">-</span></h3>
+        <a class="tile" href="/proyectos/" rel="noopener">
+          <h3>Proyectos <span class="badge" data-count="proyectos">-</span></h3>
           <p>Proyectos personales y herramientas.</p>
         </a>
-        <a class="tile" href="#/poc" rel="noopener">
-          <h3>POCs <span class="badge" id="pocCount">-</span></h3>
+        <a class="tile" href="/poc/" rel="noopener">
+          <h3>POCs <span class="badge" data-count="poc">-</span></h3>
           <p>Proof-of-Concepts personales</p>
         </a>
-        <a class="tile" href="#/cve" rel="noopener">
-          <h3>CVEs <span class="badge" id="cveCount">-</span></h3>
+        <a class="tile" href="/cve/" rel="noopener">
+          <h3>CVEs <span class="badge" data-count="cve">-</span></h3>
           <p>Vulnerabilidades descubiertas</p>
         </a>
       </div>
@@ -131,19 +165,19 @@
 
           <div class="links-card">
             <div class="links-row">
-              <a class="sbtn" href="https://github.com/ub1cu0" target="_blank" aria-label="GitHub">
+              <a class="sbtn" href="https://github.com/ub1cu0" target="_blank" rel="noopener" aria-label="GitHub">
                 <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                   <path
                     d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.26.82-.577v-2.234c-3.338.724-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.085 1.84 1.238 1.84 1.238 1.07 1.834 2.805 1.304 3.492.997.107-.775.42-1.305.763-1.605-2.665-.305-5.467-1.332-5.467-5.93 0-1.31.467-2.38 1.235-3.22-.124-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23a11.49 11.49 0 0 1 3-.404c1.02.005 2.045.138 3 .404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.873.12 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.624-5.48 5.92.43.372.823 1.102.823 2.222v3.293c0 .32.218.694.825.576C20.565 21.796 24 17.297 24 12c0-6.63-5.373-12-12-12z" />
                 </svg>
               </a>
-              <a class="sbtn" href="https://www.linkedin.com/in/moiseshermo/" target="_blank" aria-label="LinkedIn">
+              <a class="sbtn" href="https://www.linkedin.com/in/moiseshermo/" target="_blank" rel="noopener" aria-label="LinkedIn">
                 <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                   <path
                     d="M4.98 3.5C4.98 4.88 3.88 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8.25h4V24h-4V8.25zM8.5 8.25h3.62v2.14h.05c.51-.97 1.76-2 3.63-2 3.88 0 4.6 2.56 4.6 5.89V24h-4v-7.75c0-1.85-.03-4.23-2.58-4.23-2.58 0-2.98 2.01-2.98 4.09V24h-4V8.25z" />
                 </svg>
               </a>
-              <a class="sbtn" href="https://app.hackthebox.com/profile/1623120" target="_blank"
+              <a class="sbtn" href="https://app.hackthebox.com/profile/1623120" target="_blank" rel="noopener"
                 aria-label="Hack The Box">
                 <svg viewBox="0 0 64 64" fill="currentColor" width="24" height="24">
                   <path
@@ -156,24 +190,10 @@
       </div>
     </section>
 
-    <section id="viewer" class="hidden">
-      <section class="id" aria-label="Cabecera categoría" id="viewer-id">
-        <div>
-          <div class="name" id="viewerTitle">Writeups</div>
-        </div>
-        <span class="status" id="viewerStatus">Status: reading...</span>
-      </section>
-      <section class="panel" aria-label="Lista/Contenido">
-        <div class="breadcrumbs" id="crumbs"></div>
-        <div class="stats" id="stats"></div>
-        <div id="viewerContent" style="margin-top:12px"></div>
-      </section>
-    </section>
-
   </main>
   <footer><span>©</span><span id="year"></span><span>ub1cu0</span></footer>
 
-  <script type="module" src="assets/js/main.js"></script>
+  <script src="/assets/js/app.js" defer></script>
 </body>
 
 </html>

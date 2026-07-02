@@ -3,10 +3,14 @@
     "version": "1.0.0",
     "description": "Portfolio",
     "scripts": {
-        "start": "npx http-server"
+        "build": "node build.mjs",
+        "preview": "node build.mjs && npx http-server dist -c-1 -p 8080",
+        "start": "npx http-server dist -c-1"
     },
     "devDependencies": {
-        "http-server": "^14.1.1"
+        "highlight.js": "^11.11.1",
+        "http-server": "^14.1.1",
+        "markdown-it": "^14.3.0"
     },
     "dependencies": {
         "keystone-wasm": "^1.0.4"

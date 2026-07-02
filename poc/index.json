@@ -1,12 +1,43 @@
 [
   {
+    "title": "libwebp CVE-2023-4863",
+    "date": "2026-06-18",
+    "tags": ["libwebp", "heap overflow", "oob", "huffman", "C++"],
+    "slug": "libwebp CVE-2023-4863",
+    "words": 601
+  },
+  {
+    "title": "libtiff CVE-2023-52356",
+    "date": "2026-05-20",
+    "tags": ["libtiff", "heap overflow", "oob", "C++"],
+    "slug": "libtiff CVE-2023-52356",
+    "words": 434
+  },
+  {
+    "title": "Exiv2 CVE-2021-3482",
+    "date": "2026-04-28",
+    "tags": ["exiv2", "heap overflow", "oob", "C++"],
+    "slug": "Exiv2 CVE-2021-3482",
+    "words": 458
+  },
+  {
+    "title": "zlib CVE-2022-37434",
+    "date": "2026-04-02",
+    "tags": ["zlib", "heap overflow", "oob", "C++"],
+    "slug": "zlib CVE-2022-37434",
+    "words": 715
+  },
+  {
+    "title": "yaml-cpp CVE-2017-5950",
+    "date": "2026-03-10",
+    "tags": ["yaml-cpp", "DoS", "stack overflow", "C++"],
+    "slug": "yaml-cpp CVE-2017-5950",
+    "words": 495
+  },
+  {
     "title": "Xpdf",
     "date": "2026-01-08",
-    "tags": [
-      "Xpdf",
-      "DoS",
-      "converter"
-    ],
+    "tags": ["Xpdf", "DoS", "converter"],
     "slug": "Xpdf",
     "words": 671
   }
