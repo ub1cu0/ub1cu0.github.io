@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Endian Converter — ub1cu0</title>
     <meta name="description"
-        content="Convierte texto y valores a chunks little endian y big endian para shellcoding, evitando null bytes con neg, not y xor. Genera el bloque de push listo para copiar.">
+        content="Convierte texto y valores a chunks little endian y big endian para shellcoding, evitando null bytes con neg, not y xor. Genera el bloque listo para copiar, en la pila con push o en memoria con mov [rax].">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../css/style.css">
     <style>
@@ -317,8 +317,8 @@
         <a href="/proyectos/" class="back-link">← Volver a Proyectos</a>
 
         <h1>Endian Converter</h1>
-        <p class="lead">Convierte texto y valores a chunks para shellcoding, y monta los push evitando bytes prohibidos.
-        </p>
+        <p class="lead">Convierte texto y valores a chunks para shellcoding, en la pila o en memoria, evitando bytes
+            prohibidos.</p>
 
         <div class="config-bar">
             <div class="config-item">
@@ -334,6 +334,14 @@
                 <select id="wordSelect">
                     <option value="4">4 bytes (x86)</option>
                     <option value="8">8 bytes (x86-64)</option>
+                </select>
+            </div>
+
+            <div class="config-item">
+                <label for="targetSelect">Destino</label>
+                <select id="targetSelect">
+                    <option value="stack">Pila (push)</option>
+                    <option value="mem" id="memOption">Memoria (mov [eax])</option>
                 </select>
             </div>
 
@@ -381,7 +389,7 @@
                 <button class="copy-btn" data-copy="leAsm">Copiar ASM</button>
             </div>
             <div class="chunk-list" id="leWords">
-                <div class="chunk-item"><span class="chunk-comment">// escribe para ver el bloque...</span></div>
+                <div class="chunk-item"><span class="chunk-comment"># escribe para ver el bloque...</span></div>
             </div>
             <pre id="leAsm" hidden></pre>
         </div>
@@ -392,7 +400,7 @@
                 <button class="copy-btn" data-copy="beAsm">Copiar ASM</button>
             </div>
             <div class="chunk-list" id="beWords">
-                <div class="chunk-item"><span class="chunk-comment">// escribe para ver el bloque...</span></div>
+                <div class="chunk-item"><span class="chunk-comment"># escribe para ver el bloque...</span></div>
             </div>
             <pre id="beAsm" hidden></pre>
         </div>

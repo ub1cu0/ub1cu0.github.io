@@ -8,6 +8,8 @@ const el = id => document.getElementById(id);
 const input = el('inputText');
 const modeSelect = el('modeSelect');
 const wordSelect = el('wordSelect');
+const targetSelect = el('targetSelect');
+const memOption = el('memOption');
 const badInput = el('badInput');
 const avoidChk = el('avoidBad');
 const termChk = el('terminator');
@@ -28,7 +30,7 @@ function escapeHtml(s) {
 function renderAsm(container, lines) {
     const insns = lines.filter(l => l.kind === 'insn');
     if (!insns.length) {
-        container.innerHTML = '<div class="chunk-item"><span class="chunk-comment">// escribe para ver el bloque...</span></div>';
+        container.innerHTML = '<div class="chunk-item"><span class="chunk-comment"># escribe para ver el bloque...</span></div>';
         return;
     }
     container.innerHTML = insns.map(l => {
@@ -37,10 +39,11 @@ function renderAsm(container, lines) {
         const ops = m ? m[2] : '';
         const opsHtml = escapeHtml(ops).replace(/(0x[0-9a-f]+)/gi, '<span class="asm-imm">$1</span>');
         const tags = (l.tags || []).map(t =>
-            `<span class="chunk-tag tag-${t.kind}">${escapeHtml(t.text)}</span>`).join('');
+            `<span class="chunk-tag tag-${t.kind}"${t.title ? ` title="${escapeHtml(t.title)}"` : ''}>`
+            + `${escapeHtml(t.text)}</span>`).join('');
         return `<div class="chunk-item">
             <span class="asm-text"><span class="asm-mn">${escapeHtml(mn)}</span>${ops ? ' ' + opsHtml : ''}</span>
-            ${l.comment ? `<span class="chunk-comment">; ${escapeHtml(l.comment)}</span>` : ''}
+            ${l.comment ? `<span class="chunk-comment"># ${escapeHtml(l.comment)}</span>` : ''}
             ${tags ? `<span class="tag-row">${tags}</span>` : ''}
         </div>`;
     }).join('');
@@ -50,9 +53,13 @@ function update() {
     const raw = input.value;
     const mode = modeSelect.value;
     const wordSize = Number(wordSelect.value);
+    const target = targetSelect.value;
     const badSet = parseBadBytes(badInput.value);
     const avoidBad = avoidChk.checked;
     const terminator = termChk.checked;
+
+    // El registro destino va en la propia opcion, que es donde importa
+    memOption.textContent = `Memoria (mov [${wordSize === 8 ? 'rax' : 'eax'}])`;
 
     const fill = html => {
         hexStream.textContent = '-';
@@ -62,7 +69,7 @@ function update() {
         leAsm.textContent = '';
         beAsm.textContent = '';
     };
-    const empty = () => fill('<div class="chunk-item"><span class="chunk-comment">// escribe para ver el bloque...</span></div>');
+    const empty = () => fill('<div class="chunk-item"><span class="chunk-comment"># escribe para ver el bloque...</span></div>');
 
     if (!raw) return empty();
 
@@ -70,7 +77,7 @@ function update() {
     if (bytes === null) {
         input.classList.add('invalid');
         fill('<div class="chunk-item chunk-error"><span class="asm-text">Hex no válido</span>'
-            + '<span class="chunk-comment">; usa bytes en hex, por ejemplo 2f 62 69 6e o 2f62696e</span></div>');
+            + '<span class="chunk-comment"># usa bytes en hex, por ejemplo 2f 62 69 6e o 2f62696e</span></div>');
         return;
     }
     input.classList.remove('invalid');
@@ -80,8 +87,8 @@ function update() {
     hexStreamRev.textContent = Array.from(bytes).reverse().map(hexByte).join(' ');
 
     const label = mode === 'hex' ? 'el valor' : `"${raw}"`;
-    const le = buildAsmBlock(bytes, { wordSize, endian: 'le', badSet, avoidBad, terminator, label });
-    const be = buildAsmBlock(bytes, { wordSize, endian: 'be', badSet, avoidBad, terminator, label });
+    const le = buildAsmBlock(bytes, { wordSize, endian: 'le', badSet, avoidBad, terminator, label, target });
+    const be = buildAsmBlock(bytes, { wordSize, endian: 'be', badSet, avoidBad, terminator, label, target });
 
     renderAsm(leWords, le.lines);
     renderAsm(beWords, be.lines);
@@ -120,7 +127,7 @@ async function copyText(text, btn) {
     setTimeout(() => { btn.textContent = original; }, 1200);
 }
 
-for (const ctl of [input, modeSelect, wordSelect, badInput, avoidChk, termChk]) {
+for (const ctl of [input, modeSelect, wordSelect, targetSelect, badInput, avoidChk, termChk]) {
     ctl.addEventListener(ctl === input || ctl === badInput ? 'input' : 'change', update);
 }
 
