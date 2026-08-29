@@ -52,6 +52,7 @@ const sello = (rel) => {
 const V_CSS = sello('assets/css/lab95.css');
 const V_CSS2 = sello('assets/css/lab95-variantes.css');
 const V_JS = sello('assets/js/sitio.js');
+const V_TOOL = sello('assets/css/lab95-tool.css');
 
 /* El teletipo que va pasando por la barra de abajo. Se cambia aqui y ya esta.
    Termina en separador porque el texto se repite en bucle y si no, se pegan la
@@ -237,6 +238,43 @@ const BOTONES = '<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>
    tags, donde la lista tiene otro largo, no sale. */
 const HAMSTER = '<img class="gif hamster-esq" src="/assets/img/hamster.gif" alt="" width="230" height="243">';
 
+/* El marco que rodea a todas las paginas: nubes, radiocasete, banda de arriba y
+   barra de tareas. Vive aqui suelto porque las dos herramientas, que son ficheros
+   estaticos y no pasan por pagina(), se lo pegan tambien. Asi el teletipo, la
+   cancion y las nubes se cambian en un sitio y valen para todo. */
+const chromeArriba = (esPortada) => `${NUBES}
+
+<button class="musica" id="musica" type="button" aria-pressed="false"
+        aria-label="Poner o quitar la música" title="Música" data-video="${VIDEO}">
+  <img src="/assets/img/musica.gif" alt="">
+  <canvas width="108" height="96" aria-hidden="true"></canvas>
+</button>
+<div id="reproductor" aria-hidden="true"></div>
+
+<div class="page">
+
+  <header class="banner">
+    ${esPortada
+      ? '<h1 class="logo">&lt;<b>ub1cu0</b>&gt;</h1>'
+      : '<div class="logo"><a href="/">&lt;<b>ub1cu0</b>&gt;</a></div>'}
+    <div class="sub">VULNERABILITY RESEARCH &middot; EXPLOIT DEV &middot; LOW LEVEL</div>
+    <img class="gif mascota" src="/assets/img/banner.gif" alt="" width="139" height="163">
+  </header>
+`;
+
+const chromeAbajo = (tarea) => `  <footer class="taskbar">
+    <div class="start"><em></em>Inicio</div>
+    <div class="tarea">${esc(tarea || 'ub1cu0')}</div>
+    <div class="hueco"><span>${TELETIPO}</span></div>
+    <div class="visitas">visitas <span id="visitas">001337</span></div>
+    <div class="reloj" id="reloj">--:--</div>
+  </footer>
+
+</div>
+
+<script src="${V_JS}" defer></script>
+`;
+
 const ventana = (titulo, cuerpo, { tag = 'section', clase = '', h = 'h2', pad = '' } = {}) =>
   `      <${tag} class="win ${clase}">
         <${h}>${titulo}${BOTONES}</${h}>
@@ -388,25 +426,7 @@ function pagina({ titulo, desc, canonical, tipo = 'website', tags = [], jsonld =
 </head>
 <body>
 
-${NUBES}
-
-<button class="musica" id="musica" type="button" aria-pressed="false"
-        aria-label="Poner o quitar la música" title="Música" data-video="${VIDEO}">
-  <img src="/assets/img/musica.gif" alt="">
-  <canvas width="108" height="96" aria-hidden="true"></canvas>
-</button>
-<div id="reproductor" aria-hidden="true"></div>
-
-<div class="page">
-
-  <header class="banner">
-    ${canonical === `${SITE}/`
-      ? '<h1 class="logo">&lt;<b>ub1cu0</b>&gt;</h1>'
-      : '<div class="logo"><a href="/">&lt;<b>ub1cu0</b>&gt;</a></div>'}
-    <div class="sub">VULNERABILITY RESEARCH &middot; EXPLOIT DEV &middot; LOW LEVEL</div>
-    <img class="gif mascota" src="/assets/img/banner.gif" alt="" width="139" height="163">
-  </header>
-
+${chromeArriba(canonical === `${SITE}/`)}
   <div class="zones">
 ${zonaA(cuentas)}
 
@@ -422,18 +442,7 @@ ${zonaC}
 
   <template id="tpl-nuevo"><img class="gif" src="/assets/img/new-new.gif" alt="nuevo" width="44" height="24"></template>
 
-  <footer class="taskbar">
-    <div class="start"><em></em>Inicio</div>
-    <div class="tarea">${esc(tarea || 'ub1cu0')}</div>
-    <div class="hueco"><span>${TELETIPO}</span></div>
-    <div class="visitas">visitas <span id="visitas">001337</span></div>
-    <div class="reloj" id="reloj">--:--</div>
-  </footer>
-
-</div>
-
-<script src="${V_JS}" defer></script>
-</body>
+${chromeAbajo(tarea)}</body>
 </html>
 `;
 }
@@ -741,14 +750,28 @@ function build() {
     }
   }
 
-  /* Las dos herramientas son paginas sueltas dentro de assets. Se les mete el
-     canonical y las tarjetas sociales aqui, sobre la copia, para no tocar los
-     ficheros originales, y se anaden al sitemap, que antes no estaban. */
+  /* Las dos herramientas son paginas sueltas dentro de assets: llevan su propio
+     JavaScript y no pasan por pagina(). Aqui, sobre la copia de dist y sin tocar
+     los ficheros originales, se les pega el marco del sitio donde lo piden, se
+     les pone la version a las hojas de estilo, y se les mete el canonical y las
+     tarjetas sociales. Tambien entran en el sitemap, que antes no estaban. */
   for (const [t, nombre] of [['shellcrafter', 'ShellCrafter'], ['endian', 'Endian Converter']]) {
     const p = join(DIST, 'assets/proyectos', t, 'index.html');
     if (!existsSync(p)) continue;
     const loc = `${SITE}/assets/proyectos/${t}/index.html`;
     let html = readFileSync(p, 'utf8');
+
+    if (html.includes('<!--ARRIBA-->')) {
+      html = html
+        .replace('<!--ARRIBA-->', chromeArriba(false))
+        .replace(/<!--ABAJO:(.*?)-->/, (m, tarea) => chromeAbajo(tarea))
+        .replace('/assets/css/lab95.css', V_CSS)
+        .replace('/assets/css/lab95-variantes.css', V_CSS2)
+        .replace('/assets/css/lab95-tool.css', V_TOOL);
+    } else {
+      console.warn(`  ! ${t}/index.html no trae el hueco del marco, sale sin el`);
+    }
+
     if (!/rel="canonical"/.test(html)) {
       const d = (html.match(/<meta\s+name="description"\s+content="([^"]*)"/i) || [, `${nombre}, herramienta de ub1cu0.`])[1];
       html = html.replace('</head>', `  <link rel="canonical" href="${loc}">

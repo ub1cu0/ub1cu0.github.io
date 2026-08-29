@@ -610,9 +610,9 @@ img.gif { image-rendering: auto; }
 .win.conhamster { position: relative; }
 .win.conhamster .hamster-esq {
   position: absolute;
-  right: -62px;
-  bottom: -12px;
-  width: 210px;
+  right: -48px;
+  bottom: -10px;
+  width: 160px;
   height: auto;
   z-index: 3;
   pointer-events: none;

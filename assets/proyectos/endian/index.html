@@ -1,414 +1,127 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-layout="clasico" data-bg="foto" data-pal="estandar" data-grad="azul">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Endian Converter — ub1cu0</title>
-    <meta name="description"
-        content="Convierte texto y valores a chunks little endian y big endian para shellcoding, evitando null bytes con neg, not y xor. Genera el bloque listo para copiar, en la pila con push o en memoria con mov [rax].">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../css/style.css">
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            padding: 40px 20px;
-        }
-
-        .converter-wrap {
-            width: min(900px, 94vw);
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .config-bar {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            align-items: flex-end;
-        }
-
-        .config-item {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .config-item label {
-            font-size: 0.8rem;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        select {
-            background: linear-gradient(180deg, #15151c, #12121a);
-            border: 1px solid var(--line);
-            border-radius: 10px;
-            padding: 9px 12px;
-            color: var(--text);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            outline: none;
-            transition: border-color .18s, box-shadow .18s;
-        }
-
-        select:hover {
-            border-color: var(--red);
-            box-shadow: 0 0 18px #ff163f44;
-        }
-
-        select:focus {
-            border-color: var(--red);
-            box-shadow: var(--glow);
-        }
-
-        input[type="text"] {
-            width: 100%;
-            background: linear-gradient(180deg, #15151c, #12121a);
-            border: 1px solid var(--line);
-            border-radius: 14px;
-            padding: 16px;
-            color: var(--text);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.2rem;
-            outline: none;
-            transition: border-color .18s, box-shadow .18s;
-        }
-
-        input[type="text"]:hover {
-            border-color: #3a2030;
-            box-shadow: 0 0 18px #ff163f33;
-        }
-
-        input[type="text"]:focus {
-            border-color: var(--red);
-            box-shadow: var(--glow);
-        }
-
-        #badInput {
-            font-size: 0.9rem;
-            padding: 8px 12px;
-            border-radius: 8px;
-            width: 120px;
-        }
-
-        .chk {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding-bottom: 9px;
-        }
-
-        .chk input {
-            accent-color: var(--red);
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
-
-        .chk label {
-            cursor: pointer;
-            font-size: 0.88rem;
-            color: var(--text);
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        /* Mismos paneles que el resto del sitio: degradado, borde fino y glow rojo */
-        .output-group {
-            background: linear-gradient(180deg, var(--panel), var(--panel-2));
-            border: 1px solid var(--line);
-            border-radius: var(--radius);
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .02), var(--glow);
-            padding: 20px 24px;
-            margin-bottom: 20px;
-            transition: border-color .18s, box-shadow .18s;
-        }
-
-        .output-group:hover {
-            border-color: #2a2a38;
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .02), 0 0 32px rgba(255, 22, 63, .25);
-        }
-
-        .group-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 14px;
-        }
-
-        .output-label {
-            font-size: 0.85rem;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .output-value {
-            font-family: 'JetBrains Mono', monospace;
-            color: #ff8fa3;
-            word-break: break-all;
-            line-height: 1.6;
-        }
-
-        .chunk-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .chunk-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            background: linear-gradient(180deg, #101018, #0e0e14);
-            border: 1px solid var(--line);
-            border-radius: 10px;
-            font-family: 'JetBrains Mono', monospace;
-            flex-wrap: wrap;
-            transition: border-color .18s, box-shadow .18s, transform .18s;
-        }
-
-        .chunk-item:hover {
-            border-color: #2a2a38;
-            box-shadow: var(--glow);
-            transform: translateX(2px);
-        }
-
-        .asm-text {
-            color: #fff;
-            min-width: 190px;
-        }
-
-        .asm-mn {
-            color: #ff8fa3;
-        }
-
-        .asm-imm {
-            color: #a9e6ff;
-        }
-
-        .chunk-comment {
-            color: var(--muted);
-            font-size: 0.9em;
-        }
-
-        .tag-row {
-            margin-left: auto;
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .chunk-tag {
-            font-size: 0.72rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-radius: 20px;
-            padding: 2px 8px;
-            white-space: nowrap;
-        }
-
-        .tag-fix {
-            color: #ff163f;
-            border: 1px solid rgba(255, 22, 63, 0.35);
-        }
-
-        .tag-info {
-            color: var(--muted);
-            border: 1px solid var(--line);
-            text-transform: none;
-        }
-
-        .tag-danger {
-            color: #fff;
-            background: linear-gradient(90deg, rgba(255, 22, 63, .9), rgba(255, 22, 63, .55));
-            border: 1px solid #ff163f;
-            box-shadow: 0 0 22px rgba(255, 22, 63, .35);
-            text-transform: none;
-        }
-
-        .chunk-error .asm-text {
-            color: #ff163f;
-            font-weight: 700;
-            min-width: 0;
-        }
-
-        .copy-btn {
-            background: linear-gradient(180deg, #15151c, #12121a);
-            border: 1px solid var(--line);
-            color: var(--muted);
-            padding: 6px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.78rem;
-            font-family: inherit;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-
-        .copy-btn:hover {
-            color: #fff;
-            border-color: var(--red);
-            box-shadow: 0 0 18px #ff163f44;
-        }
-
-        input[type="text"].invalid {
-            border-color: #ff163f;
-        }
-
-        .alt-btn {
-            background: transparent;
-            border: 1px dashed var(--line);
-            color: var(--muted);
-            padding: 6px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            margin-top: 10px;
-            transition: all 0.2s;
-        }
-
-        .alt-btn:hover {
-            color: #fff;
-            border-color: var(--red);
-            border-style: solid;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: var(--red);
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
-        }
-
-        h1 {
-            color: var(--text);
-            margin-bottom: 10px;
-        }
-
-        .lead {
-            color: var(--muted);
-            margin-bottom: 26px;
-        }
-
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Endian Converter — ub1cu0</title>
+  <meta name="description"
+    content="Convierte texto y bytes a chunks little endian y big endian para shellcoding, en la pila o en memoria, evitando bytes prohibidos.">
+  <link rel="stylesheet" href="/assets/css/lab95.css">
+  <link rel="stylesheet" href="/assets/css/lab95-variantes.css">
+  <link rel="stylesheet" href="/assets/css/lab95-tool.css">
 </head>
 
 <body>
-    <div class="rain" id="rain" aria-hidden="true"></div>
+<!--ARRIBA-->
+  <div class="zones solo tool">
+    <div class="zone zone-b">
 
-    <div class="converter-wrap">
-        <a href="/proyectos/" class="back-link">← Volver a Proyectos</a>
+      <section class="win">
+        <h1>Endian Converter<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h1>
+        <div class="body">
+          <div class="migas"><a href="/">Inicio</a> / <a href="/proyectos/">Proyectos</a> / Endian Converter</div>
+          <p style="margin:6px 0 9px">Parte lo que escribas en palabras del tamaño que necesites y te da el bloque
+            listo para meterlo en la pila o en memoria, esquivando los bytes que no puedas usar.</p>
 
-        <h1>Endian Converter</h1>
-        <p class="lead">Convierte texto y valores a chunks para shellcoding, en la pila o en memoria, evitando bytes
-            prohibidos.</p>
-
-        <div class="config-bar">
-            <div class="config-item">
-                <label for="modeSelect">Entrada</label>
-                <select id="modeSelect">
-                    <option value="text">Texto</option>
-                    <option value="hex">Bytes en hex</option>
-                </select>
+          <div class="barra">
+            <div class="campo">
+              <label for="modeSelect">Entrada</label>
+              <select id="modeSelect">
+                <option value="text">Texto</option>
+                <option value="hex">Bytes en hex</option>
+              </select>
             </div>
 
-            <div class="config-item">
-                <label for="wordSelect">Palabra</label>
-                <select id="wordSelect">
-                    <option value="4">4 bytes (x86)</option>
-                    <option value="8">8 bytes (x86-64)</option>
-                </select>
+            <div class="campo">
+              <label for="wordSelect">Palabra</label>
+              <select id="wordSelect">
+                <option value="4">4 bytes (x86)</option>
+                <option value="8">8 bytes (x86-64)</option>
+              </select>
             </div>
 
-            <div class="config-item">
-                <label for="targetSelect">Destino</label>
-                <select id="targetSelect">
-                    <option value="stack">Pila (push)</option>
-                    <option value="mem" id="memOption">Memoria (mov [eax])</option>
-                </select>
+            <div class="campo">
+              <label for="targetSelect">Destino</label>
+              <select id="targetSelect">
+                <option value="stack">Pila (push)</option>
+                <option value="mem" id="memOption">Memoria (mov [eax])</option>
+              </select>
             </div>
 
-            <div class="config-item">
-                <label for="badInput">Bytes prohibidos</label>
-                <input type="text" id="badInput" value="00" placeholder="00 0a 0d" spellcheck="false">
-            </div>
-
-            <div class="chk">
-                <input type="checkbox" id="avoidBad" checked>
-                <label for="avoidBad">Evitarlos con neg / not / xor</label>
+            <div class="campo">
+              <label for="badInput">Bytes prohibidos</label>
+              <input type="text" class="mono" id="badInput" value="00" placeholder="00 0a 0d" spellcheck="false">
             </div>
 
             <div class="chk">
-                <input type="checkbox" id="terminator" checked>
-                <label for="terminator">Terminador nulo</label>
+              <input type="checkbox" id="avoidBad" checked>
+              <label for="avoidBad">Evitarlos con neg / not / xor</label>
             </div>
-        </div>
 
-        <div class="input-group">
-            <input type="text" id="inputText" placeholder="Escribe aquí... (ej: /bin/sh)" spellcheck="false"
-                autocomplete="off">
-            <button class="alt-btn" id="altBtn" hidden></button>
-        </div>
+            <div class="chk">
+              <input type="checkbox" id="terminator" checked>
+              <label for="terminator">Terminador nulo</label>
+            </div>
+          </div>
 
-        <div class="output-group">
-            <div class="group-head">
-                <span class="output-label">Hex stream (original)</span>
-                <button class="copy-btn" data-copy="hexStream">Copiar</button>
-            </div>
-            <div class="output-value" id="hexStream">-</div>
+          <div class="input-group" style="margin-top:9px">
+            <input type="text" class="mono" id="inputText" placeholder="Escribe aquí... (ej: /bin/sh)"
+              spellcheck="false" autocomplete="off">
+            <button class="btn" id="altBtn" hidden></button>
+          </div>
         </div>
+      </section>
 
-        <div class="output-group">
-            <div class="group-head">
-                <span class="output-label">Hex stream (invertido)</span>
-                <button class="copy-btn" data-copy="hexStreamRev">Copiar</button>
-            </div>
-            <div class="output-value" id="hexStreamRev">-</div>
-        </div>
+      <section class="win">
+        <h2>Hex stream<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h2>
+        <div class="body">
+          <div class="cabecera">
+            <b>Original</b>
+            <span class="mandos"><button class="btn" data-copy="hexStream">Copiar</button></span>
+          </div>
+          <div class="output-value" id="hexStream">-</div>
 
-        <div class="output-group">
-            <div class="group-head">
-                <span class="output-label">Little endian</span>
-                <button class="copy-btn" data-copy="leAsm">Copiar ASM</button>
-            </div>
-            <div class="chunk-list" id="leWords">
-                <div class="chunk-item"><span class="chunk-comment"># escribe para ver el bloque...</span></div>
-            </div>
-            <pre id="leAsm" hidden></pre>
+          <div class="cabecera" style="margin-top:9px">
+            <b>Invertido</b>
+            <span class="mandos"><button class="btn" data-copy="hexStreamRev">Copiar</button></span>
+          </div>
+          <div class="output-value" id="hexStreamRev">-</div>
         </div>
+      </section>
 
-        <div class="output-group">
-            <div class="group-head">
-                <span class="output-label">Big endian</span>
-                <button class="copy-btn" data-copy="beAsm">Copiar ASM</button>
-            </div>
-            <div class="chunk-list" id="beWords">
-                <div class="chunk-item"><span class="chunk-comment"># escribe para ver el bloque...</span></div>
-            </div>
-            <pre id="beAsm" hidden></pre>
+      <section class="win">
+        <h2>Little endian<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h2>
+        <div class="body">
+          <div class="cabecera">
+            <b>Bloque</b>
+            <span class="mandos"><button class="btn" data-copy="leAsm">Copiar ASM</button></span>
+          </div>
+          <div class="chunk-list" id="leWords">
+            <div class="chunk-item"><span class="chunk-comment"># escribe para ver el bloque...</span></div>
+          </div>
+          <pre id="leAsm" hidden></pre>
         </div>
+      </section>
+
+      <section class="win">
+        <h2>Big endian<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h2>
+        <div class="body">
+          <div class="cabecera">
+            <b>Bloque</b>
+            <span class="mandos"><button class="btn" data-copy="beAsm">Copiar ASM</button></span>
+          </div>
+          <div class="chunk-list" id="beWords">
+            <div class="chunk-item"><span class="chunk-comment"># escribe para ver el bloque...</span></div>
+          </div>
+          <pre id="beAsm" hidden></pre>
+        </div>
+      </section>
 
     </div>
-
-    <script src="/assets/js/app.js" defer></script>
-    <script type="module" src="js/app.js"></script>
+  </div>
+<!--ABAJO:Endian Converter-->
+<script type="module" src="js/app.js"></script>
 </body>
 
 </html>

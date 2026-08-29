@@ -1,0 +1,232 @@
+/* Las dos herramientas sueltas (ShellCrafter y Endian Converter) sobre el mismo
+   chrome que el resto del sitio. Aqui solo van los controles y las salidas: las
+   ventanas, la banda y la barra de tareas salen de lab95.css. */
+
+/* Una sola columna: en una herramienta no hay barra lateral que valga */
+.zones.solo { grid-template-columns: minmax(0,1fr); }
+
+/* ------------------------------------------------------------- controles */
+
+.barra {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+}
+.campo { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.campo > label { font-size: 11px; color: var(--dim); }
+.campo.ancho { flex: 1 1 190px; }
+
+/* Campo hundido de Windows: fondo claro, bisel hacia dentro y esquinas vivas */
+.tool select,
+.tool input[type="text"],
+.tool textarea {
+  font: 12px/1.4 var(--font);
+  color: var(--txt);
+  background: var(--field);
+  border: 0;
+  border-radius: 0;
+  padding: 3px 4px;
+  outline-offset: -3px;
+  box-shadow:
+    inset  1px  1px 0 var(--face-dker),
+    inset -1px -1px 0 var(--face-lt),
+    inset  2px  2px 0 var(--face-dk),
+    inset -2px -2px 0 var(--face);
+}
+.tool textarea,
+.tool input.mono { font-family: var(--mono); }
+.tool select { padding: 2px; }
+.tool input[type="text"]:focus-visible,
+.tool textarea:focus-visible,
+.tool select:focus-visible { outline: 1px dotted var(--txt); }
+
+.tool input.invalid { color: #a00; font-weight: bold; }
+
+/* Boton de Windows: en reposo sobresale y al pulsarlo se hunde y el texto baja */
+.tool .btn {
+  font: 12px/1.4 var(--font);
+  color: var(--txt);
+  background: var(--face);
+  border: 0;
+  border-radius: 0;
+  padding: 3px 10px;
+  cursor: pointer;
+  box-shadow:
+    inset -1px -1px 0 var(--face-dker),
+    inset  1px  1px 0 var(--face-lt),
+    inset -2px -2px 0 var(--face-dk),
+    inset  2px  2px 0 var(--face);
+}
+.tool .btn:active {
+  padding: 4px 9px 2px 11px;
+  box-shadow:
+    inset  1px  1px 0 var(--face-dker),
+    inset -1px -1px 0 var(--face-lt),
+    inset  2px  2px 0 var(--face-dk),
+    inset -2px -2px 0 var(--face);
+}
+.tool .btn:focus-visible { outline: 1px dotted var(--txt); outline-offset: -4px; }
+
+.chk { display: flex; align-items: center; gap: 5px; font-size: 11px; }
+.chk label { cursor: pointer; }
+
+/* La cabecera de cada panel, con su titulo a la izquierda y sus mandos a la derecha */
+.cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 5px;
+  font-size: 11px;
+  color: var(--dim);
+}
+.cabecera b { color: var(--txt); }
+.cabecera .mandos { display: flex; gap: 5px; align-items: center; }
+
+/* ------------------------------------------------------ ShellCrafter */
+
+.paneles { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); }
+.panel { display: flex; flex-direction: column; min-width: 0; }
+
+#asmInput {
+  width: 100%;
+  height: 300px;
+  resize: vertical;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: auto;
+  tab-size: 4;
+}
+
+.output-list {
+  height: 300px;
+  overflow: auto;
+  padding: 3px;
+  background: var(--field);
+  font-family: var(--mono);
+  font-size: 12px;
+  box-shadow:
+    inset  1px  1px 0 var(--face-dker),
+    inset -1px -1px 0 var(--face-lt),
+    inset  2px  2px 0 var(--face-dk),
+    inset -2px -2px 0 var(--face);
+}
+.output-line { display: flex; gap: 7px; align-items: baseline; padding: 1px 2px; }
+.output-line:nth-child(odd) { background: rgba(0, 0, 0, .035); }
+.line-num { flex: 0 0 26px; text-align: right; color: var(--dim); font-size: 11px; }
+.hex-bytes { flex: 1; word-break: break-all; min-width: 0; }
+.hex-bytes.empty { color: var(--dim); font-family: var(--font); }
+.hex-bytes.err { color: #a00; font-family: var(--font); }
+.line-failed { background: rgba(170, 0, 0, .10); }
+.line-group { background: rgba(0, 0, 130, .07); }
+.group-note { color: var(--dim); font-size: 11px; font-family: var(--font); }
+
+/* Los tres estados de un byte. El malo no se distingue solo por el color:
+   tambien va en negrita y subrayado, para que se vea sin verlo. */
+.byte-ok { color: var(--txt); }
+.byte-null { color: #b35a00; font-weight: bold; }
+.byte-bad { color: #c00; font-weight: bold; text-decoration: underline; }
+
+.out-body {
+  margin: 0;
+  padding: 6px;
+  min-height: 62px;
+  max-height: 190px;
+  overflow: auto;
+  background: var(--field);
+  font-family: var(--mono);
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  box-shadow:
+    inset  1px  1px 0 var(--face-dker),
+    inset -1px -1px 0 var(--face-lt),
+    inset  2px  2px 0 var(--face-dk),
+    inset -2px -2px 0 var(--face);
+}
+
+/* El aviso de abajo, con el mismo bisel hundido que un campo */
+.status-bar {
+  padding: 4px 7px;
+  font-size: 11px;
+  background: var(--field);
+  box-shadow:
+    inset  1px  1px 0 var(--face-dker),
+    inset -1px -1px 0 var(--face-lt),
+    inset  2px  2px 0 var(--face-dk),
+    inset -2px -2px 0 var(--face);
+}
+.status-bar::before { font-weight: bold; margin-right: 5px; }
+.status-ok { color: var(--txt); }
+.status-ok::before { content: "i"; color: var(--acc); }
+.status-warn { color: #7a4a00; }
+.status-warn::before { content: "!"; }
+.status-error { color: #a00; }
+.status-error::before { content: "x"; }
+
+/* ------------------------------------------------ Endian Converter */
+
+.input-group { display: flex; gap: 6px; align-items: center; }
+.input-group input { flex: 1; min-width: 0; }
+
+.chunk-list {
+  padding: 4px;
+  background: var(--field);
+  font-family: var(--mono);
+  font-size: 12px;
+  box-shadow:
+    inset  1px  1px 0 var(--face-dker),
+    inset -1px -1px 0 var(--face-lt),
+    inset  2px  2px 0 var(--face-dk),
+    inset -2px -2px 0 var(--face);
+}
+.chunk-item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: baseline;
+  padding: 2px 3px;
+}
+.chunk-item:nth-child(odd) { background: rgba(0, 0, 0, .035); }
+.chunk-error { color: #a00; }
+.asm-text { white-space: pre-wrap; word-break: break-all; }
+.asm-mn { color: var(--acc); font-weight: bold; }
+.asm-imm { color: #7a2d00; }
+.chunk-comment { color: var(--dim); font-size: 11px; }
+.tag-row { display: flex; flex-wrap: wrap; gap: 4px; }
+
+/* Las etiquetas van con bisel de boton, que es como se marcaba un estado */
+.chunk-tag {
+  font-family: var(--font);
+  font-size: 10px;
+  text-transform: uppercase;
+  padding: 0 4px;
+  color: var(--dim);
+  box-shadow: inset 1px 1px 0 var(--face-lt), inset -1px -1px 0 var(--face-dk);
+}
+.tag-danger, .tag-fix { color: #a00; }
+.tag-info { text-transform: none; }
+
+.output-value {
+  padding: 5px 6px;
+  background: var(--field);
+  font-family: var(--mono);
+  font-size: 12px;
+  word-break: break-all;
+  box-shadow:
+    inset  1px  1px 0 var(--face-dker),
+    inset -1px -1px 0 var(--face-lt),
+    inset  2px  2px 0 var(--face-dk),
+    inset -2px -2px 0 var(--face);
+}
+
+/* ------------------------------------------------------------- movil */
+
+@media (max-width: 940px) {
+  .paneles { grid-template-columns: minmax(0,1fr); }
+  #asmInput, .output-list { height: 220px; }
+  .campo.ancho { flex-basis: 100%; }
+  .cabecera { font-size: 10px; }
+}
