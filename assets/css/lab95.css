@@ -581,7 +581,11 @@ img.gif { image-rendering: auto; }
 /* al pasar por encima da un salto, como cuando lo eliges */
 .isaac .ficha:hover .marco img,
 .isaac .ficha:focus-visible .marco img { transform: translateY(-3px); }
-.isaac .ficha:hover .nom { text-decoration: underline; }
+/* Al pasar por encima, el enlace se pinta de azul de barra de titulo. El
+   nombre iba en azul oscuro, asi que se perdia dentro. En amarillo se lee, y
+   es el mismo amarillo del logo de arriba. */
+.isaac .ficha:hover .nom,
+.isaac .ficha:focus-visible .nom { color: #ffd800; text-decoration: underline; }
 
 @media (prefers-reduced-motion: reduce) {
   .isaac .ficha:hover .marco img { transform: none; }
