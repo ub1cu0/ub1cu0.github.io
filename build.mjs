@@ -461,7 +461,6 @@ ${ventana('Lo último', `
 ${tabla(ultimas)}
           <div class="status">
             <span>${total} documentos</span>
-            <span><a href="/pwn/">ver todos</a></span>
           </div>
         ${HAMSTER}`, { clase: 'flush conhamster', pad: '3px' })}`;
 

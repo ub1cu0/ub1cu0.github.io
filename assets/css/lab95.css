@@ -611,7 +611,7 @@ img.gif { image-rendering: auto; }
 .win.conhamster .hamster-esq {
   position: absolute;
   right: -62px;
-  bottom: 8px;
+  bottom: -12px;
   width: 210px;
   height: auto;
   z-index: 3;
