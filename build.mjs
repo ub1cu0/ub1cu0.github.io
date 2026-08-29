@@ -288,14 +288,14 @@ const METAS = `
    el primero y su enlace funciona igual. */
 const AMIGOS_WIN = ventana('Amigos', `
           <div class="isaac" id="isaac">
-            <button class="fl" type="button" data-paso="-1" aria-label="Anterior"><img src="/assets/img/flecha.gif" alt=""></button>
+            <button class="fl" type="button" data-paso="-1" aria-label="Anterior"><img class="flecha" src="/assets/img/flecha.gif" alt=""><span class="mini"><img src="${AMIGOS[AMIGOS.length - 1].img}" alt=""></span></button>
             <div class="fichas">
 ${AMIGOS.map((a, i) => `              <a class="ficha" href="${a.url}" target="_blank" rel="noopener"${i ? ' hidden' : ''}>
                 <span class="nom">${esc(a.nombre)}</span>
                 <span class="marco"><img src="${a.img}" alt="${esc(a.nombre)}" width="128" height="152"></span>
               </a>`).join('\n')}
             </div>
-            <button class="fl" type="button" data-paso="1" aria-label="Siguiente"><img src="/assets/img/flecha.gif" alt=""></button>
+            <button class="fl" type="button" data-paso="1" aria-label="Siguiente"><img class="flecha" src="/assets/img/flecha.gif" alt=""><span class="mini"><img src="${AMIGOS[1 % AMIGOS.length].img}" alt=""></span></button>
           </div>
         `, { clase: 'amigos', pad: '7px 4px 9px' });
 

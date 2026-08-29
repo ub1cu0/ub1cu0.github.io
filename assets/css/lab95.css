@@ -531,20 +531,34 @@ img.gif { image-rendering: auto; }
    dada la vuelta, que es como se hacia y ahorra un fichero. */
 .isaac { display: flex; align-items: center; justify-content: center; gap: 4px; }
 
+/* Cada flecha lleva debajo, en pequeno, al que va a salir si la pulsas. En la
+   columna no caben tres sprites grandes, asi que los de los lados van a 36 y
+   apagados, y el del medio se queda a su tamano de verdad. */
 .isaac .fl {
-  flex: 0 0 auto;
-  width: 30px;
+  flex: 0 0 36px;
+  width: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
   padding: 0;
   border: 0;
   background: none;
   line-height: 0;
   cursor: pointer;
 }
-.isaac .fl img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
-.isaac .fl:first-child img { transform: scaleX(-1); }
-.isaac .fl:active img { transform: translateY(1px); }
-.isaac .fl:first-child:active img { transform: scaleX(-1) translateY(1px); }
+.isaac .fl .flecha { display: block; width: 28px; height: auto; image-rendering: pixelated; }
+.isaac .fl:first-child .flecha { transform: scaleX(-1); }
+.isaac .fl:active .flecha { transform: translateY(1px); }
+.isaac .fl:first-child:active .flecha { transform: scaleX(-1) translateY(1px); }
 .isaac .fl:focus-visible { outline: 1px dotted var(--txt); outline-offset: 2px; }
+
+/* la miniatura se encoge mucho, asi que se deja suavizada: a este tamano el
+   pixelado a lo bruto se come medias filas y queda sucio */
+.isaac .fl .mini { display: block; width: 100%; }
+.isaac .fl .mini img { display: block; width: 100%; height: auto; opacity: .5; }
+.isaac .fl:hover .mini img,
+.isaac .fl:focus-visible .mini img { opacity: 1; }
 
 /* 134 y no 128: el marco lleva 3px de aire a cada lado, asi que el sprite cae
    justo a sus 128 de ancho y se pinta pixel a pixel, sin reescalar. */

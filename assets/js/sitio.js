@@ -46,11 +46,22 @@
       if (fichas.length < 2) {
         flechas.forEach(function (b) { b.hidden = true; });
       } else {
+        // cada flecha ensena debajo al que saldria si la pulsas
+        var pinta = function () {
+          flechas.forEach(function (b) {
+            var mini = b.querySelector('.mini img');
+            if (!mini) return;
+            var i = (cual + Number(b.dataset.paso) + fichas.length) % fichas.length;
+            mini.src = fichas[i].querySelector('img').getAttribute('src');
+          });
+        };
+        pinta();
         flechas.forEach(function (b) {
           b.addEventListener('click', function () {
             fichas[cual].hidden = true;
             cual = (cual + Number(b.dataset.paso) + fichas.length) % fichas.length;
             fichas[cual].hidden = false;
+            pinta();
           });
         });
       }
