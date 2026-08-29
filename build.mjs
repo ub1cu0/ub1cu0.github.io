@@ -823,6 +823,7 @@ function build() {
     if (g.entradas.length >= 3) urls.push({ loc: `${SITE}/tags/${g.slug}/`, lastmod: g.entradas[0].date });
   }
   escribe(join(DIST, 'tags', 'index.html'), indiceTags(tags, cuentas));
+
   urls.push({ loc: `${SITE}/tags/`, lastmod: HOY });
 
   escribe(join(DIST, 'index.html'), portada(todo, cuentas));
