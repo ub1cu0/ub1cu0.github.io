@@ -126,8 +126,12 @@
       var href = a.getAttribute('href');
       if (!href || href.charAt(0) === '#') return;
       if (a.origin !== location.origin) return;
-      // las herramientas y los ficheros sueltos se abren como toda la vida
-      if (/^\/assets\//.test(a.pathname) || /\.(xml|txt|json|png|jpe?g|gif|pdf)$/.test(a.pathname)) return;
+      /* Las herramientas traen su propio JavaScript, que no se ejecutaria al
+         cambiar solo el interior de .page, asi que se cargan enteras. Igual los
+         ficheros sueltos. */
+      if (/^\/assets\//.test(a.pathname)) return;
+      if (/^\/proyectos\/(shellcrafter|endian)\//.test(a.pathname)) return;
+      if (/\.(xml|txt|json|png|jpe?g|gif|pdf)$/.test(a.pathname)) return;
       if (a.pathname === location.pathname) { e.preventDefault(); window.scrollTo(0, 0); return; }
       e.preventDefault();
       ve(a.href, true);

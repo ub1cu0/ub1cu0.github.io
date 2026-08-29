@@ -362,6 +362,23 @@ ${AMIGOS.map((a, i) => `              <a class="ficha" href="${a.url}" target="_
           </div>
         `, { clase: 'amigos', pad: '7px 4px 9px' });
 
+/* Pagina de una linea que manda a otra direccion. Se queda donde vivia la
+   herramienta antes, para que los enlaces de fuera y lo que tenga guardado
+   Google sigan llegando. No se indexa, y el canonical apunta al sitio nuevo. */
+const desvio = (destino, nombre) => `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>${esc(nombre)} se ha mudado</title>
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="${destino}">
+<meta http-equiv="refresh" content="0; url=${destino}">
+<script>location.replace(${JSON.stringify(destino)});</script>
+</head>
+<body><p>${esc(nombre)} está ahora en <a href="${destino}">${destino}</a>.</p></body>
+</html>
+`;
+
 /* Una tabla de entradas, que es la pieza que se repite en portada y listados. */
 function tabla(entradas) {
   const filas = entradas.map(e => {
@@ -751,42 +768,53 @@ function build() {
   }
 
   /* Las dos herramientas son paginas sueltas dentro de assets: llevan su propio
-     JavaScript y no pasan por pagina(). Aqui, sobre la copia de dist y sin tocar
-     los ficheros originales, se les pega el marco del sitio donde lo piden, se
-     les pone la version a las hojas de estilo, y se les mete el canonical y las
-     tarjetas sociales. Tambien entran en el sitemap, que antes no estaban. */
+     JavaScript y no pasan por pagina(). Aqui se les pega el marco del sitio, se
+     les pone la version a las hojas y se publican en /proyectos/<nombre>/, que
+     es una direccion de verdad y no un index.html colgando de assets. El JS y el
+     wasm se quedan donde estan, sin copiar, porque cada modulo resuelve lo suyo
+     contra su propia URL. En el sitio viejo queda un desvio. */
   for (const [t, nombre] of [['shellcrafter', 'ShellCrafter'], ['endian', 'Endian Converter']]) {
-    const p = join(DIST, 'assets/proyectos', t, 'index.html');
-    if (!existsSync(p)) continue;
-    const loc = `${SITE}/assets/proyectos/${t}/index.html`;
-    let html = readFileSync(p, 'utf8');
+    const origen = join(DIST, 'assets/proyectos', t, 'index.html');
+    if (!existsSync(origen)) continue;
+    const loc = `${SITE}/proyectos/${t}/`;
+    let html = readFileSync(origen, 'utf8');
 
-    if (html.includes('<!--ARRIBA-->')) {
-      html = html
-        .replace('<!--ARRIBA-->', chromeArriba(false))
-        .replace(/<!--ABAJO:(.*?)-->/, (m, tarea) => chromeAbajo(tarea))
-        .replace('/assets/css/lab95.css', V_CSS)
-        .replace('/assets/css/lab95-variantes.css', V_CSS2)
-        .replace('/assets/css/lab95-tool.css', V_TOOL);
-    } else {
-      console.warn(`  ! ${t}/index.html no trae el hueco del marco, sale sin el`);
+    if (!html.includes('<!--ARRIBA-->')) {
+      console.warn(`  ! ${t}/index.html no trae el hueco del marco, se deja como esta`);
+      continue;
     }
 
-    if (!/rel="canonical"/.test(html)) {
-      const d = (html.match(/<meta\s+name="description"\s+content="([^"]*)"/i) || [, `${nombre}, herramienta de ub1cu0.`])[1];
-      html = html.replace('</head>', `  <link rel="canonical" href="${loc}">
+    html = html
+      .replace('<!--ARRIBA-->', chromeArriba(false))
+      .replace(/<!--ABAJO:(.*?)-->/, (m, tarea) => chromeAbajo(tarea))
+      .replace('/assets/css/lab95.css', V_CSS)
+      .replace('/assets/css/lab95-variantes.css', V_CSS2)
+      .replace('/assets/css/lab95-tool.css', V_TOOL)
+      // el script sigue viviendo en assets, asi que desde la URL nueva va absoluto
+      .replace(/src="js\//g, `src="/assets/proyectos/${t}/js/`);
+
+    const d = (html.match(/<meta\s+name="description"\s+content="([^"]*)"/i) || [, `${nombre}, herramienta de ub1cu0.`])[1];
+    html = html.replace('</head>', `  <link rel="canonical" href="${loc}">
+  <meta name="author" content="${AUTOR}">
+  <meta name="google-site-verification" content="${GSC}">
   <meta property="og:type" content="website">
   <meta property="og:title" content="${esc(nombre)} · ub1cu0">
   <meta property="og:description" content="${esc(d)}">
   <meta property="og:url" content="${loc}">
   <meta property="og:image" content="${IMG_SOCIAL}">
+  <meta property="og:site_name" content="ub1cu0">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="author" content="${AUTOR}">
+  <meta name="twitter:title" content="${esc(nombre)} · ub1cu0">
+  <meta name="twitter:description" content="${esc(d)}">
+  <meta name="twitter:image" content="${IMG_SOCIAL}">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E🖥%3C/text%3E%3C/svg%3E">
 </head>`);
-      writeFileSync(p, html);
-    }
+
+    escribe(join(DIST, 'proyectos', t, 'index.html'), html);
     urls.push({ loc, lastmod: HOY });
+
+    // la direccion vieja lleva tiempo publicada, asi que no se rompe: se desvia
+    writeFileSync(origen, desvio(loc, nombre));
   }
 
   // paginas de tag

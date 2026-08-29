@@ -7,7 +7,7 @@
       "asm",
       "tool"
     ],
-    "url": "/assets/proyectos/shellcrafter/index.html",
+    "url": "/proyectos/shellcrafter/",
     "target": "_blank",
     "slug": "shellcrafter",
     "words": 0
@@ -19,7 +19,7 @@
       "shellcode",
       "tool"
     ],
-    "url": "/assets/proyectos/endian/index.html",
+    "url": "/proyectos/endian/",
     "target": "_blank",
     "slug": "endian-converter",
     "words": 0
