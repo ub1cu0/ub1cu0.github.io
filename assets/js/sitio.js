@@ -116,6 +116,8 @@
   if (boton && window.YT !== null) {
     var VIDEO = boton.dataset.video;
     var player = null, listo = false, arrancando = false;
+    var VOLUMEN = 18;   // de fondo, no de primer plano
+    var suena = function () { player.unMute(); player.setVolume(VOLUMEN); };
 
     var leer = function (k, d) { try { return localStorage.getItem(k) || d; } catch (e) { return d; } };
     var guardar = function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} };
@@ -161,6 +163,7 @@
         events: {
           onReady: function () {
             listo = true;
+            player.setVolume(VOLUMEN);
             if (quiere) intenta();
           },
           onStateChange: function (e) {
@@ -182,7 +185,7 @@
     var alPrimerToque = function () {
       GESTOS.forEach(function (g) { document.removeEventListener(g, alPrimerToque); });
       if (!quiere || !listo) return;
-      if (mudo) { player.unMute(); mudo = false; }
+      if (mudo) { suena(); mudo = false; }
       if (player.getPlayerState() !== 1) player.playVideo();
       pinta(player.getPlayerState() === 1);
     };
@@ -191,7 +194,7 @@
       if (!listo) return;
       arrancando = true;
       mudo = false;
-      player.unMute();
+      suena();
       player.playVideo();
       GESTOS.forEach(function (g) { document.addEventListener(g, alPrimerToque); });
 
@@ -213,7 +216,7 @@
       quiere = !sonando;
       guardar('musica', quiere ? 'si' : 'no');
       if (quiere) {
-        if (mudo) { player.unMute(); mudo = false; pinta(true); }
+        if (mudo) { suena(); mudo = false; pinta(true); }
         else intenta();
       } else {
         player.pauseVideo();
