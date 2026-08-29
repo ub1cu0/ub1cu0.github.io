@@ -116,7 +116,7 @@
   if (boton && window.YT !== null) {
     var VIDEO = boton.dataset.video;
     var player = null, listo = false, arrancando = false;
-    var VOLUMEN = 18;   // de fondo, no de primer plano
+    var VOLUMEN = 8;   // de fondo, no de primer plano
     var suena = function () { player.unMute(); player.setVolume(VOLUMEN); };
 
     var leer = function (k, d) { try { return localStorage.getItem(k) || d; } catch (e) { return d; } };
