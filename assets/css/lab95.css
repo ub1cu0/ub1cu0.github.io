@@ -529,11 +529,11 @@ img.gif { image-rendering: auto; }
    Igual que el de elegir personaje del Isaac: el nombre arriba, el sprite en
    su recuadro y una flecha a cada lado. La de la izquierda es la misma imagen
    dada la vuelta, que es como se hacia y ahorra un fichero. */
-.isaac { display: flex; align-items: center; justify-content: center; gap: 5px; }
+.isaac { display: flex; align-items: center; justify-content: center; gap: 4px; }
 
 .isaac .fl {
   flex: 0 0 auto;
-  width: 34px;
+  width: 30px;
   padding: 0;
   border: 0;
   background: none;
@@ -546,7 +546,9 @@ img.gif { image-rendering: auto; }
 .isaac .fl:first-child:active img { transform: scaleX(-1) translateY(1px); }
 .isaac .fl:focus-visible { outline: 1px dotted var(--txt); outline-offset: 2px; }
 
-.isaac .fichas { flex: 0 1 112px; min-width: 0; }
+/* 134 y no 128: el marco lleva 3px de aire a cada lado, asi que el sprite cae
+   justo a sus 128 de ancho y se pinta pixel a pixel, sin reescalar. */
+.isaac .fichas { flex: 0 1 134px; min-width: 0; }
 
 /* el enlace lleva display:block, que le gana al hidden del navegador */
 .isaac .ficha { display: block; text-decoration: none; }

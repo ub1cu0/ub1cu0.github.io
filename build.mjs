@@ -41,11 +41,13 @@ const TELETIPO = 'BUSCO TRABAJO &middot; BUSCO TRABAJO &middot; BUSCO TRABAJO &m
 
 /* Los colegas del selector de personaje. Para anadir uno: su nombre, su web y
    un sprite recortado en assets/img/. Salen en este orden, y las flechas van
-   pasando de uno a otro. Los sprites miden 112x132 con el fondo transparente,
+   pasando de uno a otro. Los sprites miden 128x152 con el fondo transparente,
    asi que uno nuevo hay que dejarlo de ese tamano para que no baile. */
 const AMIGOS = [
   { nombre: 'FOUEN', url: 'https://fouen.blogspot.com/', img: '/assets/img/amigo-fouen.png' },
   { nombre: 'YOSHL', url: 'https://yoshlsec.github.io/', img: '/assets/img/amigo-yoshl.png' },
+  { nombre: 'D3B0',  url: 'https://d3bo.eu/',            img: '/assets/img/amigo-d3b0.png' },
+  { nombre: 'MARC',  url: 'https://m2rc.net/',           img: '/assets/img/amigo-marc.png' },
 ];
 
 /* Cada seccion con su color, que es el mismo del cuadradito del indice.
@@ -290,7 +292,7 @@ const AMIGOS_WIN = ventana('Amigos', `
             <div class="fichas">
 ${AMIGOS.map((a, i) => `              <a class="ficha" href="${a.url}" target="_blank" rel="noopener"${i ? ' hidden' : ''}>
                 <span class="nom">${esc(a.nombre)}</span>
-                <span class="marco"><img src="${a.img}" alt="${esc(a.nombre)}" width="112" height="132"></span>
+                <span class="marco"><img src="${a.img}" alt="${esc(a.nombre)}" width="128" height="152"></span>
               </a>`).join('\n')}
             </div>
             <button class="fl" type="button" data-paso="1" aria-label="Siguiente"><img src="/assets/img/flecha.gif" alt=""></button>
