@@ -242,6 +242,11 @@
 
   .musica img,
   .musica canvas { width: 54px; }
+
+  /* A una columna la ventana llega casi al borde de la pantalla, asi que si
+     asomara por el lado sacaria barra horizontal. Aqui se queda entero dentro,
+     en la misma esquina. */
+  .win.conhamster .hamster-esq { right: 4px; bottom: 6px; width: 130px; }
 }
 
 /* los iconos del escritorio, cada seccion de su color, como los del sistema */

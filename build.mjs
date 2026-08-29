@@ -231,6 +231,12 @@ const NUBES = `<div class="cielo" aria-hidden="true">${
 
 const BOTONES = '<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span>';
 
+/* El hamster va solo en la portada, apoyado en la parte de abajo a la derecha
+   de la ventana de Lo ultimo y asomando un poco por el lado. La postura esta
+   medida para las catorce filas de la portada, asi que en los listados y en los
+   tags, donde la lista tiene otro largo, no sale. */
+const HAMSTER = '<img class="gif hamster-esq" src="/assets/img/hamster.gif" alt="" width="230" height="243">';
+
 const ventana = (titulo, cuerpo, { tag = 'section', clase = '', h = 'h2', pad = '' } = {}) =>
   `      <${tag} class="win ${clase}">
         <${h}>${titulo}${BOTONES}</${h}>
@@ -411,7 +417,6 @@ ${zonaB}
     <div class="zone zone-c">
 ${zonaC}
 
-      <img class="gif pegado hamster" src="/assets/img/hamster.gif" alt="">
     </div>
   </div>
 
@@ -458,7 +463,7 @@ ${tabla(ultimas)}
             <span>${total} documentos</span>
             <span><a href="/pwn/">ver todos</a></span>
           </div>
-        `, { clase: 'flush', pad: '3px' })}`;
+        ${HAMSTER}`, { clase: 'flush conhamster', pad: '3px' })}`;
 
   const zonaC = `${ventana('Tags', `
           ${nubeTags(todo)}
