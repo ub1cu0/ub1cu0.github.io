@@ -37,7 +37,16 @@ const HOY = new Date().toISOString().slice(0, 10);
 /* El teletipo que va pasando por la barra de abajo. Se cambia aqui y ya esta.
    Termina en separador porque el texto se repite en bucle y si no, se pegan la
    ultima palabra y la primera. Para un simbolo raro se usa su entidad HTML. */
-const TELETIPO = 'BUSCO TRABAJO &middot; vulnerability research &middot; exploit dev &middot; low level &middot; hablamos por LinkedIn &middot; ';
+const TELETIPO = 'BUSCO TRABAJO &middot; BUSCO TRABAJO &middot; BUSCO TRABAJO &middot; BUSCO TRABAJO &middot; BUSCO TRABAJO &middot; BUSCO TRABAJO &middot; BUSCO TRABAJO &middot; BUSCO TRABAJO &middot; BUSCO TRABAJO &middot; BUSCO TRABAJO &middot; ';
+
+/* Los colegas del selector de personaje. Para anadir uno: su nombre, su web y
+   un sprite recortado en assets/img/. Salen en este orden, y las flechas van
+   pasando de uno a otro. Los sprites miden 112x132 con el fondo transparente,
+   asi que uno nuevo hay que dejarlo de ese tamano para que no baile. */
+const AMIGOS = [
+  { nombre: 'FOUEN', url: 'https://fouen.blogspot.com/', img: '/assets/img/amigo-fouen.png' },
+  { nombre: 'YOSHL', url: 'https://yoshlsec.github.io/', img: '/assets/img/amigo-yoshl.png' },
+];
 
 /* Cada seccion con su color, que es el mismo del cuadradito del indice.
    `oculta` deja la seccion fuera del menu, del sitemap y de la portada, pero
@@ -272,6 +281,22 @@ const METAS = `
           </ul>
         `;
 
+/* El selector de colegas. Cada uno es un enlace de verdad y estan todos en el
+   HTML: el JavaScript solo ensena uno y las flechas cambian cual. Sin JS se ve
+   el primero y su enlace funciona igual. */
+const AMIGOS_WIN = ventana('Amigos', `
+          <div class="isaac" id="isaac">
+            <button class="fl" type="button" data-paso="-1" aria-label="Anterior"><img src="/assets/img/flecha.gif" alt=""></button>
+            <div class="fichas">
+${AMIGOS.map((a, i) => `              <a class="ficha" href="${a.url}" target="_blank" rel="noopener"${i ? ' hidden' : ''}>
+                <span class="nom">${esc(a.nombre)}</span>
+                <span class="marco"><img src="${a.img}" alt="${esc(a.nombre)}" width="112" height="132"></span>
+              </a>`).join('\n')}
+            </div>
+            <button class="fl" type="button" data-paso="1" aria-label="Siguiente"><img src="/assets/img/flecha.gif" alt=""></button>
+          </div>
+        `, { clase: 'amigos', pad: '7px 4px 9px' });
+
 /* Una tabla de entradas, que es la pieza que se repite en portada y listados. */
 function tabla(entradas) {
   const filas = entradas.map(e => {
@@ -418,7 +443,9 @@ ${tabla(ultimas)}
           ${nubeTags(todo)}
         `, { clase: 'nube-caja' }).replace('<div class="body"', '<div class="body nube"')}
 
-${ventana('Metas', METAS)}`;
+${ventana('Metas', METAS)}
+
+${AMIGOS_WIN}`;
 
   return pagina({
     titulo: 'ub1cu0 — Vulnerability Researcher',
@@ -453,7 +480,9 @@ ${tabla(entradas)}
           ${nubeTags(entradas)}
         `).replace('<div class="body"', '<div class="body nube"')}
 
-${ventana('Metas', METAS)}`;
+${ventana('Metas', METAS)}
+
+${AMIGOS_WIN}`;
 
   return pagina({
     titulo: `${c.titulo} · ub1cu0`,
@@ -494,7 +523,9 @@ ${md.render(sinFrontmatter(e.raw)).replace(/<(\/?)h1>/g, '<$1h2>')}
           ${tags ? `<div class="tagsficha">${tags}</div>` : ''}
         `)}
 
-${ventana('Metas', METAS)}`;
+${ventana('Metas', METAS)}
+
+${AMIGOS_WIN}`;
 
   return pagina({
     titulo: `${e.title} · ub1cu0`,
@@ -535,7 +566,9 @@ ${tabla(g.entradas)}
           ${nubeTags(todo)}
         `).replace('<div class="body"', '<div class="body nube"')}
 
-${ventana('Metas', METAS)}`;
+${ventana('Metas', METAS)}
+
+${AMIGOS_WIN}`;
 
   return pagina({
     titulo: `${g.nombre} · ub1cu0`,
@@ -571,7 +604,7 @@ ${filas}
   return pagina({
     titulo: 'Tags · ub1cu0',
     desc: 'Todos los temas que toco: técnicas de explotación, plataformas de CTF y librerías analizadas.',
-    canonical, cuentas, zonaB, zonaC: ventana('Metas', METAS), tarea: 'Tags',
+    canonical, cuentas, zonaB, zonaC: `${ventana('Metas', METAS)}\n\n${AMIGOS_WIN}`, tarea: 'Tags',
   });
 }
 
@@ -582,7 +615,7 @@ function pagina404(cuentas) {
         `, { h: 'h1' });
   return pagina({
     titulo: '404 · ub1cu0', desc: 'Página no encontrada.',
-    canonical: `${SITE}/404.html`, cuentas, zonaB, zonaC: ventana('Metas', METAS), tarea: '404', shim: true,
+    canonical: `${SITE}/404.html`, cuentas, zonaB, zonaC: `${ventana('Metas', METAS)}\n\n${AMIGOS_WIN}`, tarea: '404', shim: true,
   });
 }
 

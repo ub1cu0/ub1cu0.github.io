@@ -35,6 +35,27 @@
     var v = document.getElementById('visitas');
     if (v) v.textContent = String(visitas).padStart(6, '0');
 
+    /* El selector de colegas. Todos estan ya en el HTML, aqui solo se ensena
+       uno y las flechas cambian cual. Si esto no corre se ve el primero, que
+       es un enlace normal y funciona igual. */
+    var isaac = document.getElementById('isaac');
+    if (isaac) {
+      var fichas = [].slice.call(isaac.querySelectorAll('.ficha'));
+      var flechas = [].slice.call(isaac.querySelectorAll('.fl'));
+      var cual = 0;
+      if (fichas.length < 2) {
+        flechas.forEach(function (b) { b.hidden = true; });
+      } else {
+        flechas.forEach(function (b) {
+          b.addEventListener('click', function () {
+            fichas[cual].hidden = true;
+            cual = (cual + Number(b.dataset.paso) + fichas.length) % fichas.length;
+            fichas[cual].hidden = false;
+          });
+        });
+      }
+    }
+
     var reloj = document.getElementById('reloj');
     if (reloj) {
       var tic = function () {
