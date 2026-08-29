@@ -1,344 +1,727 @@
 #!/usr/bin/env node
 /**
- * Generador estático de ub1cu0.github.io
- * -------------------------------------------------
- * Convierte los .md + index.json de cada sección en páginas HTML reales
- * (URLs limpias, sin almohadilla) para que Google y las IAs las indexen.
+ * Generador de ub1cu0.github.io, version Win95.
+ * ---------------------------------------------------------------------------
+ * Mismo trato que el generador anterior: el contenido son ficheros .md dentro
+ * de la carpeta de su seccion. Para publicar algo nuevo se deja el .md ahi y se
+ * corre esto. El index.json sigue valiendo para ordenar y para las entradas que
+ * no tienen .md (proyectos que apuntan fuera), pero ya no hace falta tocarlo:
+ * si aparece un .md que no esta listado, se coge su frontmatter y entra igual.
  *
- * - Renderiza el markdown en build (markdown-it + highlight.js), así el
- *   cliente NO necesita descargar esas librerías.
- * - Reutiliza el mismo CSS y la misma estructura de DOM, por lo que el
- *   aspecto es idéntico al SPA original.
- * - Salida en dist/ (lo que se despliega en GitHub Pages).
+ * Lo que ya no hay que mantener a mano:
+ *   - el numero de palabras, que sale de contar el propio markdown
+ *   - el resaltado de codigo, que va en el CSS del sitio y no en un CDN
  *
- *   node build.mjs        (o: npm run build)
+ *   node build.mjs [--src <repo>] [--out <dir>]
  */
 
-import { readFileSync, writeFileSync, mkdirSync, rmSync, cpSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { readFileSync, writeFileSync, mkdirSync, rmSync, cpSync, existsSync, readdirSync } from 'node:fs';
+import { join, dirname } from 'node:path';
 import MarkdownIt from 'markdown-it';
 import hljs from 'highlight.js';
 
 const ROOT = import.meta.dirname;
-const DIST = join(ROOT, 'dist');
+const arg = (n, d) => { const i = process.argv.indexOf(n); return i > 0 ? process.argv[i + 1] : d; };
+/* Si este fichero vive dentro del repo de la web, el contenido esta al lado.
+   Si vive fuera (mientras es un prototipo), se apunta al repo con --src. */
+const SRC = arg('--src', existsSync(join(ROOT, 'pwn', 'index.json')) ? ROOT : '/home/ub1cu0/Escritorio/Proyectos/ub1cu0.github.io');
+const DIST = arg('--out', join(ROOT, 'dist'));
 
-/* ------------------------------------------------------------------ *
- *  Configuración del sitio
- * ------------------------------------------------------------------ */
-const SITE_URL = 'https://ub1cu0.github.io';
-const AUTHOR = 'ub1cu0';
-const DEFAULT_IMG = `${SITE_URL}/assets/img/miniatura.png`;
-const GSC_VERIFY = 'TcazwE_vjVsfW2MRMH8DUh7GhoNp-aqNCNdUdudgAgQ'; // Google Search Console
+const SITE = 'https://ub1cu0.github.io';
+const AUTOR = 'ub1cu0';
+const IMG_SOCIAL = `${SITE}/assets/img/miniatura.png`;
+const GSC = 'TcazwE_vjVsfW2MRMH8DUh7GhoNp-aqNCNdUdudgAgQ';
+const VIDEO = 'Maw3A8zUJyM';   // la cancion que suena de fondo, desde YouTube
+const HOY = new Date().toISOString().slice(0, 10);
 
-// Secciones y su copy para el <title>/description de cada listado.
-const SECTIONS = {
-    pwn:       { title: 'PWN',       label: 'Writeups', desc: 'Writeups de explotación de binarios (PWN) paso a paso, en español.' },
-    htb:       { title: 'HTB',       label: 'Machines', desc: 'Resolución de máquinas de HackTheBox, en español.' },
-    cve:       { title: 'CVEs',      label: 'Research', desc: 'Vulnerabilidades (CVE) y research de seguridad.' },
-    poc:       { title: 'POCs',      label: 'Code',     desc: 'Proof-of-Concepts y análisis de vulnerabilidades en C/C++.' },
-    proyectos: { title: 'Proyectos', label: 'Personal', desc: 'Proyectos personales y herramientas de seguridad.' },
+/* Cada seccion con su color, que es el mismo del cuadradito del indice.
+   `oculta` deja la seccion fuera del menu, del sitemap y de la portada, pero
+   sus paginas se siguen generando para no romper enlaces que ya existan. */
+const SECCIONES = {
+  pwn:       { titulo: 'Writeups PWN', corto: 'PWN',       color: 'pwn',  desc: 'Writeups de explotación de binarios (PWN) paso a paso, en español.' },
+  htb:       { titulo: 'HackTheBox',   corto: 'HTB',       color: 'htb',  desc: 'Resolución de máquinas de HackTheBox, en español.', oculta: true },
+  cve:       { titulo: 'CVEs',         corto: 'CVEs',      color: 'cve',  desc: 'Vulnerabilidades (CVE) encontradas y reportadas por mí.' },
+  poc:       { titulo: 'POCs',         corto: 'POCs',      color: 'poc',  desc: 'Proof of Concept de vulnerabilidades conocidas, en C/C++.' },
+  proyectos: { titulo: 'Proyectos',    corto: 'Proyectos', color: 'tool', desc: 'Proyectos personales y herramientas de seguridad.' },
 };
 
-// Tags que cuentan como "plataforma" (para el primer desplegable del filtro).
-const ORIGIN_TAGS = ['picoCTF', 'HackTheBox', 'SnakeCTF', 'imaginaryCTF', 'WWCTF', 'ropemporium', 'pwnable', 'NavajaNegra', 'CVE', 'Xpdf', 'sumatrapdfreader'];
-const ORIGINS_LOWER = ORIGIN_TAGS.map(t => t.toLowerCase());
+const VISIBLES = Object.keys(SECCIONES).filter(c => !SECCIONES[c].oculta);
 
-// Mapa tag -> imagen de plataforma (marca de agua en el tile).
-const FILE_MAP = {
-    hackthebox: 'HTB.png', htb: 'HTB.png', picoctf: 'picoCTF.png', navajanegra: 'nn.png',
-    snakectf: 'snakeCTF.png', ropemporium: 'RopEmporium.png', pwnable: 'pwnable.png',
-    imaginaryctf: 'imaginaryCTF.png', wwctf: 'WWCTF.png', xpdf: 'Xpdf.png',
-    sumatrapdfreader: 'sumatrapdfreader.png',
-};
+/* --------------------------------------------------------------- utilidades */
 
-/* ------------------------------------------------------------------ *
- *  Utilidades
- * ------------------------------------------------------------------ */
-
-// Convierte un título en un slug de URL. DEBE coincidir con el slugify
-// del shim de redirección (assets/js/app.js) para que los enlaces #/... antiguos
-// aterricen en la URL nueva.
 export function slugify(s) {
-    return String(s)
-        .normalize('NFD').replace(/[̀-ͯ]/g, '') // fuera acentos
-        .toLowerCase()
-        .replace(/['"`´’]/g, '')                          // fuera comillas/apóstrofes
-        .replace(/[^a-z0-9]+/g, '-')                      // resto -> guiones
-        .replace(/^-+|-+$/g, '');                         // recorta guiones
+  return String(s)
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/['"`´’]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 }
 
 const esc = (s) => String(s)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
-const stripFrontmatter = (md) => md.replace(/^﻿?---[\s\S]*?---\s*/i, '');
+const sinFrontmatter = (md) => md.replace(/^﻿?---[\s\S]*?---\s*/i, '');
 
-// Configuración de markdown-it idéntica a la que usaba el SPA en cliente.
 const md = new MarkdownIt({
-    html: true,
-    linkify: true,
-    highlight: (str, lang) => {
-        if (lang && hljs.getLanguage(lang)) {
-            try {
-                return `<pre><code class="hljs">${hljs.highlight(str, { language: lang, ignoreIllegals: true }).value}</code></pre>`;
-            } catch (_) { /* fallthrough */ }
-        }
-        return `<pre><code class="hljs">${md.utils.escapeHtml(str)}</code></pre>`;
-    },
+  html: true,
+  linkify: true,
+  highlight: (str, lang) => {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return `<pre><code class="hljs">${hljs.highlight(str, { language: lang, ignoreIllegals: true }).value}</code></pre>`;
+      } catch { /* cae al escape de abajo */ }
+    }
+    return `<pre><code class="hljs">${md.utils.escapeHtml(str)}</code></pre>`;
+  },
 });
 
-const renderMarkdown = (raw) => md.render(stripFrontmatter(raw));
-
-// Saca una descripción de ~155 chars a partir del markdown, para el <meta description>.
-function excerpt(raw, max = 155) {
-    let t = stripFrontmatter(raw)
-        .replace(/```[\s\S]*?```/g, ' ')      // bloques de código
-        .replace(/`[^`]*`/g, ' ')             // código inline
-        .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')// imágenes
-        .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1') // enlaces -> texto
-        .replace(/<[^>]+>/g, ' ')             // html
-        .replace(/^[#>\-*+]+\s*/gm, ' ')      // marcadores markdown
-        .replace(/[*_~#>`]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .replace(/\s+([.,;:!?])/g, '$1')      // sin espacio antes de puntuación
-        .trim();
-    if (t.length <= max) return t;
-    t = t.slice(0, max);
-    return t.slice(0, t.lastIndexOf(' ') > 40 ? t.lastIndexOf(' ') : max).trim() + '…';
+/* Texto plano del markdown, sin codigo. Sirve para la descripcion y para contar
+   palabras: el codigo no se lee, asi que no deberia inflar el tiempo de lectura. */
+function texto(raw) {
+  return sinFrontmatter(raw)
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/`[^`]*`/g, ' ')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/^[#>\-*+]+\s*/gm, ' ')
+    .replace(/[*_~#>`|]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
-const readJSON = (p) => JSON.parse(readFileSync(p, 'utf8'));
+const palabras = (raw) => texto(raw).split(' ').filter(Boolean).length;
+const minutos = (n) => (n ? `${Math.max(1, Math.ceil(n / 200))} min` : '');
 
-// Normaliza una entrada de index.json.
-function normalize(entry) {
-    let tags = entry.tags;
-    if (typeof tags === 'string') tags = tags.split(',').map(s => s.trim());
-    if (!Array.isArray(tags)) tags = [];
-    return { ...entry, tags, urlSlug: slugify(entry.slug) };
+function resumen(raw, max = 155) {
+  let t = texto(raw).replace(/\s+([.,;:!?])/g, '$1');
+  if (t.length <= max) return t;
+  t = t.slice(0, max);
+  const corte = t.lastIndexOf(' ');
+  return t.slice(0, corte > 40 ? corte : max).trim() + '…';
 }
 
-const readMin = (words) => (words ? `${Math.ceil(words / 200)} min` : '');
-const isNew = (date) => date && (Date.now() - Date.parse(date) < 86400000);
+const fechaES = (d) => (d ? d.split('-').reverse().join('/') : '');
 
-/* ------------------------------------------------------------------ *
- *  Plantillas
- * ------------------------------------------------------------------ */
+/* Lee el frontmatter de un .md sin dependencias: title, date y tags. */
+function frontmatter(raw) {
+  const m = raw.match(/^﻿?---\s*([\s\S]*?)\s*---/);
+  if (!m) return {};
+  const out = {};
+  for (const linea of m[1].split('\n')) {
+    const kv = linea.match(/^\s*([a-z_]+)\s*:\s*(.*)$/i);
+    if (!kv) continue;
+    let v = kv[2].trim().replace(/^["']|["']$/g, '');
+    if (v.startsWith('[')) {
+      v = v.slice(1, -1).split(',').map(s => s.trim().replace(/^["']|["']$/g, '')).filter(Boolean);
+    }
+    out[kv[1].toLowerCase()] = v;
+  }
+  return out;
+}
 
-// <head> común con todo el SEO por página.
-function head({ title, description, canonical, ogType = 'article', tags = [], jsonld = [] }) {
-    const desc = esc(description || SECTIONS.pwn.desc);
-    const ld = jsonld.map(o => `<script type="application/ld+json">${JSON.stringify(o)}</script>`).join('\n  ');
-    return `<!DOCTYPE html>
-<html lang="es">
+/* ------------------------------------------------------------- el contenido */
+
+/* Junta lo que dice index.json con los .md que haya en la carpeta. Si un .md no
+   esta en el json, entra igual con lo que diga su frontmatter. */
+function leerSeccion(cat) {
+  const dir = join(SRC, cat);
+  if (!existsSync(dir)) return [];
+
+  const idx = join(dir, 'index.json');
+  const listadas = existsSync(idx) ? JSON.parse(readFileSync(idx, 'utf8')) : [];
+  const porSlug = new Map();
+
+  for (const e of listadas) {
+    const tags = Array.isArray(e.tags) ? e.tags : String(e.tags || '').split(',').map(s => s.trim()).filter(Boolean);
+    porSlug.set(e.slug, { ...e, tags, cat });
+  }
+
+  for (const f of readdirSync(dir).filter(f => f.endsWith('.md'))) {
+    const slug = f.slice(0, -3);
+    if (porSlug.has(slug)) continue;
+    const fm = frontmatter(readFileSync(join(dir, f), 'utf8'));
+    if (!fm.title && !fm.date) continue;          // sin frontmatter no es un post
+    porSlug.set(slug, {
+      slug, cat,
+      title: fm.title || slug,
+      date: fm.date || '',
+      tags: Array.isArray(fm.tags) ? fm.tags : [],
+      suelto: true,
+    });
+    console.log(`  + ${cat}/${f} entra por su frontmatter, no estaba en index.json`);
+  }
+
+  const salida = [];
+  const vistos = new Map();
+  for (const e of porSlug.values()) {
+    const mdPath = join(dir, `${e.slug}.md`);
+    const tieneMd = !e.url && existsSync(mdPath);
+    if (!tieneMd && !e.url) { console.warn(`  ! ${cat}/${e.slug}.md no existe, la entrada se salta`); continue; }
+    const raw = tieneMd ? readFileSync(mdPath, 'utf8') : '';
+
+    /* Dos ficheros distintos pueden dar la misma URL ("A - B.md" y "A B.md").
+       Se queda el que esta en index.json y se avisa del otro, que si no uno
+       pisaria al otro en silencio y el listado mostraria la entrada dos veces. */
+    const urlSlug = slugify(e.slug);
+    if (vistos.has(urlSlug)) {
+      const antes = vistos.get(urlSlug);
+      const fuera = e.suelto ? e : antes;
+      const queda = e.suelto ? antes : e;
+      console.warn(`  ! ${cat}/${fuera.slug}.md y ${cat}/${queda.slug}.md dan la misma URL (/${cat}/${urlSlug}/). Se publica ${queda.slug}.md`);
+      if (!e.suelto) { const i = salida.findIndex(x => x.urlSlug === urlSlug); if (i >= 0) salida.splice(i, 1); }
+      else continue;
+    }
+    vistos.set(urlSlug, e);
+
+    salida.push({
+      ...e,
+      raw,
+      urlSlug,
+      words: tieneMd ? palabras(raw) : 0,
+      href: e.url || `/${cat}/${slugify(e.slug)}/`,
+      externa: Boolean(e.url),
+    });
+  }
+  return salida.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+}
+
+/* ------------------------------------------------------------------ trozos  */
+
+const NUBES = `<div class="cielo" aria-hidden="true">${
+  Array(8).fill('<img src="/assets/img/kumo.gif" alt="">').join('')
+}</div>`;
+
+const BOTONES = '<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span>';
+
+const ventana = (titulo, cuerpo, { tag = 'section', clase = '', h = 'h2', pad = '' } = {}) =>
+  `      <${tag} class="win ${clase}">
+        <${h}>${titulo}${BOTONES}</${h}>
+        <div class="body"${pad ? ` style="padding:${pad}"` : ''}>${cuerpo}</div>
+      </${tag}>`;
+
+function zonaA(cuentas) {
+  const items = VISIBLES.map(c =>
+    `          <a href="/${c}/"><i class="${SECCIONES[c].color}"></i>${esc(SECCIONES[c].titulo)} <span class="n">${cuentas[c]}</span></a>`
+  ).join('\n');
+  return `    <div class="zone zone-a">
+${ventana('Índice', `\n${items}\n        `, { tag: 'nav', clase: 'menu', pad: '3px' })}
+
+${ventana('Links', `
+          <a href="https://github.com/ub1cu0" rel="me noopener" target="_blank">GitHub</a>
+          <a href="https://www.linkedin.com/in/moiseshermo/" rel="me noopener" target="_blank">LinkedIn</a>
+          <a href="/feed.xml">RSS</a>
+        `, { clase: 'menu', pad: '3px' })}
+
+      <img class="gif pegado escritorio" src="/assets/img/escritorio.gif" alt="">
+    </div>`;
+}
+
+/* Agrupa los tags ignorando mayusculas y acentos, porque "OOB" y "oob" son el
+   mismo tag escrito de dos maneras. Se queda con el nombre que mas se repite. */
+function mapaTags(entradas) {
+  const m = new Map();
+  for (const e of entradas) {
+    for (const t of e.tags || []) {
+      const k = slugify(t);
+      if (!k) continue;
+      if (!m.has(k)) m.set(k, { slug: k, nombres: new Map(), entradas: [] });
+      const g = m.get(k);
+      g.nombres.set(t, (g.nombres.get(t) || 0) + 1);
+      if (!g.entradas.includes(e)) g.entradas.push(e);
+    }
+  }
+  for (const g of m.values()) {
+    g.nombre = [...g.nombres.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0][0];
+    g.entradas.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  }
+  return m;
+}
+
+const ordenTags = (m) => [...m.values()]
+  .sort((a, b) => b.entradas.length - a.entradas.length || a.nombre.localeCompare(b.nombre, 'es'));
+
+/* La nube de tags. Cada uno lleva a su pagina, que es lo que faltaba. */
+function nubeTags(entradas, max = 16) {
+  const orden = ordenTags(mapaTags(entradas));
+  if (!orden.length) return '';
+  const top = orden[0].entradas.length;
+  const trozos = orden.slice(0, max).map(g => {
+    const p = g.entradas.length / top;
+    const c = p > 0.7 ? 's4' : p > 0.4 ? 's3' : p > 0.15 ? 's2' : 's1';
+    return `<b class="${c}"><a href="/tags/${g.slug}/">${esc(g.nombre)}</a> <i>${g.entradas.length}</i></b>`;
+  });
+  if (orden.length > max) trozos.push(`<span class="todos"><a href="/tags/">ver los ${orden.length} tags</a></span>`);
+  return trozos.join('\n          ');
+}
+
+const METAS = `
+          <ul class="metas">
+            <li><span class="box hecho">[x]</span> eJPTv2 <span class="yr">hecho</span></li>
+            <li><span class="box hecho">[x]</span> CEH <span class="yr">hecho</span></li>
+            <li><span class="box hecho">[x]</span> ROP Emporium al 100% <span class="yr">hecho</span></li>
+            <li><span class="box hecho">[x]</span> primer CVE propio <span class="yr">2026</span></li>
+            <li><span class="box">[ ]</span> Linux Kernel exploitation <span class="yr">2026</span></li>
+            <li><span class="box">[ ]</span> OSEE <span class="yr">2027</span></li>
+          </ul>
+        `;
+
+/* Una tabla de entradas, que es la pieza que se repite en portada y listados. */
+function tabla(entradas) {
+  const filas = entradas.map(e => {
+    const col = SECCIONES[e.cat].color;
+    const fuera = e.externa ? ' target="_blank" rel="noopener noreferrer"' : '';
+    const tags = (e.tags || []).slice(0, 4).map(esc).join(' · ');
+    const peso = e.externa ? esc(SECCIONES[e.cat].corto.toLowerCase()) : `${e.words} pal.`;
+    return `              <tr>
+                <td class="ic"><i class="${col}"></i></td>
+                <td class="d">${fechaES(e.date)}</td>
+                <td><a href="${esc(e.href)}"${fuera}>${esc(e.title)}</a>${tags ? `<div class="tg">${tags}</div>` : ''}</td>
+                <td class="s">${peso}</td>
+                <td class="ic"></td>
+              </tr>`;
+  }).join('\n');
+  return `          <div class="sunken">
+            <table class="lista">
+${filas}
+            </table>
+          </div>`;
+}
+
+/* --------------------------------------------------------------- plantilla  */
+
+/* Antes la web era una SPA con URLs de almohadilla. Si a alguien le queda un
+   enlace viejo del tipo #/post/pwn/Handoff, el navegador pide la portada y la
+   almohadilla se queda en el cliente, asi que se traduce aqui a la URL nueva. */
+const SHIM = `<script>(function(){var h=location.hash;if(!h||h.length<2)return;var p=h.replace(/^#\\/?/,'').split('/').filter(Boolean);function sl(s){return decodeURIComponent(s).normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/['"\`\u00b4\u2019]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}var u=null;if(p[0]==='post'&&p[1]&&p[2]){u='/'+p[1].toLowerCase()+'/'+sl(p.slice(2).join('/'))+'/';}else if(p[0]){u='/'+p[0].toLowerCase()+'/';}if(u)location.replace(u);})();</script>`;
+
+function pagina({ titulo, desc, canonical, tipo = 'website', tags = [], jsonld = [], zonaB, zonaC, cuentas, tarea, robots = 'index, follow', shim = false }) {
+  const ld = jsonld.map(o => `<script type="application/ld+json">${JSON.stringify(o)}</script>`).join('\n  ');
+  return `<!DOCTYPE html>
+<html lang="es" data-layout="clasico" data-bg="foto" data-pal="estandar" data-grad="azul">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${esc(title)}</title>
-  <meta name="description" content="${desc}" />
-  <meta name="author" content="${AUTHOR}" />
-  <meta name="robots" content="index, follow" />
-  ${tags.length ? `<meta name="keywords" content="${esc(tags.join(', '))}" />` : ''}
-  <link rel="canonical" href="${canonical}" />
-  <meta name="google-site-verification" content="${GSC_VERIFY}" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${esc(titulo)}</title>
+  <meta name="description" content="${esc(desc)}">
+  <meta name="author" content="${AUTOR}">
+  <meta name="robots" content="${robots}">
+  ${tags.length ? `<meta name="keywords" content="${esc(tags.join(', '))}">` : ''}
+  <link rel="canonical" href="${canonical}">
+  <meta name="google-site-verification" content="${GSC}">
 
-  <meta property="og:type" content="${ogType}" />
-  <meta property="og:title" content="${esc(title)}" />
-  <meta property="og:description" content="${desc}" />
-  <meta property="og:url" content="${canonical}" />
-  <meta property="og:image" content="${DEFAULT_IMG}" />
-  <meta property="og:site_name" content="ub1cu0" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="${esc(title)}" />
-  <meta name="twitter:description" content="${desc}" />
-  <meta name="twitter:image" content="${DEFAULT_IMG}" />
+  <meta property="og:type" content="${tipo}">
+  <meta property="og:title" content="${esc(titulo)}">
+  <meta property="og:description" content="${esc(desc)}">
+  <meta property="og:url" content="${canonical}">
+  <meta property="og:image" content="${IMG_SOCIAL}">
+  <meta property="og:site_name" content="ub1cu0">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${esc(titulo)}">
+  <meta name="twitter:description" content="${esc(desc)}">
+  <meta name="twitter:image" content="${IMG_SOCIAL}">
 
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
-  <link rel="stylesheet" href="/assets/css/style.css">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E💀%3C/text%3E%3C/svg%3E">
+  <link rel="alternate" type="application/rss+xml" title="ub1cu0" href="${SITE}/feed.xml">
+  <link rel="stylesheet" href="/assets/css/lab95.css">
+  <link rel="stylesheet" href="/assets/css/lab95-variantes.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E🖥%3C/text%3E%3C/svg%3E">
   ${ld}
-</head>`;
-}
+  ${shim ? SHIM : ''}
+</head>
+<body>
 
-const shell = (headHtml, bodyHtml, { landing = false } = {}) => `${headHtml}
-<body class="${landing ? 'mode-landing' : 'mode-viewer'}">
-  <div class="rain" aria-hidden="true" id="rain"></div>
-  <main class="wrap">
-${bodyHtml}
-  </main>
-  <footer><span>©</span><span id="year"></span><span>ub1cu0</span></footer>
-  <script src="/assets/js/app.js" defer></script>
+${NUBES}
+
+<button class="musica" id="musica" type="button" aria-pressed="false"
+        aria-label="Poner o quitar la música" title="Música" data-video="${VIDEO}">
+  <img src="/assets/img/musica.gif" alt="">
+  <canvas width="108" height="96" aria-hidden="true"></canvas>
+</button>
+<div id="reproductor" aria-hidden="true"></div>
+
+<div class="page">
+
+  <header class="banner">
+    ${canonical === `${SITE}/`
+      ? '<h1 class="logo">&lt;<b>ub1cu0</b>&gt;</h1>'
+      : '<div class="logo"><a href="/">&lt;<b>ub1cu0</b>&gt;</a></div>'}
+    <div class="sub">VULNERABILITY RESEARCH &middot; EXPLOIT DEV &middot; LOW LEVEL</div>
+  </header>
+
+  <div class="zones">
+${zonaA(cuentas)}
+
+    <div class="zone zone-b">
+${zonaB}
+    </div>
+
+    <div class="zone zone-c">
+${zonaC}
+
+      <img class="gif pegado hamster" src="/assets/img/hamster.gif" alt="">
+    </div>
+  </div>
+
+  <template id="tpl-nuevo"><img class="gif" src="/assets/img/new-new.gif" alt="nuevo" width="44" height="24"></template>
+
+  <footer class="taskbar">
+    <div class="start"><em></em>Inicio</div>
+    <div class="tarea">${esc(tarea || 'ub1cu0')}</div>
+    <div class="hueco"><span>ROP &middot; heap &middot; tcache &middot; format string &middot; ret2libc &middot; shellcode &middot; use after free &middot; canary bypass &middot; kernel pwn &middot; </span></div>
+    <div class="visitas">visitas <span id="visitas">001337</span></div>
+    <div class="reloj" id="reloj">--:--</div>
+  </footer>
+
+</div>
+
+<script src="/assets/js/sitio.js" defer></script>
 </body>
-</html>`;
-
-// Un tile de la rejilla (mismo markup que generaba el router en cliente).
-function tile(cat, e) {
-    const platformTag = e.tags.find(t => ORIGINS_LOWER.includes(t.toLowerCase()));
-    const file = platformTag ? FILE_MAP[platformTag.toLowerCase()] : null;
-    const imgStyle = file ? ` style="--platform-img:url('/assets/img/${file}');"` : '';
-    const visibleTags = e.tags.filter(t => !ORIGINS_LOWER.includes(t.toLowerCase()))
-        .map(t => `<span class="pill">${esc(t)}</span>`).join(' ');
-    const href = e.url ? e.url : `/${cat}/${e.urlSlug}/`;
-    const target = e.target ? ` target="${esc(e.target)}"` : '';
-    const dataTags = e.tags.map(t => t.toLowerCase()).join(',');
-    const min = readMin(e.words);
-    return `        <a class="tile" href="${href}"${target}${imgStyle} data-tags="${esc(dataTags)}">
-          <h3 style="margin:0;display:flex;align-items:center;gap:8px;">${esc(e.title || e.slug)} ${isNew(e.date) ? '<span class="new">NEW</span>' : ''}</h3>
-          <div class="tile-tags">${visibleTags}</div>
-          <div class="tile-meta">${min ? `<span class="muted">${min}</span>` : ''}${e.date ? ` <span class="muted"> · ${esc(e.date)}</span>` : ''}</div>
-        </a>`;
+</html>
+`;
 }
 
-// Desplegables del filtro (plataforma / tags), replicando la lógica original.
-function filterSelects(entries) {
-    const counts = {}, origin = new Set(), type = new Set();
-    entries.forEach(e => e.tags.forEach(t => {
-        counts[t] = (counts[t] || 0) + 1;
-        (ORIGINS_LOWER.includes(t.toLowerCase()) ? origin : type).add(t);
-    }));
-    const opts = (set, label) => `<option value="all">${label}: Todos</option>` +
-        Array.from(set).sort((a, b) => (counts[b] || 0) - (counts[a] || 0))
-            .map(t => `<option value="${esc(t)}">${esc(t)} (${counts[t] || 0})</option>`).join('');
-    return `<select id="origenSelect" style="margin-right:10px;">${opts(origin, 'Plataforma')}</select>` +
-        `<select id="tipoSelect">${opts(type, 'Tags')}</select>`;
+/* ----------------------------------------------------------------- paginas  */
+
+function portada(todo, cuentas) {
+  const ultimas = todo.slice(0, 14);
+  const total = todo.length;
+  const desc = 'Writeups de PWN, research de CVE y POCs propios en C/C++. Exploit development y programación a bajo nivel, en español.';
+
+  const zonaB = `${ventana('Bienvenido', `
+          <h2 style="margin:0 0 3px;font-size:17px;color:var(--acc)">ub1cu0</h2>
+          <div class="role">vulnerability researcher &amp; low level programmer</div>
+          <div class="chips">
+            <span class="on">CEH</span><span class="on">eJPTv2</span>
+            <span>C</span><span>C++</span><span>PYTHON</span><span>ASM</span>
+          </div>
+          <p>Rompo binarios y luego lo cuento. Aquí subo writeups de PWN, research de
+          CVE y POCs propios en C/C++. Todo en español, paso a paso y con el debugger
+          delante. Miembro del equipo de CTF <b>Caliphal Hounds</b>.</p>
+        `, { clase: 'intro' })}
+
+${ventana('Lo último', `
+${tabla(ultimas)}
+          <div class="status">
+            <span>${total} documentos</span>
+            <span><a href="/pwn/">ver todos</a></span>
+          </div>
+        `, { clase: 'flush', pad: '3px' })}`;
+
+  const zonaC = `${ventana('Tags', `
+          ${nubeTags(todo)}
+        `, { clase: 'nube-caja' }).replace('<div class="body"', '<div class="body nube"')}
+
+${ventana('Metas', METAS)}`;
+
+  return pagina({
+    titulo: 'ub1cu0 — Vulnerability Researcher',
+    desc,
+    canonical: `${SITE}/`,
+    tipo: 'website',
+    cuentas,
+    zonaB, zonaC,
+    shim: true,
+    jsonld: [
+      { '@context': 'https://schema.org', '@type': 'WebSite', name: 'ub1cu0', url: `${SITE}/`, inLanguage: 'es', description: desc },
+      { '@context': 'https://schema.org', '@type': 'Person', name: AUTOR, url: `${SITE}/`, jobTitle: 'Vulnerability Researcher',
+        sameAs: ['https://github.com/ub1cu0', 'https://www.linkedin.com/in/moiseshermo/'] },
+    ],
+  });
 }
 
-// Página de listado de una sección.
-function listPage(cat, entries) {
-    const c = SECTIONS[cat];
-    const canonical = `${SITE_URL}/${cat}/`;
-    const title = `${c.title} — ${c.label} · ub1cu0`;
-    const body = `    <section class="id" aria-label="Cabecera categoría">
-      <div><div class="name">${c.title} — ${c.label}</div></div>
-      <span class="status">Status: reading...</span>
-    </section>
-    <section class="panel" aria-label="Lista">
-      <div class="breadcrumbs"><a href="/">Inicio</a> / ${c.title}</div>
-      <div class="stats">${filterSelects(entries)}</div>
-      <div id="viewerContent" style="margin-top:12px">
-        <div class="grid">
-${entries.map(e => tile(cat, e)).join('\n')}
+function listado(cat, entradas, cuentas) {
+  const c = SECCIONES[cat];
+  const canonical = `${SITE}/${cat}/`;
+
+  const zonaB = ventana(esc(c.titulo), `
+          <div class="migas"><a href="/">Inicio</a> / ${esc(c.corto)}</div>
+${tabla(entradas)}
+          <div class="status">
+            <span>${entradas.length} ${entradas.length === 1 ? 'entrada' : 'entradas'}</span>
+            <span>${esc(c.desc)}</span>
+          </div>
+        `, { clase: 'flush', h: 'h1', pad: '3px' });
+
+  const zonaC = `${ventana('Tags', `
+          ${nubeTags(entradas)}
+        `).replace('<div class="body"', '<div class="body nube"')}
+
+${ventana('Metas', METAS)}`;
+
+  return pagina({
+    titulo: `${c.titulo} · ub1cu0`,
+    desc: c.desc,
+    canonical, tipo: 'website', cuentas, zonaB, zonaC,
+    tarea: c.corto,
+    jsonld: [{
+      '@context': 'https://schema.org', '@type': 'CollectionPage',
+      name: c.titulo, description: c.desc, url: canonical, inLanguage: 'es',
+      isPartOf: { '@type': 'WebSite', name: 'ub1cu0', url: `${SITE}/` },
+    }],
+  });
+}
+
+function post(cat, e, cuentas) {
+  const c = SECCIONES[cat];
+  const canonical = `${SITE}/${cat}/${e.urlSlug}/`;
+  const desc = e.description || resumen(e.raw);
+  const tags = (e.tags || []).map(t => `<a class="t" href="/tags/${slugify(t)}/">${esc(t)}</a>`).join(' ');
+
+  const zonaB = `      <article class="win flush">
+        <h1>${esc(e.title)}${BOTONES}</h1>
+        <div class="body" style="padding:3px">
+          <div class="migas"><a href="/">Inicio</a> / <a href="/${cat}/">${esc(c.corto)}</a> / ${esc(e.title)}</div>
+          <div class="prose">
+${md.render(sinFrontmatter(e.raw)).replace(/<(\/?)h1>/g, '<$1h2>')}
+          </div>
+          <div class="status"><span>${fechaES(e.date)} · ${e.words} palabras · ${minutos(e.words)} de lectura</span></div>
         </div>
-      </div>
-    </section>`;
-    const jsonld = [{
-        '@context': 'https://schema.org', '@type': 'CollectionPage',
-        name: `${c.title} — ${c.label}`, description: c.desc, url: canonical, inLanguage: 'es',
-        isPartOf: { '@type': 'WebSite', name: 'ub1cu0', url: `${SITE_URL}/` },
-    }];
-    return shell(head({ title, description: c.desc, canonical, ogType: 'website', jsonld }), body);
+      </article>`;
+
+  const zonaC = `${ventana('Ficha', `
+          <div class="datos">
+            <div>sección <b><a href="/${cat}/">${esc(c.corto)}</a></b></div>
+            <div>fecha <b>${fechaES(e.date)}</b></div>
+            <div>lectura <b>${minutos(e.words)}</b></div>
+          </div>
+          ${tags ? `<div class="tagsficha">${tags}</div>` : ''}
+        `)}
+
+${ventana('Metas', METAS)}`;
+
+  return pagina({
+    titulo: `${e.title} · ub1cu0`,
+    desc, canonical, tipo: 'article', tags: e.tags, cuentas, zonaB, zonaC,
+    tarea: e.title,
+    jsonld: [
+      { '@context': 'https://schema.org', '@type': 'BlogPosting',
+        headline: e.title, description: desc, datePublished: e.date, dateModified: e.date,
+        author: { '@type': 'Person', name: AUTOR, url: `${SITE}/` },
+        publisher: { '@type': 'Person', name: AUTOR },
+        mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+        url: canonical, inLanguage: 'es', keywords: (e.tags || []).join(', ') },
+      { '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE}/` },
+          { '@type': 'ListItem', position: 2, name: c.corto, item: `${SITE}/${cat}/` },
+          { '@type': 'ListItem', position: 3, name: e.title, item: canonical },
+        ] },
+    ],
+  });
 }
 
-// Página de un post concreto (markdown renderizado).
-function postPage(cat, e, raw) {
-    const c = SECTIONS[cat];
-    const canonical = `${SITE_URL}/${cat}/${e.urlSlug}/`;
-    const title = `${e.title || e.slug} · ub1cu0`;
-    const description = e.description || excerpt(raw);
-    const min = readMin(e.words);
-    const metaLine = [min, e.date].filter(Boolean).map(x => `<span class="muted">${esc(x)}</span>`).join(' · ');
-    const visibleTags = e.tags.filter(t => !ORIGINS_LOWER.includes(t.toLowerCase()))
-        .map(t => `<span class="pill">${esc(t)}</span>`).join(' ');
-    const body = `    <section class="id" aria-label="Cabecera post">
-      <div><div class="name">${esc(e.title || e.slug)}</div></div>
-      <span class="status">Status: reading...</span>
-    </section>
-    <section class="panel" aria-label="Contenido">
-      <div class="breadcrumbs"><a href="/">Inicio</a> / <a href="/${cat}/">${c.title}</a> / ${esc(e.title || e.slug)}</div>
-      <div class="stats">${metaLine}${visibleTags ? ` · ${visibleTags}` : ''}</div>
-      <article id="viewerContent" style="margin-top:12px">
-        <div class="markdown-body">${renderMarkdown(raw)}</div>
-      </article>
-    </section>`;
-    const jsonld = [
-        {
-            '@context': 'https://schema.org', '@type': 'BlogPosting',
-            headline: e.title || e.slug, description,
-            datePublished: e.date, dateModified: e.date,
-            author: { '@type': 'Person', name: AUTHOR, url: `${SITE_URL}/` },
-            publisher: { '@type': 'Person', name: AUTHOR },
-            mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
-            url: canonical, inLanguage: 'es',
-            keywords: e.tags.join(', '),
-        },
-        {
-            '@context': 'https://schema.org', '@type': 'BreadcrumbList',
-            itemListElement: [
-                { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE_URL}/` },
-                { '@type': 'ListItem', position: 2, name: c.title, item: canonical.replace(`${e.urlSlug}/`, '') },
-                { '@type': 'ListItem', position: 3, name: e.title || e.slug, item: canonical },
-            ],
-        },
-    ];
-    return shell(head({ title, description, canonical, ogType: 'article', tags: e.tags, jsonld }), body);
+function paginaTag(g, cuentas, todo) {
+  const canonical = `${SITE}/tags/${g.slug}/`;
+  const n = g.entradas.length;
+  const desc = `Todo lo que he publicado sobre ${g.nombre}: ${n} ${n === 1 ? 'entrada' : 'entradas'} entre writeups de PWN, CVEs y POCs.`;
+
+  const zonaB = ventana(`Tag: ${esc(g.nombre)}`, `
+          <div class="migas"><a href="/">Inicio</a> / <a href="/tags/">Tags</a> / ${esc(g.nombre)}</div>
+${tabla(g.entradas)}
+          <div class="status">
+            <span>${n} ${n === 1 ? 'entrada' : 'entradas'} con este tag</span>
+            <span><a href="/tags/">ver todos los tags</a></span>
+          </div>
+        `, { clase: 'flush', h: 'h1', pad: '3px' });
+
+  const zonaC = `${ventana('Tags', `
+          ${nubeTags(todo)}
+        `).replace('<div class="body"', '<div class="body nube"')}
+
+${ventana('Metas', METAS)}`;
+
+  return pagina({
+    titulo: `${g.nombre} · ub1cu0`,
+    desc, canonical, tipo: 'website', cuentas, zonaB, zonaC,
+    tarea: g.nombre,
+    // los tags con dos entradas o menos no aportan nada en un buscador
+    robots: n >= 3 ? 'index, follow' : 'noindex, follow',
+    jsonld: [{
+      '@context': 'https://schema.org', '@type': 'CollectionPage',
+      name: `Tag: ${g.nombre}`, description: desc, url: canonical, inLanguage: 'es',
+      isPartOf: { '@type': 'WebSite', name: 'ub1cu0', url: `${SITE}/` },
+    }],
+  });
 }
 
-/* ------------------------------------------------------------------ *
- *  Sitemap / robots / 404
- * ------------------------------------------------------------------ */
-function sitemap(urls) {
-    const body = urls.map(u => `  <url><loc>${u.loc}</loc>${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ''}</url>`).join('\n');
-    return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
+function indiceTags(orden, cuentas) {
+  const canonical = `${SITE}/tags/`;
+  const filas = orden.map(g => `              <tr>
+                <td class="d"><a href="/tags/${g.slug}/">${esc(g.nombre)}</a></td>
+                <td class="s">${g.entradas.length}</td>
+              </tr>`).join('\n');
+
+  const zonaB = ventana('Tags', `
+          <div class="migas"><a href="/">Inicio</a> / Tags</div>
+          <div class="sunken">
+            <table class="lista tabla-tags">
+${filas}
+            </table>
+          </div>
+          <div class="status"><span>${orden.length} tags</span></div>
+        `, { clase: 'flush', h: 'h1', pad: '3px' });
+
+  return pagina({
+    titulo: 'Tags · ub1cu0',
+    desc: 'Todos los temas que toco: técnicas de explotación, plataformas de CTF y librerías analizadas.',
+    canonical, cuentas, zonaB, zonaC: ventana('Metas', METAS), tarea: 'Tags',
+  });
 }
 
-const robots = () => `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
-
-function notFound() {
-    const body = `    <section class="id"><div><div class="name">404</div></div><span class="status">Status: lost</span></section>
-    <section class="panel"><p class="muted">Esta página no existe. Vuelve al <a href="/">inicio</a>.</p></section>`;
-    // shim por si llega un enlace #/... antiguo a una ruta inexistente
-    const shim = `<script>(function(){var h=location.hash;if(!h)return;var p=h.replace(/^#\\/?/,'').split('/').filter(Boolean);function sl(s){return decodeURIComponent(s).normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/['"\`´’]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}var u=null;if(p[0]==='post'&&p[1]&&p[2]){u='/'+p[1].toLowerCase()+'/'+sl(p.slice(2).join('/'))+'/';}else if(p[0]){u='/'+p[0].toLowerCase()+'/';}if(u)location.replace(u);})();</script>`;
-    const h = head({ title: '404 · ub1cu0', description: 'Página no encontrada.', canonical: `${SITE_URL}/404.html`, ogType: 'website' })
-        .replace('</head>', `  ${shim}\n</head>`);
-    return shell(h, body);
+function pagina404(cuentas) {
+  const zonaB = ventana('No encontrado', `
+          <p>Esa página no está. Puede que la hayas escrito mal o que ya no exista.</p>
+          <p>Desde el índice de la izquierda se llega a todo, o vuelve al <a href="/">inicio</a>.</p>
+        `, { h: 'h1' });
+  return pagina({
+    titulo: '404 · ub1cu0', desc: 'Página no encontrada.',
+    canonical: `${SITE}/404.html`, cuentas, zonaB, zonaC: ventana('Metas', METAS), tarea: '404', shim: true,
+  });
 }
 
-/* ------------------------------------------------------------------ *
- *  Build
- * ------------------------------------------------------------------ */
+/* ------------------------------------------------------------- feed y demas */
+
+function feed(todo) {
+  const items = todo.slice(0, 20).map(e => `    <item>
+      <title>${esc(e.title)}</title>
+      <link>${e.externa ? esc(e.href) : `${SITE}${e.href}`}</link>
+      <guid isPermaLink="${!e.externa}">${e.externa ? esc(e.href) : `${SITE}${e.href}`}</guid>
+      <pubDate>${e.date ? new Date(e.date + 'T09:00:00Z').toUTCString() : ''}</pubDate>
+      <category>${esc(SECCIONES[e.cat].corto)}</category>
+      <description>${esc(e.raw ? resumen(e.raw, 300) : e.title)}</description>
+    </item>`).join('\n');
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ub1cu0</title>
+    <link>${SITE}/</link>
+    <atom:link href="${SITE}/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>Writeups de PWN, research de CVE y POCs en C/C++.</description>
+    <language>es</language>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+${items}
+  </channel>
+</rss>
+`;
+}
+
+const sitemap = (urls) => `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map(u => `  <url><loc>${u.loc}</loc>${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ''}</url>`).join('\n')}
+</urlset>
+`;
+
+const robots = () => `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`;
+
+/* ------------------------------------------------------------------ build   */
+
+/* Las imagenes locales que no existen se publican rotas y nadie se entera hasta
+   que alguien abre la pagina. Esto las canta al construir. */
+function revisaImagenes(cat, e, html) {
+  const rotas = [];
+  for (const m of html.matchAll(/<img[^>]+src="([^"]+)"/g)) {
+    const src = m[1];
+    if (/^(https?:)?\/\//.test(src) || src.startsWith('data:')) continue;
+    const rel = src.startsWith('/') ? join(SRC, src.slice(1)) : join(SRC, cat, src);
+    const enDist = src.startsWith('/') ? join(DIST, src.slice(1)) : null;
+    if (!existsSync(rel) && !(enDist && existsSync(enDist))) rotas.push(src);
+  }
+  if (rotas.length) console.warn(`  ! ${cat}/${e.slug}: ${rotas.length} imagen(es) que no existen -> ${rotas.slice(0, 3).join(', ')}`);
+  return rotas.length;
+}
+
+function escribe(ruta, contenido) {
+  mkdirSync(dirname(ruta), { recursive: true });
+  writeFileSync(ruta, contenido);
+}
+
 function build() {
-    rmSync(DIST, { recursive: true, force: true });
-    mkdirSync(DIST, { recursive: true });
+  rmSync(DIST, { recursive: true, force: true });
+  mkdirSync(DIST, { recursive: true });
 
-    // Estáticos: assets + .nojekyll
-    cpSync(join(ROOT, 'assets'), join(DIST, 'assets'), { recursive: true });
-    if (existsSync(join(ROOT, '.nojekyll'))) cpSync(join(ROOT, '.nojekyll'), join(DIST, '.nojekyll'));
+  // estaticos del repo (imagenes de plataforma y las dos herramientas)
+  cpSync(join(SRC, 'assets'), join(DIST, 'assets'), { recursive: true });
+  if (existsSync(join(SRC, '.nojekyll'))) cpSync(join(SRC, '.nojekyll'), join(DIST, '.nojekyll'));
 
-    const urls = [{ loc: `${SITE_URL}/`, lastmod: new Date().toISOString().slice(0, 10) }];
-    let nPosts = 0;
+  const porSeccion = {}, cuentas = {};
+  let todo = [];
+  for (const cat of Object.keys(SECCIONES)) {
+    porSeccion[cat] = leerSeccion(cat);
+    cuentas[cat] = porSeccion[cat].length;
+    if (!SECCIONES[cat].oculta) todo = todo.concat(porSeccion[cat]);
+  }
+  todo.sort((a, b) => String(b.date).localeCompare(String(a.date)));
 
-    for (const cat of Object.keys(SECTIONS)) {
-        const idxPath = join(ROOT, cat, 'index.json');
-        if (!existsSync(idxPath)) continue;
-        const entries = readJSON(idxPath).map(normalize);
+  const urls = [{ loc: `${SITE}/`, lastmod: HOY }];
+  let nPosts = 0, nRotas = 0;
 
-        // Listado (+ el index.json, que la home usa para los contadores)
-        mkdirSync(join(DIST, cat), { recursive: true });
-        writeFileSync(join(DIST, cat, 'index.html'), listPage(cat, entries));
-        cpSync(idxPath, join(DIST, cat, 'index.json'));
-        const latest = entries.map(e => e.date).filter(Boolean).sort().pop();
-        urls.push({ loc: `${SITE_URL}/${cat}/`, lastmod: latest });
+  for (const cat of Object.keys(SECCIONES)) {
+    const entradas = porSeccion[cat];
+    if (!entradas.length) continue;
+    const oculta = SECCIONES[cat].oculta;
 
-        // Posts (solo entradas internas, sin url externa)
-        for (const e of entries) {
-            if (e.url) continue;
-            const mdPath = join(ROOT, cat, `${e.slug}.md`);
-            if (!existsSync(mdPath)) { console.warn(`  ! falta ${cat}/${e.slug}.md`); continue; }
-            const raw = readFileSync(mdPath, 'utf8');
-            mkdirSync(join(DIST, cat, e.urlSlug), { recursive: true });
-            writeFileSync(join(DIST, cat, e.urlSlug, 'index.html'), postPage(cat, e, raw));
-            urls.push({ loc: `${SITE_URL}/${cat}/${e.urlSlug}/`, lastmod: e.date });
-            nPosts++;
-        }
+    escribe(join(DIST, cat, 'index.html'), listado(cat, entradas, cuentas));
+    if (!oculta) {
+      const ultima = entradas.map(e => e.date).filter(Boolean).sort().pop();
+      urls.push({ loc: `${SITE}/${cat}/`, lastmod: ultima });
     }
 
-    // Landing (index.html ya es la versión final) + sitemap + robots + 404
-    cpSync(join(ROOT, 'index.html'), join(DIST, 'index.html'));
-    writeFileSync(join(DIST, 'sitemap.xml'), sitemap(urls));
-    writeFileSync(join(DIST, 'robots.txt'), robots());
-    writeFileSync(join(DIST, '404.html'), notFound());
+    for (const e of entradas) {
+      if (e.externa) continue;
+      const html = post(cat, e, cuentas);
+      if (!oculta) nRotas += revisaImagenes(cat, e, html);
+      escribe(join(DIST, cat, e.urlSlug, 'index.html'), html);
+      if (!oculta) urls.push({ loc: `${SITE}/${cat}/${e.urlSlug}/`, lastmod: e.date });
+      nPosts++;
+    }
+  }
 
-    console.log(`✓ build OK -> dist/  (${nPosts} posts, ${urls.length} URLs en sitemap)`);
+  /* Las dos herramientas son paginas sueltas dentro de assets. Se les mete el
+     canonical y las tarjetas sociales aqui, sobre la copia, para no tocar los
+     ficheros originales, y se anaden al sitemap, que antes no estaban. */
+  for (const [t, nombre] of [['shellcrafter', 'ShellCrafter'], ['endian', 'Endian Converter']]) {
+    const p = join(DIST, 'assets/proyectos', t, 'index.html');
+    if (!existsSync(p)) continue;
+    const loc = `${SITE}/assets/proyectos/${t}/index.html`;
+    let html = readFileSync(p, 'utf8');
+    if (!/rel="canonical"/.test(html)) {
+      const d = (html.match(/<meta\s+name="description"\s+content="([^"]*)"/i) || [, `${nombre}, herramienta de ub1cu0.`])[1];
+      html = html.replace('</head>', `  <link rel="canonical" href="${loc}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="${esc(nombre)} · ub1cu0">
+  <meta property="og:description" content="${esc(d)}">
+  <meta property="og:url" content="${loc}">
+  <meta property="og:image" content="${IMG_SOCIAL}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="author" content="${AUTOR}">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E🖥%3C/text%3E%3C/svg%3E">
+</head>`);
+      writeFileSync(p, html);
+    }
+    urls.push({ loc, lastmod: HOY });
+  }
+
+  // paginas de tag
+  const tags = ordenTags(mapaTags(todo));
+  for (const g of tags) {
+    escribe(join(DIST, 'tags', g.slug, 'index.html'), paginaTag(g, cuentas, todo));
+    if (g.entradas.length >= 3) urls.push({ loc: `${SITE}/tags/${g.slug}/`, lastmod: g.entradas[0].date });
+  }
+  escribe(join(DIST, 'tags', 'index.html'), indiceTags(tags, cuentas));
+  urls.push({ loc: `${SITE}/tags/`, lastmod: HOY });
+
+  escribe(join(DIST, 'index.html'), portada(todo, cuentas));
+  escribe(join(DIST, '404.html'), pagina404(cuentas));
+  escribe(join(DIST, 'sitemap.xml'), sitemap(urls));
+  escribe(join(DIST, 'robots.txt'), robots());
+  escribe(join(DIST, 'feed.xml'), feed(todo));
+
+  const ocultas = Object.keys(SECCIONES).filter(c => SECCIONES[c].oculta && porSeccion[c].length);
+  console.log(`✓ ${nPosts} posts, ${tags.length} tags, ${urls.length} URLs en el sitemap, ${todo.length} entradas visibles`);
+  if (nRotas) console.log(`  ${nRotas} imagen(es) rotas en las secciones visibles, arriba tienes cuales`);
+  if (ocultas.length) console.log(`  (${ocultas.join(', ')} se generan pero no se enlazan ni van al sitemap)`);
 }
 
 build();

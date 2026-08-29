@@ -1,0 +1,514 @@
+/* Laboratorio Win95. Cuatro cosas se eligen por separado y no se pisan entre ellas:
+   data-layout  -> como se reparte la pagina
+   data-bg      -> el fondo del escritorio
+   data-pal     -> la paleta de las ventanas
+   data-grad    -> el degradado de la cabecera
+   Todo cuelga de variables, asi que anadir una opcion nueva es una regla mas. */
+
+:root {
+  /* paleta por defecto, la de Windows de toda la vida */
+  --face:      #c0c0c0;
+  --face-lt:   #ffffff;
+  --face-dk:   #808080;
+  --face-dker: #404040;
+  --title-a:   #000082;
+  --title-b:   #1084d0;
+  --title-txt: #ffffff;
+  --title-off: #808080;
+  --txt:       #000000;
+  --dim:       #4c4c4c;
+  --link:      #0000cd;
+  --visited:   #551a8b;
+  --field:     #ffffff;
+  --acc:       #000082;
+  --acc-2:     #7c0000;
+  --ok:        #006400;
+  --desktop:   #008080;
+
+  /* el color de cada tipo de documento: la lista y el indice tiran de aqui */
+  --c-pwn:  #7c0000;
+  --c-cve:  #8a5a00;
+  --c-poc:  #000082;
+  --c-tool: #4b0082;
+  --c-htb:  #006400;
+
+  --grad-a: #000082;
+  --grad-b: #1084d0;
+  --grad-c: #0a3d6b;
+
+  --font: "MS Sans Serif", Tahoma, "DejaVu Sans", Verdana, sans-serif;
+  --mono: "DejaVu Sans Mono", "Courier New", monospace;
+  --gap: 6px;
+  --page-w: 920px;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--desktop); }
+
+body {
+  margin: 0;
+  padding: 8px 0 10px;
+  color: var(--txt);
+  font: 12px/1.4 var(--font);
+  background: var(--desktop);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+a { color: var(--link); text-decoration: underline; }
+a:visited { color: var(--visited); }
+a:hover { background: var(--title-a); color: var(--title-txt); }
+a:focus-visible { outline: 1px dotted var(--txt); outline-offset: 1px; }
+
+/* ---------------------------------------------------------- ventanas */
+
+.win {
+  background: var(--face);
+  padding: 2px;
+  box-shadow:
+    inset -1px -1px 0 var(--face-dker),
+    inset  1px  1px 0 var(--face-lt),
+    inset -2px -2px 0 var(--face-dk),
+    inset  2px  2px 0 var(--face);
+}
+
+.win > h2, .win > h1 {
+  margin: 0 0 2px;
+  padding: 2px 3px;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: .2px;
+  color: var(--title-txt);
+  background: linear-gradient(90deg, var(--title-a) 0%, var(--title-b) 100%);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* los tres botones de la barra de titulo, cada uno con su relieve y su simbolo */
+.win > h2 .ctrl, .win > h1 .ctrl { margin-left: auto; display: flex; gap: 1px; flex: none; }
+.win > h2 .ctrl b:last-child, .win > h1 .ctrl b:last-child { margin-left: 2px; }
+
+.ctrl b {
+  width: 16px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: bold 9px/1 var(--font);
+  color: var(--txt);
+  background: var(--face);
+  box-shadow:
+    inset -1px -1px 0 var(--face-dker),
+    inset  1px  1px 0 var(--face-lt),
+    inset -2px -2px 0 var(--face-dk),
+    inset  2px  2px 0 var(--face);
+}
+/* el guion bajo cae por debajo de la linea base, asi que la raya va dibujada */
+.ctrl b:first-child { font-size: 0; }
+.ctrl b:first-child::before {
+  content: "";
+  width: 7px;
+  height: 2px;
+  background: currentColor;
+  margin-top: 4px;
+}
+
+.win > .body { padding: 7px 9px 9px; }
+.win.flush > .body { padding: 0; }
+
+/* superficie hundida, para listas y campos */
+.sunken {
+  background: var(--field);
+  box-shadow:
+    inset  1px  1px 0 var(--face-dker),
+    inset -1px -1px 0 var(--face-lt),
+    inset  2px  2px 0 var(--face-dk),
+    inset -2px -2px 0 var(--face);
+  padding: 3px;
+}
+
+.btn {
+  font: 11px var(--font);
+  color: var(--txt);
+  background: var(--face);
+  border: 0;
+  padding: 3px 9px;
+  box-shadow:
+    inset -1px -1px 0 var(--face-dker),
+    inset  1px  1px 0 var(--face-lt),
+    inset -2px -2px 0 var(--face-dk),
+    inset  2px  2px 0 var(--face);
+  cursor: pointer;
+}
+.btn:active {
+  box-shadow:
+    inset  1px  1px 0 var(--face-dker),
+    inset -1px -1px 0 var(--face-lt),
+    inset  2px  2px 0 var(--face-dk);
+}
+
+/* ---------------------------------------------------------- estructura */
+
+.page {
+  position: relative;
+  z-index: 1;
+  width: var(--page-w);
+  max-width: calc(100% - 12px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.banner {
+  position: relative;
+  height: 124px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.045) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, var(--grad-a) 0%, var(--grad-b) 58%, var(--grad-c) 100%);
+  box-shadow:
+    inset -1px -1px 0 var(--face-dker),
+    inset  1px  1px 0 var(--face-lt),
+    inset -2px -2px 0 var(--face-dk),
+    inset  2px  2px 0 var(--face);
+}
+
+.banner .logo {
+  margin: 0;
+  font-size: 46px;
+  line-height: 1;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #fff;
+  text-shadow: 3px 3px 0 rgba(0,0,0,.85), 6px 6px 0 rgba(0,0,0,.30);
+}
+.banner .logo b { color: #ffd800; font-weight: inherit; }
+
+/* En las paginas interiores el logo es un enlace al inicio, pero tiene que
+   verse exactamente igual que en la portada: sin subrayado y sin cambiar de
+   color al pasar por encima. */
+.banner .logo a,
+.banner .logo a:visited,
+.banner .logo a:hover,
+.banner .logo a:focus {
+  color: inherit;
+  background: none;
+  text-decoration: none;
+}
+.banner .logo a:focus-visible { outline: 2px dotted rgba(255,255,255,.7); outline-offset: 4px; }
+.banner .sub {
+  position: absolute;
+  left: 0; right: 0; bottom: 8px;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,.72);
+}
+.banner .gifbar { position: absolute; left: 8px; bottom: 6px; display: flex; gap: 6px; }
+
+.zones { display: grid; gap: var(--gap); align-items: start; }
+.zone { display: flex; flex-direction: column; gap: var(--gap); min-width: 0; }
+
+/* ---------------------------------------------------------- menu */
+
+.menu a {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 8px;
+  color: var(--txt);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.menu a:hover { background: var(--title-a); color: var(--title-txt); }
+.menu a .n { margin-left: auto; color: var(--dim); font-size: 10px; }
+.menu a:hover .n { color: inherit; }
+.menu .rule { height: 2px; margin: 4px 6px; box-shadow: inset 0 1px 0 var(--face-dk), inset 0 -1px 0 var(--face-lt); }
+
+/* ---------------------------------------------------------- principal */
+
+.intro h3 { margin: 0 0 3px; font-size: 17px; color: var(--acc); }
+.intro .role { color: var(--dim); font-style: italic; margin-bottom: 7px; }
+.intro p { margin: 0 0 8px; }
+.intro .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 9px; }
+.intro .chips span {
+  font-size: 10px;
+  padding: 1px 5px;
+  background: var(--face);
+  box-shadow: inset -1px -1px 0 var(--face-dk), inset 1px 1px 0 var(--face-lt);
+}
+.intro .chips span.on { color: var(--ok); font-weight: bold; }
+
+.lista { width: 100%; border-collapse: collapse; font-size: 12px; }
+.lista td { padding: 3px 6px; vertical-align: top; }
+.lista tr + tr td { border-top: 1px solid var(--face); }
+.lista .ic { width: 1%; padding-right: 2px; }
+:is(.lista .ic, .menu a) i {
+  display: block;
+  flex: none;
+  font-style: normal;
+  background: var(--acc);
+  box-shadow: inset -1px -1px 0 rgba(0,0,0,.45), inset 1px 1px 0 rgba(255,255,255,.35);
+}
+:is(.lista .ic, .menu a) i.pwn  { background: var(--c-pwn); }
+:is(.lista .ic, .menu a) i.htb  { background: var(--c-htb); }
+:is(.lista .ic, .menu a) i.cve  { background: var(--c-cve); }
+:is(.lista .ic, .menu a) i.poc  { background: var(--c-poc); }
+:is(.lista .ic, .menu a) i.tool { background: var(--c-tool); }
+
+.lista .ic i { width: 16px; height: 16px; }
+.menu a i    { width: 10px; height: 10px; }
+.lista .d { width: 1%; white-space: nowrap; color: var(--dim); font-family: var(--mono); font-size: 11px; }
+.lista td:last-child { padding-right: 8px; }
+.lista .s { width: 1%; white-space: nowrap; text-align: right; color: var(--dim); font-size: 11px; }
+.lista a { font-weight: bold; }
+.lista .tg { color: var(--dim); font-size: 10px; }
+.lista tr:hover td { background: var(--title-a); }
+.lista tr:hover a, .lista tr:hover .d, .lista tr:hover .s, .lista tr:hover .tg { color: var(--title-txt); }
+
+
+.status {
+  display: flex; gap: var(--gap); align-items: center;
+  font-size: 11px; color: var(--txt);
+  padding: 2px 0 0;
+}
+.status span {
+  padding: 2px 6px;
+  box-shadow: inset 1px 1px 0 var(--face-dk), inset -1px -1px 0 var(--face-lt);
+}
+.status span:first-child { flex: 1; }
+
+/* ---------------------------------------------------------- extras */
+
+.nube { display: flex; flex-wrap: wrap; gap: 3px 7px; align-items: baseline; line-height: 1.3; }
+.nube b { font-weight: normal; }
+.nube a { color: inherit; text-decoration: none; }
+.nube a:hover { background: var(--title-a); color: var(--title-txt); text-decoration: none; }
+.nube .todos { display: block; width: 100%; margin-top: 6px; font-size: 11px; }
+.nube .todos a { color: var(--link); text-decoration: underline; }
+.nube b i { font-style: normal; color: var(--dim); font-size: 10px; }
+.nube b.s1 { font-size: 11px; color: var(--dim); }
+.nube b.s2 { font-size: 12px; }
+.nube b.s3 { font-size: 14px; font-weight: bold; }
+.nube b.s4 { font-size: 17px; font-weight: bold; color: var(--acc); }
+
+.metas { list-style: none; margin: 0; padding: 0; font-size: 11px; }
+.metas li { display: flex; gap: 6px; align-items: baseline; padding: 2px 0; }
+.metas li + li { border-top: 1px dotted var(--face-dk); }
+.metas .box { font-family: var(--mono); }
+.metas .hecho { color: var(--ok); }
+.metas .yr { margin-left: auto; color: var(--dim); }
+
+.datos { font-size: 11px; }
+.datos div { display: flex; padding: 1px 0; }
+.datos b { margin-left: auto; }
+
+/* ---------------------------------------------------------- gifs */
+
+.gifs { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; padding: 6px 4px; }
+.gif { image-rendering: pixelated; display: block; }
+.gif.sun { box-shadow: inset 1px 1px 0 var(--face-dker), inset -1px -1px 0 var(--face-lt); }
+
+/* los gifs de verdad no son pixel art, asi que se escalan suavizados */
+img.gif { image-rendering: auto; }
+
+/* uno pequeno metido en la barra de titulo, como se hacia entonces */
+.win > h2 img.gif-t, .win > h1 img.gif-t { height: 12px; width: auto; display: block; }
+
+/* los que van sueltos debajo de una ventana, sin marco */
+.pegado { display: block; margin: 0 auto; max-width: 100%; }
+/* al ancho de la ventana que tiene encima, y escalado a lo bruto para que
+   no se emborrone al agrandarlo */
+.pegado.escritorio { width: 100%; image-rendering: pixelated; }
+.pegado.hamster { width: 210px; }
+
+/* el cielo: la misma nube repartida por detras de todo, a la deriva */
+.cielo { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.cielo img { position: absolute; animation: deriva 64s ease-in-out infinite alternate; }
+/* Ancladas al borde de la pagina y no a un porcentaje del viewport: asi se
+   quedan pegadas al contenido con cualquier ancho de ventana, en vez de irse a
+   las esquinas en pantallas grandes o esconderse detras en las pequenas.
+   La pagina mide 920, o sea 460 a cada lado del centro. */
+.cielo img:nth-child(1) { top:  5%; left: calc(50% - 604px); width: 74px; animation-duration: 71s; }
+.cielo img:nth-child(2) { top: 15%; left: calc(50% + 515px); width: 52px; animation-duration: 53s; animation-direction: alternate-reverse; }
+.cielo img:nth-child(3) { top: 33%; left: calc(50% - 556px); width: 44px; animation-duration: 88s; }
+.cielo img:nth-child(4) { top: 44%; left: calc(50% + 532px); width: 66px; animation-duration: 61s; animation-direction: alternate-reverse; }
+.cielo img:nth-child(5) { top: 60%; left: calc(50% - 596px); width: 58px; animation-duration: 79s; }
+.cielo img:nth-child(6) { top: 70%; left: calc(50% + 508px); width: 40px; animation-duration: 46s; animation-direction: alternate-reverse; }
+.cielo img:nth-child(7) { top: 86%; left: calc(50% - 556px); width: 48px; animation-duration: 67s; }
+.cielo img:nth-child(8) { top: 90%; left: calc(50% + 526px); width: 62px; animation-duration: 57s; animation-direction: alternate-reverse; }
+
+@keyframes deriva { from { transform: translateX(-26px); } to { transform: translateX(26px); } }
+@media (prefers-reduced-motion: reduce) { .cielo img { animation: none; } }
+
+/* ---------------------------------------------------------- barra de tareas */
+
+.taskbar {
+  display: flex; align-items: center; gap: 5px;
+  padding: 2px 3px;
+  background: var(--face);
+  box-shadow: inset 0 1px 0 var(--face-lt), inset 0 2px 0 var(--face);
+  font-size: 11px;
+}
+.taskbar .start {
+  display: flex; align-items: center; gap: 4px;
+  font-weight: bold; padding: 2px 7px 2px 4px;
+  box-shadow:
+    inset -1px -1px 0 var(--face-dker),
+    inset  1px  1px 0 var(--face-lt),
+    inset -2px -2px 0 var(--face-dk),
+    inset  2px  2px 0 var(--face);
+}
+.taskbar .start em { width: 12px; height: 12px; background: var(--title-a); display: block; font-style: normal; }
+.taskbar .tarea {
+  padding: 2px 8px; color: var(--txt);
+  box-shadow: inset 1px 1px 0 var(--face-dker), inset -1px -1px 0 var(--face-lt);
+}
+.taskbar .hueco { flex: 1; overflow: hidden; white-space: nowrap; }
+.taskbar .hueco span { display: inline-block; padding-left: 100%; animation: marcha 24s linear infinite; color: var(--dim); }
+@keyframes marcha { to { transform: translateX(-100%); } }
+.taskbar .visitas {
+  font-family: var(--mono);
+  padding: 2px 7px;
+  box-shadow: inset 1px 1px 0 var(--face-dk), inset -1px -1px 0 var(--face-lt);
+}
+.taskbar .reloj {
+  font-family: var(--mono);
+  padding: 2px 7px;
+  box-shadow: inset 1px 1px 0 var(--face-dk), inset -1px -1px 0 var(--face-lt);
+}
+@media (prefers-reduced-motion: reduce) {
+  .taskbar .hueco span { animation: none; padding-left: 0; }
+}
+
+/* ---------------------------------------------------------- writeups */
+
+.migas { padding: 4px 8px; font-size: 11px; color: var(--dim); }
+.migas a { text-decoration: underline; }
+
+.prose { padding: 14px 18px 18px; }
+.prose > *:first-child { margin-top: 0; }
+.prose h1, .prose h2, .prose h3 {
+  font-weight: bold;
+  color: var(--acc);
+  margin: 20px 0 8px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--face-dk);
+  box-shadow: 0 1px 0 var(--face-lt);
+}
+.prose h1 { font-size: 19px; }
+.prose h2 { font-size: 15px; }
+.prose h3 { font-size: 13px; border-bottom-style: dotted; box-shadow: none; }
+.prose p { margin: 0 0 10px; max-width: 74ch; }
+.prose ul, .prose ol { margin: 0 0 10px; padding-left: 24px; max-width: 74ch; }
+.prose li { margin-bottom: 2px; }
+.prose strong { color: var(--acc-2); }
+.prose code { font-family: var(--mono); font-size: 12px; background: var(--field); padding: 0 3px; color: var(--acc-2); }
+.prose pre {
+  margin: 0 0 12px;
+  padding: 8px 10px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12px;
+  background: var(--field);
+  color: var(--txt);
+  box-shadow:
+    inset  1px  1px 0 var(--face-dker),
+    inset -1px -1px 0 var(--face-lt),
+    inset  2px  2px 0 var(--face-dk),
+    inset -2px -2px 0 var(--face);
+}
+.prose pre code { background: none; padding: 0; color: inherit; }
+.prose blockquote { margin: 0 0 10px; padding: 6px 10px; background: var(--field); border-left: 4px solid var(--acc); color: var(--dim); }
+.prose img { max-width: 100%; box-shadow: inset 1px 1px 0 var(--face-dker), inset -1px -1px 0 var(--face-lt); }
+.prose table { border-collapse: collapse; margin: 0 0 10px; }
+.prose th, .prose td { border: 1px solid var(--face-dk); padding: 3px 7px; text-align: left; }
+.prose th { background: var(--face); }
+.prose hr { border: 0; height: 2px; margin: 16px 0; box-shadow: inset 0 1px 0 var(--face-dk), inset 0 -1px 0 var(--face-lt); }
+
+/* resaltado propio, cinco colores atados a la paleta, sin depender de cdnjs */
+.hljs-comment, .hljs-quote { color: var(--dim); font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-built_in, .hljs-name { color: var(--acc); font-weight: bold; }
+.hljs-string, .hljs-attr, .hljs-symbol, .hljs-bullet, .hljs-addition { color: var(--ok); }
+.hljs-number, .hljs-literal, .hljs-variable, .hljs-template-variable { color: var(--acc-2); }
+.hljs-title, .hljs-section, .hljs-type { color: var(--acc); }
+.hljs-meta, .hljs-doctag, .hljs-deletion { color: var(--dim); }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: bold; }
+
+/* la ficha del writeup, en la columna de la derecha */
+.tagsficha { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.tagsficha .t {
+  font-size: 10px;
+  padding: 1px 5px;
+  color: var(--txt);
+  text-decoration: none;
+  background: var(--face);
+  box-shadow: inset -1px -1px 0 var(--face-dk), inset 1px 1px 0 var(--face-lt);
+}
+.tagsficha a.t:hover { background: var(--title-a); color: var(--title-txt); }
+.tagsficha a.t:active { box-shadow: inset 1px 1px 0 var(--face-dk), inset -1px -1px 0 var(--face-lt); }
+.datos a { color: var(--link); }
+
+/* el indice de tags: dos columnas, nombre y cuantos */
+.tabla-tags td { padding: 3px 8px; }
+.tabla-tags .d { width: auto; font-family: var(--font); font-size: 12px; }
+.tabla-tags .d a { font-weight: bold; }
+.tabla-tags .s { text-align: right; }
+
+/* ---------------------------------------------------------- boton de musica */
+
+/* Va suelto en la esquina de abajo a la derecha, encima de todo y pegado al
+   viewport, asi que se alcanza en cualquier momento sin tener que subir. */
+.musica {
+  position: fixed;
+  right: 16px;
+  bottom: 14px;
+  z-index: 5;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  line-height: 0;
+  transition: transform .12s;
+}
+
+.musica img,
+.musica canvas {
+  display: block;
+  width: 96px;
+  height: auto;
+}
+
+/* Apagada: el radiocasete se va a negro y ademas se queda quieto. Un gif no se
+   puede parar con CSS, asi que el JS copia el fotograma en un canvas y se
+   enseña ese. Si por lo que sea no se pudo copiar, al menos se ve oscuro. */
+.musica canvas { display: none; }
+.musica[aria-pressed="false"] img { filter: grayscale(1) brightness(.3) contrast(1.6); }
+.musica.congelado[aria-pressed="false"] img { display: none; }
+.musica.congelado[aria-pressed="false"] canvas {
+  display: block;
+  filter: grayscale(1) brightness(.3) contrast(1.6);
+}
+
+.musica:hover { transform: translateY(-3px); }
+.musica:active { transform: translateY(1px); }
+.musica:focus-visible { outline: 2px dotted var(--face-lt); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) { .musica { transition: none; } }
+
+@media (max-width: 940px) {
+  .musica { right: 6px; bottom: 6px; }
+}
+
+#reproductor { position: absolute; width: 1px; height: 1px; left: -9999px; top: 0; overflow: hidden; }
+
+@media (max-width: 940px) {
+  .banner .musica { top: 5px; right: 5px; padding: 4px; }
+  .banner .musica img { width: 26px; height: 26px; }
+}

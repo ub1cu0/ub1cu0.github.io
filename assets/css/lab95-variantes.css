@@ -1,0 +1,251 @@
+/* Las cuatro familias de variantes. Cada una toca cosas distintas, asi que se
+   pueden combinar todas con todas sin que ninguna pise a la otra. */
+
+/* ======================================================== 1. LAYOUTS
+   En los cuatro manda la zona B. Es la unica ancha y la unica que lleva
+   la lista larga, para que el ojo sepa siempre donde empezar. */
+
+/* --- clasico: chrome a la izquierda, contenido en medio, extras a la derecha */
+[data-layout="clasico"] { --page-w: 920px; }
+[data-layout="clasico"] .zones { grid-template-columns: 164px minmax(0,1fr) 228px; }
+
+/* --- explorador: arbol a la izquierda y un panel grande, como el de archivos */
+[data-layout="explorador"] { --page-w: 940px; }
+[data-layout="explorador"] .zones { grid-template-columns: 206px minmax(0,1fr); }
+[data-layout="explorador"] .zone-a { grid-column: 1; grid-row: 1 / span 2; }
+[data-layout="explorador"] .zone-b { grid-column: 2; grid-row: 1; }
+[data-layout="explorador"] .zone-c { grid-column: 2; grid-row: 2; flex-direction: row; }
+[data-layout="explorador"] .zone-c > * { flex: 1; min-width: 0; }
+[data-layout="explorador"] .menu a { padding-left: 18px; position: relative; }
+[data-layout="explorador"] .menu a::before {
+  content: ""; position: absolute; left: 5px; top: 5px;
+  width: 8px; height: 7px; background: var(--acc-2);
+  box-shadow: inset -1px -1px 0 rgba(0,0,0,.4), inset 1px 1px 0 rgba(255,255,255,.4);
+}
+[data-layout="explorador"] .lista .ic { display: table-cell; }
+
+/* --- escritorio: iconos sueltos, una ventana grande centrada y barra abajo */
+[data-layout="escritorio"] { --page-w: 1000px; }
+[data-layout="escritorio"] .zones { grid-template-columns: 108px minmax(0,1fr); }
+[data-layout="escritorio"] .zone-a { grid-column: 1; grid-row: 1 / span 2; }
+[data-layout="escritorio"] .zone-b { grid-column: 2; grid-row: 1; }
+[data-layout="escritorio"] .zone-c { grid-column: 2; grid-row: 2; flex-direction: row; }
+[data-layout="escritorio"] .zone-c > * { flex: 1; min-width: 0; }
+[data-layout="escritorio"] .zone-a .win { background: none; box-shadow: none; padding: 0; }
+[data-layout="escritorio"] .zone-a .win > h2 { display: none; }
+[data-layout="escritorio"] .zone-a .win > .body { padding: 0; }
+[data-layout="escritorio"] .zone-a .menu a {
+  display: block;   /* el icono va encima del texto, no al lado */
+  text-align: center; color: #fff; padding: 4px 2px;
+  text-shadow: 1px 1px 0 rgba(0,0,0,.9);
+  font-size: 11px; white-space: normal;
+}
+[data-layout="escritorio"] .zone-a .menu a::before {
+  content: ""; display: block; width: 26px; height: 24px; margin: 0 auto 3px;
+  background: var(--face);
+  box-shadow:
+    inset -2px -2px 0 var(--face-dker),
+    inset  2px  2px 0 var(--face-lt),
+    inset  0 0 0 1px var(--face-dk);
+}
+[data-layout="escritorio"] .zone-a .menu a .n { margin: 0; display: block; color: inherit; opacity: .8; }
+[data-layout="escritorio"] .zone-a .rule { display: none; }
+[data-layout="escritorio"] .zone-a .datos, [data-layout="escritorio"] .zone-a .gifs { color: #fff; text-shadow: 1px 1px 0 #000; }
+
+/* --- revista: una sola columna, ancho de lectura y todo en orden de interes */
+[data-layout="revista"] { --page-w: 730px; }
+[data-layout="revista"] .zones { grid-template-columns: minmax(0,1fr); }
+[data-layout="revista"] .zone-b { grid-row: 1; }
+[data-layout="revista"] .zone-c { grid-row: 2; flex-direction: row; }
+[data-layout="revista"] .zone-c > * { flex: 1; min-width: 0; }
+[data-layout="revista"] .zone-a { grid-row: 3; flex-direction: row; flex-wrap: wrap; }
+[data-layout="revista"] .zone-a > * { flex: 1 1 200px; }
+[data-layout="revista"] .banner { height: 104px; }
+[data-layout="revista"] .banner .logo { font-size: 38px; }
+
+/* ======================================================== 2. FONDOS */
+
+[data-bg="foto"]   body {
+  background-color: #1b4a7a;
+  background-image: url("../img/fondo.jpeg");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+[data-bg="liso"]   body { background-color: var(--desktop); background-image: none; }
+
+[data-bg="trama"]  body {
+  background-color: var(--desktop);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='2' height='2' fill='%23ffffff' opacity='.17'/%3E%3Crect x='2' y='2' width='2' height='2' fill='%23000000' opacity='.17'/%3E%3C/svg%3E");
+}
+
+[data-bg="ladrillo"] body {
+  background-color: #6b3a2a;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='32'%3E%3Crect width='64' height='32' fill='%236b3a2a'/%3E%3Cg fill='%238a4d38'%3E%3Crect x='1' y='1' width='30' height='14'/%3E%3Crect x='33' y='1' width='30' height='14'/%3E%3Crect x='17' y='17' width='30' height='14'/%3E%3Crect x='-15' y='17' width='30' height='14'/%3E%3Crect x='49' y='17' width='30' height='14'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+[data-bg="circuito"] body {
+  background-color: #06281f;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cg stroke='%231d7a5a' stroke-width='1.5' fill='none'%3E%3Cpath d='M0 12h22v18h18v30M60 20H44v26M12 60V38h20'/%3E%3C/g%3E%3Cg fill='%232fae7f'%3E%3Ccircle cx='22' cy='12' r='2.5'/%3E%3Ccircle cx='40' cy='30' r='2.5'/%3E%3Ccircle cx='44' cy='20' r='2.5'/%3E%3Ccircle cx='12' cy='38' r='2.5'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+[data-bg="estrellas"] body {
+  background-color: #05060f;
+  background-image:
+    radial-gradient(1.2px 1.2px at 18% 24%, #fff, transparent),
+    radial-gradient(1.2px 1.2px at 62% 71%, #cfe3ff, transparent),
+    radial-gradient(1px 1px at 84% 33%, #fff, transparent),
+    radial-gradient(1px 1px at 34% 82%, #ffe9c0, transparent),
+    radial-gradient(1.4px 1.4px at 72% 12%, #fff, transparent);
+  background-size: 240px 240px, 300px 300px, 180px 180px, 210px 210px, 340px 340px;
+}
+
+[data-bg="plano"] body {
+  background-color: #123a63;
+  background-image:
+    linear-gradient(rgba(255,255,255,.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.10) 1px, transparent 1px),
+    linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px;
+}
+
+[data-bg="diagonal"] body {
+  background-color: #2b2f45;
+  background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.05) 0 10px, transparent 10px 20px);
+}
+
+[data-bg="hexdump"] body {
+  background-color: #101418;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='176' height='54'%3E%3Ctext x='2' y='16' font-family='monospace' font-size='14' fill='%231b232b'%3E4d5a 9000 0300%3C/text%3E%3Ctext x='64' y='42' font-family='monospace' font-size='14' fill='%231b232b'%3E9090 cc31 c050%3C/text%3E%3C/svg%3E");
+}
+
+[data-bg="nubes"] body {
+  background-color: #3a7bd5;
+  background-image:
+    radial-gradient(120px 60px at 20% 30%, rgba(255,255,255,.55), transparent 70%),
+    radial-gradient(160px 70px at 70% 55%, rgba(255,255,255,.45), transparent 70%),
+    radial-gradient(100px 50px at 45% 80%, rgba(255,255,255,.40), transparent 70%),
+    linear-gradient(180deg, #4f93e8, #2f66b5);
+  background-size: 420px 300px, 520px 340px, 380px 260px, auto;
+}
+
+/* ======================================================== 3. PALETAS
+   Los nombres son los de los esquemas de color que traia Windows. */
+
+[data-pal="estandar"] { }
+
+[data-pal="tormenta"] {
+  --face: #b5b5b5; --face-lt: #e8e8e8; --face-dk: #6e6e6e; --face-dker: #333;
+  --title-a: #3b4a5a; --title-b: #6d8296; --title-txt: #fff;
+  --acc: #3b4a5a; --link: #123a63; --desktop: #5a6570;
+}
+
+[data-pal="berenjena"] {
+  --face: #857785; --face-lt: #cbbfcb; --face-dk: #5a4e5a; --face-dker: #2b232b;
+  --title-a: #2d1b32; --title-b: #6b4a72; --title-txt: #e7dcea;
+  --txt: #150f17; --dim: #443946; --field: #ded4e0;
+  --acc: #2d1b32; --acc-2: #3f5a2f; --ok: #2f5a2f; --link: #241a3a; --visited: #4a2a52;
+  --desktop: #3d3040;
+}
+
+[data-pal="rosa"] {
+  --face: #c9aeb6; --face-lt: #f0dde2; --face-dk: #8f7078; --face-dker: #4a373c;
+  --title-a: #7b2c47; --title-b: #c07f96; --title-txt: #fff;
+  --txt: #1e1418; --dim: #5c464d; --field: #f6ecef;
+  --acc: #7b2c47; --acc-2: #8a3a12; --link: #6a1e3a; --desktop: #9c6b7a;
+}
+
+[data-pal="desierto"] {
+  --face: #c4b494; --face-lt: #eee2c8; --face-dk: #8b7c5e; --face-dker: #453d2c;
+  --title-a: #6b4a1f; --title-b: #b99154; --title-txt: #fff8e8;
+  --txt: #1c1710; --dim: #574d38; --field: #f5eeda;
+  --acc: #6b4a1f; --acc-2: #7c3a00; --ok: #4a5a1f; --link: #5a3a10; --desktop: #a08b5f;
+}
+
+[data-pal="pizarra"] {
+  --face: #a8b2bc; --face-lt: #e0e7ee; --face-dk: #6d7883; --face-dker: #333b43;
+  --title-a: #23384d; --title-b: #5f8199; --title-txt: #fff;
+  --txt: #10171d; --dim: #45525d; --field: #eef3f7;
+  --acc: #23384d; --acc-2: #7c2d2d; --link: #17384f; --desktop: #4c5a68;
+}
+
+[data-pal="hotdog"] {
+  --face: #ffff00; --face-lt: #ffffb0; --face-dk: #a08000; --face-dker: #4a3a00;
+  --title-a: #ff0000; --title-b: #ff0000; --title-txt: #ffff00;
+  --txt: #000000; --dim: #6b5500; --field: #ffffff;
+  --acc: #c00000; --acc-2: #000000; --ok: #006400; --link: #0000cd; --desktop: #ff0000;
+}
+
+[data-pal="contraste"] {
+  --face: #000000; --face-lt: #ffffff; --face-dk: #808080; --face-dker: #ffffff;
+  --title-a: #ffffff; --title-b: #ffffff; --title-txt: #000000;
+  --txt: #ffffff; --dim: #b0b0b0; --field: #000000;
+  --acc: #00ff00; --acc-2: #ffff00; --ok: #00ff00; --link: #00ffff; --visited: #ff80ff;
+  --desktop: #000000;
+}
+
+[data-pal="verde"] {
+  --face: #b8c9b0; --face-lt: #e6efe1; --face-dk: #7a8a72; --face-dker: #384030;
+  --title-a: #1f4a25; --title-b: #5d8f57; --title-txt: #f0fff0;
+  --txt: #101810; --dim: #48543f; --field: #f2f7ef;
+  --acc: #1f4a25; --acc-2: #7c4a00; --link: #14401c; --desktop: #55704f;
+}
+
+/* ======================================================== 4. DEGRADADO */
+
+[data-grad="azul"]     { --grad-a: #000082; --grad-b: #1084d0; --grad-c: #0a3d6b; }
+[data-grad="atardecer"]{ --grad-a: #6b1b00; --grad-b: #ff7a18; --grad-c: #2b0d00; }
+[data-grad="verde"]    { --grad-a: #012b12; --grad-b: #17a05a; --grad-c: #01180b; }
+[data-grad="morado"]   { --grad-a: #2a0b46; --grad-b: #8b3fd1; --grad-c: #16062a; }
+[data-grad="acero"]    { --grad-a: #2b3038; --grad-b: #8e9aa8; --grad-c: #1a1e24; }
+[data-grad="sangre"]   { --grad-a: #4a0010; --grad-b: #ff163f; --grad-c: #21000a; }
+[data-grad="cian"]     { --grad-a: #003a44; --grad-b: #00b8c4; --grad-c: #001f26; }
+[data-grad="negro"]    { --grad-a: #101010; --grad-b: #2e2e2e; --grad-c: #000000; }
+[data-grad="chicle"]   { --grad-a: #7b1f5a; --grad-b: #ff6fb5; --grad-c: #3a0a2a; }
+
+/* ======================================================== movil */
+
+@media (max-width: 940px) {
+  .zones,
+  [data-layout] .zones { grid-template-columns: minmax(0,1fr) !important; }
+  [data-layout] .zone-a,
+  [data-layout] .zone-b,
+  [data-layout] .zone-c { grid-column: 1 !important; grid-row: auto !important; flex-direction: column !important; }
+  [data-layout] .zone-b { order: 1; }
+  [data-layout] .zone-c { order: 2; }
+  [data-layout] .zone-a { order: 3; }
+  .banner { height: 96px; }
+  .banner .logo { font-size: 30px; }
+  .banner .sub { font-size: 9px; letter-spacing: 1px; padding: 0 8px; }
+  .lista .s { display: none; }
+  .lista a { overflow-wrap: anywhere; }
+
+  /* En una columna, el gif que colgaba de una ventana estrecha se iba a 378px.
+     Aqui van a un tamano fijo y centrados, que es como se ven bien. */
+  .pegado.escritorio { width: 140px; }
+  .pegado.hamster { width: 150px; }
+
+  /* Las nubes se quedan detras de las ventanas, que ocupan todo el ancho, asi
+     que solo asomarian en los seis pixeles del margen. Fuera. */
+  .cielo { display: none; }
+
+  /* El teletipo de la barra de tareas no cabe y sale cortado a media palabra */
+  .taskbar .hueco { display: none; }
+  /* el radiocasete flota en esa esquina, asi que la barra le deja el hueco */
+  .taskbar { gap: 4px; padding-right: 62px; }
+  .taskbar .tarea { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .musica img,
+  .musica canvas { width: 54px; }
+}
+
+/* los iconos del escritorio, cada seccion de su color, como los del sistema */
+[data-layout="escritorio"] .zone-a .menu a i { display: none; }
+[data-layout="escritorio"] .zone-a .menu a:nth-child(1)::before { background: var(--c-pwn); }
+[data-layout="escritorio"] .zone-a .menu a:nth-child(2)::before { background: var(--c-cve); }
+[data-layout="escritorio"] .zone-a .menu a:nth-child(3)::before { background: var(--c-poc); }
+[data-layout="escritorio"] .zone-a .menu a:nth-child(4)::before { background: var(--c-tool); }
+[data-layout="escritorio"] .zone-a .win + .win .menu a::before { background: #555f6b; }
