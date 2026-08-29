@@ -581,16 +581,12 @@ img.gif { image-rendering: auto; }
   white-space: nowrap;
 }
 
-/* el sprite va sobre oscuro, como en el juego, y no sobre la cara de la ventana */
+/* Sin caja detras: el sprite va suelto sobre la cara de la ventana. Los 3px
+   siguen puestos aunque no se vean, porque son los que dejan al sprite en sus
+   128 de ancho exactos. */
 .isaac .marco {
   display: block;
   padding: 3px;
-  background: #3a3a44;
-  box-shadow:
-    inset  1px  1px 0 var(--face-dker),
-    inset -1px -1px 0 var(--face-lt),
-    inset  2px  2px 0 var(--face-dk),
-    inset -2px -2px 0 var(--face);
 }
 .isaac .marco img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
 
