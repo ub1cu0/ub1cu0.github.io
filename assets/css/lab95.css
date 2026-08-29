@@ -604,14 +604,17 @@ img.gif { image-rendering: auto; }
 }
 
 /* ------------------------------------- el hamster de la portada
-   En el hueco de arriba a la derecha que dejan el nombre, el rol y los certis,
-   que son tres lineas cortas. Acaba justo encima del parrafo, que ese si ocupa
-   todo el ancho. Solo esta en la portada. */
+   Pegado a donde acaba la linea del rol, ocupando el hueco que dejan esa linea,
+   el nombre de arriba y los certis de abajo. El ancla es el propio div del rol,
+   que se pasa a inline-block para que su caja mida lo que mide el texto: asi el
+   hamster cae siempre justo detras de la ultima letra, aunque la tipografia no
+   sea la misma en todas las maquinas. Solo esta en la portada. */
 .win.conhamster { position: relative; }
+.win.conhamster .role { display: inline-block; position: relative; }
 .win.conhamster .hamster-esq {
   position: absolute;
-  top: 24px;
-  right: 8px;
+  left: calc(100% + 10px);
+  bottom: -23px;
   width: 70px;
   height: auto;
   z-index: 3;

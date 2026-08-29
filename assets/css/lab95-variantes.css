@@ -243,9 +243,10 @@
   .musica img,
   .musica canvas { width: 54px; }
 
-  /* En pantalla estrecha las tres lineas de arriba se parten y el hueco casi
-     desaparece, asi que va mas pequeno todavia. */
-  .win.conhamster .hamster-esq { top: 22px; right: 6px; width: 54px; }
+  /* En pantalla estrecha el rol llega casi al borde y detras no cabe nada, asi
+     que ahi vuelve a la esquina de la ventana y va mas pequeno. */
+  .win.conhamster .role { display: block; position: static; }
+  .win.conhamster .hamster-esq { left: auto; right: 6px; top: 30px; bottom: auto; width: 54px; }
 }
 
 /* los iconos del escritorio, cada seccion de su color, como los del sistema */
