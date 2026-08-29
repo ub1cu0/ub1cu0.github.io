@@ -602,3 +602,18 @@ img.gif { image-rendering: auto; }
 @media (prefers-reduced-motion: reduce) {
   .isaac .ficha:hover .marco img { transform: none; }
 }
+
+/* ------------------------------------- el hamster colgando de la esquina
+   A caballo de la esquina de abajo a la derecha de la ventana de la lista:
+   la mitad dentro, tapando el recuento de palabras de las ultimas filas, y la
+   otra mitad fuera. No estorba a los clicks ni al raton. */
+.win.conhamster { position: relative; }
+.win.conhamster .hamster-esq {
+  position: absolute;
+  right: -76px;
+  bottom: -80px;
+  width: 152px;
+  height: auto;
+  z-index: 3;
+  pointer-events: none;
+}
