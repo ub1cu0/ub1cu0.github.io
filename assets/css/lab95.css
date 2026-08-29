@@ -216,7 +216,7 @@ a:focus-visible { outline: 1px dotted var(--txt); outline-offset: 1px; }
    overflow. El ancho sale del alto, que la proporcion es 139x163. */
 .banner .mascota {
   position: absolute;
-  left: 14px;
+  right: 14px;
   bottom: 0;
   width: auto;
   height: 118px;

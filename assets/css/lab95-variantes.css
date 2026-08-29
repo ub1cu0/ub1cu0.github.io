@@ -220,10 +220,8 @@
   [data-layout] .zone-a { order: 3; }
   .banner { height: 96px; }
   .banner .logo { font-size: 30px; }
-  /* el hueco de la izquierda es el que ocupa la que baila, para que no le
-     tape las primeras letras al lema */
-  .banner .sub { font-size: 9px; letter-spacing: 1px; padding: 0 8px 0 70px; }
-  .banner .mascota { height: 76px; left: 6px; }
+  .banner .sub { font-size: 9px; letter-spacing: 1px; padding: 0 8px; }
+  .banner .mascota { height: 76px; right: 4px; }
   .lista .s { display: none; }
   .lista a { overflow-wrap: anywhere; }
 
@@ -253,3 +251,10 @@
 [data-layout="escritorio"] .zone-a .menu a:nth-child(3)::before { background: var(--c-poc); }
 [data-layout="escritorio"] .zone-a .menu a:nth-child(4)::before { background: var(--c-tool); }
 [data-layout="escritorio"] .zone-a .win + .win .menu a::before { background: #555f6b; }
+
+/* En un movil el lema ocupa casi todo el ancho de la banda, asi que no queda
+   sitio para ella sin pisarlo. Antes que encogerla hasta que no se vea o mover
+   el texto de su sitio, aqui no sale. */
+@media (max-width: 479px) {
+  .banner .mascota { display: none; }
+}
