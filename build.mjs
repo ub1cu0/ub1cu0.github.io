@@ -231,11 +231,6 @@ const NUBES = `<div class="cielo" aria-hidden="true">${
 
 const BOTONES = '<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span>';
 
-/* El hamster va a caballo de la esquina de abajo a la derecha de la ventana de
-   la lista, medio dentro y medio fuera. Se cuelga de la propia ventana para que
-   la siga aunque la lista crezca o encoja. */
-const HAMSTER = '<img class="gif hamster-esq" src="/assets/img/hamster.gif" alt="" width="230" height="243">';
-
 const ventana = (titulo, cuerpo, { tag = 'section', clase = '', h = 'h2', pad = '' } = {}) =>
   `      <${tag} class="win ${clase}">
         <${h}>${titulo}${BOTONES}</${h}>
@@ -352,7 +347,7 @@ ${filas}
    almohadilla se queda en el cliente, asi que se traduce aqui a la URL nueva. */
 const SHIM = `<script>(function(){var h=location.hash;if(!h||h.length<2)return;var p=h.replace(/^#\\/?/,'').split('/').filter(Boolean);function sl(s){return decodeURIComponent(s).normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/['"\`\u00b4\u2019]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}var u=null;if(p[0]==='post'&&p[1]&&p[2]){u='/'+p[1].toLowerCase()+'/'+sl(p.slice(2).join('/'))+'/';}else if(p[0]){u='/'+p[0].toLowerCase()+'/';}if(u)location.replace(u);})();</script>`;
 
-function pagina({ titulo, desc, canonical, tipo = 'website', tags = [], jsonld = [], zonaB, zonaC, cuentas, tarea, robots = 'index, follow', shim = false, hamsterEnLista = false }) {
+function pagina({ titulo, desc, canonical, tipo = 'website', tags = [], jsonld = [], zonaB, zonaC, cuentas, tarea, robots = 'index, follow', shim = false }) {
   const ld = jsonld.map(o => `<script type="application/ld+json">${JSON.stringify(o)}</script>`).join('\n  ');
   return `<!DOCTYPE html>
 <html lang="es" data-layout="clasico" data-bg="foto" data-pal="estandar" data-grad="azul">
@@ -416,7 +411,7 @@ ${zonaB}
     <div class="zone zone-c">
 ${zonaC}
 
-${hamsterEnLista ? '' : '\n      <img class="gif pegado hamster" src="/assets/img/hamster.gif" alt="">'}
+      <img class="gif pegado hamster" src="/assets/img/hamster.gif" alt="">
     </div>
   </div>
 
@@ -463,7 +458,7 @@ ${tabla(ultimas)}
             <span>${total} documentos</span>
             <span><a href="/pwn/">ver todos</a></span>
           </div>
-        ${HAMSTER}`, { clase: 'flush conhamster', pad: '3px' })}`;
+        `, { clase: 'flush', pad: '3px' })}`;
 
   const zonaC = `${ventana('Tags', `
           ${nubeTags(todo)}
@@ -481,7 +476,6 @@ ${AMIGOS_WIN}`;
     cuentas,
     zonaB, zonaC,
     shim: true,
-    hamsterEnLista: true,
     jsonld: [
       { '@context': 'https://schema.org', '@type': 'WebSite', name: 'ub1cu0', url: `${SITE}/`, inLanguage: 'es', description: desc },
       { '@context': 'https://schema.org', '@type': 'Person', name: AUTOR, url: `${SITE}/`, jobTitle: 'Vulnerability Researcher',
@@ -501,7 +495,7 @@ ${tabla(entradas)}
             <span>${entradas.length} ${entradas.length === 1 ? 'entrada' : 'entradas'}</span>
             <span>${esc(c.desc)}</span>
           </div>
-        ${HAMSTER}`, { clase: 'flush conhamster', h: 'h1', pad: '3px' });
+        `, { clase: 'flush', h: 'h1', pad: '3px' });
 
   const zonaC = `${ventana('Tags', `
           ${nubeTags(entradas)}
@@ -515,7 +509,7 @@ ${AMIGOS_WIN}`;
     titulo: `${c.titulo} · ub1cu0`,
     desc: c.desc,
     canonical, tipo: 'website', cuentas, zonaB, zonaC,
-    tarea: c.corto, hamsterEnLista: true,
+    tarea: c.corto,
     jsonld: [{
       '@context': 'https://schema.org', '@type': 'CollectionPage',
       name: c.titulo, description: c.desc, url: canonical, inLanguage: 'es',
@@ -587,7 +581,7 @@ ${tabla(g.entradas)}
             <span>${n} ${n === 1 ? 'entrada' : 'entradas'} con este tag</span>
             <span><a href="/tags/">ver todos los tags</a></span>
           </div>
-        ${HAMSTER}`, { clase: 'flush conhamster', h: 'h1', pad: '3px' });
+        `, { clase: 'flush', h: 'h1', pad: '3px' });
 
   const zonaC = `${ventana('Tags', `
           ${nubeTags(todo)}
@@ -599,7 +593,7 @@ ${AMIGOS_WIN}`;
 
   return pagina({
     titulo: `${g.nombre} · ub1cu0`,
-    desc, canonical, tipo: 'website', cuentas, zonaB, zonaC, hamsterEnLista: true,
+    desc, canonical, tipo: 'website', cuentas, zonaB, zonaC,
     tarea: g.nombre,
     // los tags con dos entradas o menos no aportan nada en un buscador
     robots: n >= 3 ? 'index, follow' : 'noindex, follow',

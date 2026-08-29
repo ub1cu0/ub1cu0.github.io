@@ -242,13 +242,6 @@
 
   .musica img,
   .musica canvas { width: 54px; }
-
-  /* a una columna la ventana ocupa casi toda la pantalla, asi que el hamster
-     sale menos por el lado y se apoya sobre todo en el borde de abajo */
-  /* A una columna la ventana llega casi al borde de la pantalla, y ahi solo
-     hay 6px de margen. Sale 5 por el lado, lo justo para no sacar barra
-     horizontal, y se apoya sobre todo en el borde de abajo. */
-  .win.conhamster .hamster-esq { right: -5px; bottom: -52px; width: 118px; }
 }
 
 /* los iconos del escritorio, cada seccion de su color, como los del sistema */
