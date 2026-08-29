@@ -348,6 +348,7 @@ ${NUBES}
       ? '<h1 class="logo">&lt;<b>ub1cu0</b>&gt;</h1>'
       : '<div class="logo"><a href="/">&lt;<b>ub1cu0</b>&gt;</a></div>'}
     <div class="sub">VULNERABILITY RESEARCH &middot; EXPLOIT DEV &middot; LOW LEVEL</div>
+    <img class="gif mascota" src="/assets/img/banner.gif" alt="" width="139" height="163">
   </header>
 
   <div class="zones">

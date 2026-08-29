@@ -62,6 +62,7 @@
 [data-layout="revista"] .zone-a > * { flex: 1 1 200px; }
 [data-layout="revista"] .banner { height: 104px; }
 [data-layout="revista"] .banner .logo { font-size: 38px; }
+[data-layout="revista"] .banner .mascota { height: 98px; }
 
 /* ======================================================== 2. FONDOS */
 
@@ -219,7 +220,10 @@
   [data-layout] .zone-a { order: 3; }
   .banner { height: 96px; }
   .banner .logo { font-size: 30px; }
-  .banner .sub { font-size: 9px; letter-spacing: 1px; padding: 0 8px; }
+  /* el hueco de la izquierda es el que ocupa la que baila, para que no le
+     tape las primeras letras al lema */
+  .banner .sub { font-size: 9px; letter-spacing: 1px; padding: 0 8px 0 70px; }
+  .banner .mascota { height: 76px; left: 6px; }
   .lista .s { display: none; }
   .lista a { overflow-wrap: anywhere; }
 

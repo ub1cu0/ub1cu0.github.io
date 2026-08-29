@@ -211,6 +211,18 @@ a:focus-visible { outline: 1px dotted var(--txt); outline-offset: 1px; }
 }
 .banner .gifbar { position: absolute; left: 8px; bottom: 6px; display: flex; gap: 6px; }
 
+/* La que baila en la esquina de la banda. Va anclada abajo del todo y con el
+   alto de la banda menos un pelo, para que quepa entera sin que la recorte el
+   overflow. El ancho sale del alto, que la proporcion es 139x163. */
+.banner .mascota {
+  position: absolute;
+  left: 14px;
+  bottom: 0;
+  width: auto;
+  height: 118px;
+  pointer-events: none;
+}
+
 .zones { display: grid; gap: var(--gap); align-items: start; }
 .zone { display: flex; flex-direction: column; gap: var(--gap); min-width: 0; }
 
