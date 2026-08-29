@@ -34,6 +34,11 @@ const GSC = 'TcazwE_vjVsfW2MRMH8DUh7GhoNp-aqNCNdUdudgAgQ';
 const VIDEO = 'Maw3A8zUJyM';   // la cancion que suena de fondo, desde YouTube
 const HOY = new Date().toISOString().slice(0, 10);
 
+/* El teletipo que va pasando por la barra de abajo. Se cambia aqui y ya esta.
+   Termina en separador porque el texto se repite en bucle y si no, se pegan la
+   ultima palabra y la primera. Para un simbolo raro se usa su entidad HTML. */
+const TELETIPO = 'BUSCO TRABAJO &middot; vulnerability research &middot; exploit dev &middot; low level &middot; hablamos por LinkedIn &middot; ';
+
 /* Cada seccion con su color, que es el mismo del cuadradito del indice.
    `oculta` deja la seccion fuera del menu, del sitemap y de la portada, pero
    sus paginas se siguen generando para no romper enlaces que ya existan. */
@@ -212,7 +217,6 @@ ${ventana('Índice', `\n${items}\n        `, { tag: 'nav', clase: 'menu', pad: '
 ${ventana('Links', `
           <a href="https://github.com/ub1cu0" rel="me noopener" target="_blank">GitHub</a>
           <a href="https://www.linkedin.com/in/moiseshermo/" rel="me noopener" target="_blank">LinkedIn</a>
-          <a href="/feed.xml">RSS</a>
         `, { clase: 'menu', pad: '3px' })}
 
       <img class="gif pegado escritorio" src="/assets/img/escritorio.gif" alt="">
@@ -370,7 +374,7 @@ ${zonaC}
   <footer class="taskbar">
     <div class="start"><em></em>Inicio</div>
     <div class="tarea">${esc(tarea || 'ub1cu0')}</div>
-    <div class="hueco"><span>ROP &middot; heap &middot; tcache &middot; format string &middot; ret2libc &middot; shellcode &middot; use after free &middot; canary bypass &middot; kernel pwn &middot; </span></div>
+    <div class="hueco"><span>${TELETIPO}</span></div>
     <div class="visitas">visitas <span id="visitas">001337</span></div>
     <div class="reloj" id="reloj">--:--</div>
   </footer>
