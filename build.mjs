@@ -17,6 +17,7 @@
 
 import { readFileSync, writeFileSync, mkdirSync, rmSync, cpSync, existsSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
+import { createHash } from 'node:crypto';
 import MarkdownIt from 'markdown-it';
 import hljs from 'highlight.js';
 
@@ -33,6 +34,24 @@ const IMG_SOCIAL = `${SITE}/assets/img/miniatura.png`;
 const GSC = 'TcazwE_vjVsfW2MRMH8DUh7GhoNp-aqNCNdUdudgAgQ';
 const VIDEO = 'Maw3A8zUJyM';   // la cancion que suena de fondo, desde YouTube
 const HOY = new Date().toISOString().slice(0, 10);
+
+/* GitHub Pages manda cache-control de diez minutos en todo. Asi que al subir un
+   cambio hay una ventana en la que el navegador ya tiene el HTML nuevo pero
+   sigue con el CSS o el JS viejo del cache, y la pagina se ve rota sin motivo.
+   Colgandole al final un trozo del hash del fichero, la direccion cambia
+   cuando cambia el contenido y el navegador se lo baja solo. */
+const sello = (rel) => {
+  try {
+    const h = createHash('sha1').update(readFileSync(join(SRC, rel))).digest('hex').slice(0, 8);
+    return `/${rel}?v=${h}`;
+  } catch (e) {
+    console.warn(`  ! no encuentro ${rel} para sellarlo, va sin version`);
+    return `/${rel}`;
+  }
+};
+const V_CSS = sello('assets/css/lab95.css');
+const V_CSS2 = sello('assets/css/lab95-variantes.css');
+const V_JS = sello('assets/js/sitio.js');
 
 /* El teletipo que va pasando por la barra de abajo. Se cambia aqui y ya esta.
    Termina en separador porque el texto se repite en bucle y si no, se pegan la
@@ -355,8 +374,8 @@ function pagina({ titulo, desc, canonical, tipo = 'website', tags = [], jsonld =
   <meta name="twitter:image" content="${IMG_SOCIAL}">
 
   <link rel="alternate" type="application/rss+xml" title="ub1cu0" href="${SITE}/feed.xml">
-  <link rel="stylesheet" href="/assets/css/lab95.css">
-  <link rel="stylesheet" href="/assets/css/lab95-variantes.css">
+  <link rel="stylesheet" href="${V_CSS}">
+  <link rel="stylesheet" href="${V_CSS2}">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E🖥%3C/text%3E%3C/svg%3E">
   ${ld}
   ${shim ? SHIM : ''}
@@ -408,7 +427,7 @@ ${zonaC}
 
 </div>
 
-<script src="/assets/js/sitio.js" defer></script>
+<script src="${V_JS}" defer></script>
 </body>
 </html>
 `;
