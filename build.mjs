@@ -232,10 +232,8 @@ const NUBES = `<div class="cielo" aria-hidden="true">${
 
 const BOTONES = '<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span>';
 
-/* El hamster va solo en la portada, apoyado en la parte de abajo a la derecha
-   de la ventana de Lo ultimo y asomando un poco por el lado. La postura esta
-   medida para las catorce filas de la portada, asi que en los listados y en los
-   tags, donde la lista tiene otro largo, no sale. */
+/* El hamster va solo en la portada, en el hueco que dejan a su derecha el
+   nombre, el rol y los certis. */
 const HAMSTER = '<img class="gif hamster-esq" src="/assets/img/hamster.gif" alt="" width="230" height="243">';
 
 /* El marco que rodea a todas las paginas: nubes, radiocasete, banda de arriba y
@@ -481,14 +479,14 @@ function portada(todo, cuentas) {
           <p>Rompo binarios y luego lo cuento. Aquí subo writeups de PWN, research de
           CVE y POCs propios en C/C++. Todo en español, paso a paso y con el debugger
           delante. Miembro del equipo de CTF <b>Caliphal Hounds</b>.</p>
-        `, { clase: 'intro' })}
+        ${HAMSTER}`, { clase: 'intro conhamster' })}
 
 ${ventana('Lo último', `
 ${tabla(ultimas)}
           <div class="status">
             <span>${total} documentos</span>
           </div>
-        ${HAMSTER}`, { clase: 'flush conhamster', pad: '3px' })}`;
+        `, { clase: 'flush', pad: '3px' })}`;
 
   const zonaC = `${ventana('Tags', `
           ${nubeTags(todo)}
