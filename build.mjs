@@ -458,8 +458,8 @@ function zonaA(cuentas, lang) {
 ${ventana(T[lang].indice, `\n${items}\n        `, { tag: 'nav', clase: 'menu', pad: '3px' })}
 
 ${ventana(T[lang].links, `
-          <a href="https://github.com/ub1cu0" rel="me noopener" target="_blank">GitHub</a>
-          <a href="https://www.linkedin.com/in/moiseshermo/" rel="me noopener" target="_blank">LinkedIn</a>
+          <a href="https://github.com/ub1cu0" rel="me noopener" target="_blank"><i class="ico gh"></i>GitHub</a>
+          <a href="https://www.linkedin.com/in/moiseshermo/" rel="me noopener" target="_blank"><i class="ico li"></i>LinkedIn</a>
         `, { clase: 'menu', pad: '3px' })}
 
       <img class="gif pegado escritorio" src="/assets/img/escritorio.gif" alt="">

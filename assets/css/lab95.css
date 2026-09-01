@@ -275,6 +275,19 @@ a:focus-visible { outline: 1px dotted var(--txt); outline-offset: 1px; }
 
 .lista .ic i { width: 16px; height: 16px; }
 .menu a i    { width: 10px; height: 10px; }
+
+/* Los enlaces de fuera llevan su logo en vez de un color. Es la misma tesela con
+   el mismo bisel que los cuadraditos del indice, solo que mas grande, porque a
+   10px un logo no se reconoce. La imagen mide 40 y se dibuja a 20, asi que en
+   una pantalla densa sale nitida. */
+.menu a i.ico {
+  width: 20px; height: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 20px 20px;
+}
+.menu a i.ico.gh { background-image: url(/assets/img/logo-github.png); background-color: #fff; }
+.menu a i.ico.li { background-image: url(/assets/img/logo-linkedin.png); }
 .lista .d { width: 1%; white-space: nowrap; color: var(--dim); font-family: var(--mono); font-size: 11px; }
 .lista td:last-child { padding-right: 8px; }
 .lista .s { width: 1%; white-space: nowrap; text-align: right; color: var(--dim); font-size: 11px; }
