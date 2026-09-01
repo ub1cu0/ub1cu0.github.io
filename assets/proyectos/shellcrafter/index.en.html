@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" data-layout="clasico" data-bg="foto" data-pal="estandar" data-grad="azul">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShellCrafter — ub1cu0</title>
+  <meta name="description"
+    content="An assembler in your browser for shellcoding: x86, x86-64, ARM, Thumb and ARM64. Flags bad chars and exports shellcode ready to paste.">
+  <link rel="stylesheet" href="/assets/css/lab95.css">
+  <link rel="stylesheet" href="/assets/css/lab95-variantes.css">
+  <link rel="stylesheet" href="/assets/css/lab95-tool.css">
+</head>
+
+<body>
+<!--ARRIBA-->
+  <div class="zones solo tool">
+    <div class="zone zone-b">
+
+      <section class="win">
+        <h1>ShellCrafter<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h1>
+        <div class="body">
+          <div class="migas"><a href="/en/">Home</a> / <a href="/en/proyectos/">Projects</a> / ShellCrafter</div>
+          <p style="margin:6px 0 9px">Write assembly, watch the bytes come out and take the shellcode with you.
+            It assembles with Keystone compiled to WebAssembly, so the whole thing runs in your browser
+            and what you type never leaves your machine.</p>
+
+          <div class="barra">
+            <div class="campo">
+              <label for="archSelect">Architecture</label>
+              <select id="archSelect">
+                <option value="x86">loading...</option>
+              </select>
+            </div>
+
+            <div class="campo ancho">
+              <label for="badCharsInput">Bad chars (hex)</label>
+              <input type="text" class="mono" id="badCharsInput" value="00 0a 0d" placeholder="e.g. 00 0a 0d"
+                spellcheck="false">
+            </div>
+
+            <div class="campo">
+              <label for="presetSelect">Preset</label>
+              <select id="presetSelect">
+                <option value="">Load a preset…</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="win">
+        <h2>Assembler<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h2>
+        <div class="body">
+          <div class="paneles">
+            <div class="panel">
+              <div class="cabecera"><b>Input</b><span>comments: ; # //</span></div>
+              <textarea id="asmInput" spellcheck="false" placeholder="; loading the assembler..."></textarea>
+            </div>
+
+            <div class="panel">
+              <div class="cabecera"><b>Bytes per line</b><span id="byteCount">0 bytes</span></div>
+              <div class="output-list" id="hexOutput">
+                <div class="output-line"><span class="line-num">-</span><span class="hex-bytes empty">Write some
+                    assembly to see the bytes...</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="win">
+        <h2>Shellcode<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h2>
+        <div class="body">
+          <div class="cabecera">
+            <b>Output</b>
+            <span class="mandos">
+              <select id="formatSelect">
+                <option value="escaped">"\x41\x42" (quoted)</option>
+                <option value="raw">\x41\x42 (one liner)</option>
+                <option value="hex">4142 (plain hex)</option>
+                <option value="hexspace">41 42 (hex with spaces)</option>
+                <option value="python">Python bytes</option>
+                <option value="c">C string</option>
+                <option value="carray">C array</option>
+              </select>
+              <button class="btn" id="copyFormatBtn">Copy</button>
+            </span>
+          </div>
+          <pre class="out-body" id="shellcodeOut"></pre>
+          <div id="statusBox" class="status-bar status-ok" style="display:none;"></div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+<!--ABAJO:ShellCrafter-->
+<script type="module" src="js/logic.js"></script>
+</body>
+
+</html>

@@ -240,6 +240,20 @@
   .taskbar { gap: 4px; padding-right: 62px; }
   .taskbar .tarea { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+  /* Con el selector de idioma puesto ya no caben las visitas: medido a 360px, la
+     barra se iba 16px por fuera y el titulo de la pagina se quedaba en 16px de
+     ancho, o sea ilegible. Se va el contador, que ademas no cuenta nada. En las
+     paginas sin traducir no hay selector y el contador se queda. */
+  .taskbar:has(.idiomas) .visitas { display: none; }
+}
+
+/* Medido: por debajo de aqui el titulo de la pagina se queda en menos de 30px y
+   solo ensena los puntos suspensivos, que no dicen nada. Fuera, y el selector se
+   va a la derecha con el reloj para que la barra no quede coja. */
+@media (max-width: 440px) {
+  .taskbar:has(.idiomas) .tarea { display: none; }
+  .taskbar:has(.idiomas) .idiomas { margin-left: auto; }
+
   .musica img,
   .musica canvas { width: 54px; }
 

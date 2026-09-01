@@ -97,6 +97,11 @@
       if (!nueva) { location.href = url; return; }
       page.innerHTML = nueva.innerHTML;
       document.title = doc.title;
+      /* El selector de idioma vive dentro de .page, asi que se cambia solo. Lo
+         que no cambia es el lang del <html>, que esta fuera, y de el dependen el
+         lector de pantalla y la barra de traducir del navegador. */
+      var lang = doc.documentElement.getAttribute('lang');
+      if (lang) document.documentElement.setAttribute('lang', lang);
       var can = document.querySelector('link[rel=canonical]');
       var canN = doc.querySelector('link[rel=canonical]');
       if (can && canN) can.href = canN.href;
@@ -130,7 +135,7 @@
          cambiar solo el interior de .page, asi que se cargan enteras. Igual los
          ficheros sueltos. */
       if (/^\/assets\//.test(a.pathname)) return;
-      if (/^\/proyectos\/(shellcrafter|endian)\//.test(a.pathname)) return;
+      if (/^\/(en\/)?proyectos\/(shellcrafter|endian)\//.test(a.pathname)) return;
       if (/\.(xml|txt|json|png|jpe?g|gif|pdf)$/.test(a.pathname)) return;
       if (a.pathname === location.pathname) { e.preventDefault(); window.scrollTo(0, 0); return; }
       e.preventDefault();

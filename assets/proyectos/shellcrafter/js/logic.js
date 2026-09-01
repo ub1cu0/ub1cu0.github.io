@@ -18,6 +18,11 @@ const archSelect = el('archSelect');
 const badCharsInput = el('badCharsInput');
 const byteCountLabel = el('byteCount');
 const statusBox = el('statusBox');
+
+/* Los avisos que se ven en pantalla van en los dos idiomas. Cual toca lo dice el
+   lang del <html>, que lo pone el generador segun de que version sea la pagina. */
+const EN = document.documentElement.lang === 'en';
+const t = (es, en) => (EN ? en : es);
 const presetSelect = el('presetSelect');
 const formatSelect = el('formatSelect');
 const shellcodeOut = el('shellcodeOut');
@@ -224,7 +229,7 @@ function nasmCompat(line, notes) {
     let out = line;
 
     const noShort = out.replace(/\b(j[a-z]{1,3}|loop[a-z]{0,2})\s+(short|near)\s+/gi, (m, op, kw) => {
-        notes.add(`"${kw}" no existe en Keystone, lo he quitado (el salto corto ya se elige solo)`);
+        notes.add(`"${kw}" ${t('no existe en Keystone, lo he quitado (el salto corto ya se elige solo)', 'does not exist in Keystone, so I dropped it (the short jump is picked automatically)')}`);
         return op + ' ';
     });
     out = noShort;
@@ -240,10 +245,10 @@ function nasmCompat(line, notes) {
             const nums = parts.filter(p => p && !/^["']/.test(p));
             out = `${m[1]}.ascii ${strs.join(', ')}`;
             if (nums.length) out += `\n${m[1]}.byte ${nums.join(', ')}`;
-            notes.add(`"${m[2]}" con cadena traducido a .ascii/.byte`);
+            notes.add(`"${m[2]}" ${t('con cadena traducido a .ascii/.byte', 'with a string turned into .ascii/.byte')}`);
         } else {
             out = `${m[1]}${dir} ${rest}`;
-            notes.add(`"${m[2]}" traducido a "${dir}"`);
+            notes.add(`"${m[2]}" ${t('traducido a', 'turned into')} "${dir}"`);
         }
     }
     return out;
@@ -380,7 +385,7 @@ function assemble() {
     const srcLines = rawLines.map(l => nasmCompat(stripComment(l, armSyntax), notes));
 
     if (!asmInput.value.trim()) {
-        hexOutput.innerHTML = '<div class="output-line"><span class="line-num">-</span><span class="hex-bytes empty">Escribe ensamblador para ver los bytes...</span></div>';
+        hexOutput.innerHTML = `<div class="output-line"><span class="line-num">-</span><span class="hex-bytes empty">${t('Escribe ensamblador para ver los bytes...', 'Write some assembly to see the bytes...')}</span></div>`;
         byteCountLabel.textContent = '0 bytes';
         shellcodeOut.textContent = '';
         lastBytes = new Uint8Array(0);
@@ -392,7 +397,7 @@ function assemble() {
     try {
         k = getHandle(target);
     } catch (e) {
-        setStatus(`Esta arquitectura no esta compilada en el WASM: ${e.message}`, 'error');
+        setStatus(`${t('Esta arquitectura no esta compilada en el WASM', 'This architecture is not compiled into the WASM')}: ${e.message}`, 'error');
         return;
     }
 
@@ -419,8 +424,8 @@ function assemble() {
         lastBytes = new Uint8Array(0);
         const global = String(e.message || '').replace('Failed to assemble, error: ', '');
         setStatus(show.length
-            ? `No ensambla. Revisa la linea ${show[0].line + 1}: ${show[0].msg}`
-            : `No ensambla: ${global}`, 'error');
+            ? `${t('No ensambla. Revisa la linea', 'It does not assemble. Check line')} ${show[0].line + 1}: ${show[0].msg}`
+            : `${t('No ensambla', 'It does not assemble')}: ${global}`, 'error');
         return;
     }
 
@@ -439,12 +444,12 @@ function assemble() {
         } else {
             html += `<span class="hex-bytes">${renderBytes(g.bytes, badChars)}</span>`;
             if (multi) {
-                html += `<span class="group-note" title="El salto apunta hacia delante, asi que el corte por linea no se puede fijar">${g.to - g.from + 1} lineas</span>`;
+                html += `<span class="group-note" title="${t('El salto apunta hacia delante, asi que el corte por linea no se puede fijar', 'The jump points forward, so the split by line cannot be pinned down')}">${g.to - g.from + 1} ${t('lineas', 'lines')}</span>`;
             }
         }
         html += '</div>';
     }
-    hexOutput.innerHTML = html || '<div class="output-line"><span class="line-num">-</span><span class="hex-bytes empty">Sin bytes</span></div>';
+    hexOutput.innerHTML = html || `<div class="output-line"><span class="line-num">-</span><span class="hex-bytes empty">${t('Sin bytes', 'No bytes')}</span></div>`;
 
     byteCountLabel.textContent = `${full.length} bytes`;
 
@@ -464,7 +469,7 @@ async function copyText(text, btn) {
     const original = btn.textContent;
     try {
         await navigator.clipboard.writeText(text);
-        btn.textContent = 'Copiado';
+        btn.textContent = t('Copiado', 'Copied');
     } catch (e) {
         // Fallback para contextos sin permiso de portapapeles
         const ta = document.createElement('textarea');
@@ -473,7 +478,7 @@ async function copyText(text, btn) {
         ta.style.opacity = '0';
         document.body.appendChild(ta);
         ta.select();
-        try { document.execCommand('copy'); btn.textContent = 'Copiado'; }
+        try { document.execCommand('copy'); btn.textContent = t('Copiado', 'Copied'); }
         catch (e2) { btn.textContent = 'Error'; }
         document.body.removeChild(ta);
     }
@@ -481,11 +486,11 @@ async function copyText(text, btn) {
 }
 
 async function init() {
-    setStatus('Cargando el ensamblador (WASM)...', 'ok');
+    setStatus(t('Cargando el ensamblador (WASM)...', 'Loading the assembler (WASM)...'), 'ok');
     try {
         await loadKeystone();
     } catch (e) {
-        setStatus('No he podido cargar Keystone: ' + e.message, 'error');
+        setStatus(t('No he podido cargar Keystone: ', 'I could not load Keystone: ') + e.message, 'error');
         asmInput.placeholder = '; el ensamblador no ha cargado';
         return;
     }
@@ -511,7 +516,7 @@ async function init() {
     fillPresets(archSelect.value);
 
     const v = Keystone.version();
-    let msg = `Keystone ${v.major}.${v.minor} listo. ${available.length} arquitecturas disponibles.`;
+    let msg = `Keystone ${v.major}.${v.minor} ${t('listo', 'ready')}. ${available.length} ${t('arquitecturas disponibles', 'architectures available')}.`;
     if (unsupported.length) msg += ` Sin soporte en este build: ${unsupported.join(', ')}.`;
     setStatus(msg, 'ok');
     setTimeout(() => { if (statusBox.classList.contains('status-ok')) setStatus(null); }, 6000);

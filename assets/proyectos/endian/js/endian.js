@@ -20,6 +20,11 @@ export function parseBadBytes(str) {
     return set;
 }
 
+/* Los dos comentarios que salen dentro del bloque de ASM generado. El resto de
+   lo que se ve son mnemonicos y no se traducen. */
+const EN = typeof document !== 'undefined' && document.documentElement.lang === 'en';
+const t = (es, en) => (EN ? en : es);
+
 /* Texto a bytes (UTF-8) o lista de bytes en hex. */
 export function toBytes(input, mode) {
     if (mode === 'hex') {
@@ -301,7 +306,7 @@ export function buildAsmBlock(bytes, opts) {
 
         for (let i = 0; i < words.length; i++) {
             const w = words[i];
-            const extra = pad > 0 && i === words.length - 1 ? [{ text: `+${pad} de relleno`, kind: 'info' }] : [];
+            const extra = pad > 0 && i === words.length - 1 ? [{ text: `+${pad} ${t('de relleno', 'of padding')}`, kind: 'info' }] : [];
             emit(planStore(w.value, wordSize, effBad, base, relative(i * wordSize), scratch), w, extra);
         }
         // Si la longitud cuadra justo, la cadena no queda terminada y hay que escribir ceros
@@ -311,18 +316,18 @@ export function buildAsmBlock(bytes, opts) {
             body.push({ text: `xor ${scratch}, ${scratch}`, comment: null, tags: [] });
             body.push({
                 text: `mov ${wordSize === 8 ? 'qword' : 'dword'} ptr [${base}${rel ? ` + ${rel}` : ''}], ${scratch}`,
-                comment: 'terminador nulo',
+                comment: t('terminador nulo', 'null terminator'),
                 tags: over.length ? [{ text: `${uniqHex(over)} en el shellcode`, kind: 'danger' }] : [],
             });
         }
     } else {
         if (terminator && pad === 0 && words.length) {
             body.push({ text: `xor ${acc}, ${acc}`, comment: null, tags: [] });
-            body.push({ text: `push ${acc}`, comment: 'terminador nulo', tags: [] });
+            body.push({ text: `push ${acc}`, comment: t('terminador nulo', 'null terminator'), tags: [] });
         }
         for (let i = words.length - 1; i >= 0; i--) {
             const w = words[i];
-            const extra = pad > 0 && i === words.length - 1 ? [{ text: `+${pad} de relleno`, kind: 'info' }] : [];
+            const extra = pad > 0 && i === words.length - 1 ? [{ text: `+${pad} ${t('de relleno', 'of padding')}`, kind: 'info' }] : [];
             emit(planPush(w.value, wordSize, effBad, acc), w, extra);
         }
         body.push({ text: `mov ${ptrReg}, ${sp}`, comment: `${ptrReg} -> ${label}`, tags: [] });

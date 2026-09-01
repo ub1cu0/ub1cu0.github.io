@@ -5,6 +5,11 @@ import {
 
 const el = id => document.getElementById(id);
 
+/* Los textos que se ven en pantalla, en los dos idiomas. Cual toca lo dice el
+   lang del <html>, que lo pone el generador segun de que version sea la pagina. */
+const EN = document.documentElement.lang === 'en';
+const t = (es, en) => (EN ? en : es);
+
 const input = el('inputText');
 const modeSelect = el('modeSelect');
 const wordSelect = el('wordSelect');
@@ -76,8 +81,8 @@ function update() {
     const bytes = toBytes(raw, mode);
     if (bytes === null) {
         input.classList.add('invalid');
-        fill('<div class="chunk-item chunk-error"><span class="asm-text">Hex no válido</span>'
-            + '<span class="chunk-comment"># usa bytes en hex, por ejemplo 2f 62 69 6e o 2f62696e</span></div>');
+        fill(`<div class="chunk-item chunk-error"><span class="asm-text">${t('Hex no válido', 'Not valid hex')}</span>`
+            + `<span class="chunk-comment"># ${t('usa bytes en hex, por ejemplo 2f 62 69 6e o 2f62696e', 'use hex bytes, for example 2f 62 69 6e or 2f62696e')}</span></div>`);
         return;
     }
     input.classList.remove('invalid');
@@ -112,7 +117,7 @@ async function copyText(text, btn) {
     const original = btn.textContent;
     try {
         await navigator.clipboard.writeText(text);
-        btn.textContent = 'Copiado';
+        btn.textContent = t('Copiado', 'Copied');
     } catch (e) {
         const ta = document.createElement('textarea');
         ta.value = text;
@@ -120,7 +125,7 @@ async function copyText(text, btn) {
         ta.style.opacity = '0';
         document.body.appendChild(ta);
         ta.select();
-        try { document.execCommand('copy'); btn.textContent = 'Copiado'; }
+        try { document.execCommand('copy'); btn.textContent = t('Copiado', 'Copied'); }
         catch (e2) { btn.textContent = 'Error'; }
         document.body.removeChild(ta);
     }
@@ -137,8 +142,8 @@ document.querySelectorAll('[data-copy]').forEach(btn => {
 
 modeSelect.addEventListener('change', () => {
     input.placeholder = modeSelect.value === 'hex'
-        ? 'Bytes en hex... (ej: 28 67 00 00)'
-        : 'Escribe aquí... (ej: /bin/sh)';
+        ? t('Bytes en hex... (ej: 28 67 00 00)', 'Hex bytes... (e.g. 28 67 00 00)')
+        : t('Escribe aquí... (ej: /bin/sh)', 'Type here... (e.g. /bin/sh)');
 });
 
 altBtn.addEventListener('click', () => {

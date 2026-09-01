@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-layout="clasico" data-bg="foto" data-pal="estandar" data-grad="azul">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Endian Converter — ub1cu0</title>
+  <meta name="description"
+    content="Turn text and bytes into little endian and big endian chunks for shellcoding, on the stack or in memory, dodging forbidden bytes.">
+  <link rel="stylesheet" href="/assets/css/lab95.css">
+  <link rel="stylesheet" href="/assets/css/lab95-variantes.css">
+  <link rel="stylesheet" href="/assets/css/lab95-tool.css">
+</head>
+
+<body>
+<!--ARRIBA-->
+  <div class="zones solo tool">
+    <div class="zone zone-b">
+
+      <section class="win">
+        <h1>Endian Converter<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h1>
+        <div class="body">
+          <div class="migas"><a href="/en/">Home</a> / <a href="/en/proyectos/">Projects</a> / Endian Converter</div>
+          <p style="margin:6px 0 9px">It splits whatever you type into words of the size you need and hands you the
+            block ready to push on the stack or write to memory, dodging the bytes you cannot use.</p>
+
+          <div class="barra">
+            <div class="campo">
+              <label for="modeSelect">Input</label>
+              <select id="modeSelect">
+                <option value="text">Text</option>
+                <option value="hex">Hex bytes</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label for="wordSelect">Word</label>
+              <select id="wordSelect">
+                <option value="4">4 bytes (x86)</option>
+                <option value="8">8 bytes (x86-64)</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label for="targetSelect">Target</label>
+              <select id="targetSelect">
+                <option value="stack">Stack (push)</option>
+                <option value="mem" id="memOption">Memory (mov [eax])</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label for="badInput">Forbidden bytes</label>
+              <input type="text" class="mono" id="badInput" value="00" placeholder="00 0a 0d" spellcheck="false">
+            </div>
+
+            <div class="chk">
+              <input type="checkbox" id="avoidBad" checked>
+              <label for="avoidBad">Dodge them with neg / not / xor</label>
+            </div>
+
+            <div class="chk">
+              <input type="checkbox" id="terminator" checked>
+              <label for="terminator">Null terminator</label>
+            </div>
+          </div>
+
+          <div class="input-group" style="margin-top:9px">
+            <input type="text" class="mono" id="inputText" placeholder="Type here... (e.g. /bin/sh)"
+              spellcheck="false" autocomplete="off">
+            <button class="btn" id="altBtn" hidden></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="win">
+        <h2>Hex stream<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h2>
+        <div class="body">
+          <div class="cabecera">
+            <b>Original</b>
+            <span class="mandos"><button class="btn" data-copy="hexStream">Copy</button></span>
+          </div>
+          <div class="output-value" id="hexStream">-</div>
+
+          <div class="cabecera" style="margin-top:9px">
+            <b>Reversed</b>
+            <span class="mandos"><button class="btn" data-copy="hexStreamRev">Copy</button></span>
+          </div>
+          <div class="output-value" id="hexStreamRev">-</div>
+        </div>
+      </section>
+
+      <section class="win">
+        <h2>Little endian<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h2>
+        <div class="body">
+          <div class="cabecera">
+            <b>Block</b>
+            <span class="mandos"><button class="btn" data-copy="leAsm">Copy ASM</button></span>
+          </div>
+          <div class="chunk-list" id="leWords">
+            <div class="chunk-item"><span class="chunk-comment"># type something to see the block...</span></div>
+          </div>
+          <pre id="leAsm" hidden></pre>
+        </div>
+      </section>
+
+      <section class="win">
+        <h2>Big endian<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h2>
+        <div class="body">
+          <div class="cabecera">
+            <b>Block</b>
+            <span class="mandos"><button class="btn" data-copy="beAsm">Copy ASM</button></span>
+          </div>
+          <div class="chunk-list" id="beWords">
+            <div class="chunk-item"><span class="chunk-comment"># type something to see the block...</span></div>
+          </div>
+          <pre id="beAsm" hidden></pre>
+        </div>
+      </section>
+
+    </div>
+  </div>
+<!--ABAJO:Endian Converter-->
+<script type="module" src="js/app.js"></script>
+</body>
+
+</html>

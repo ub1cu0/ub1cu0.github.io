@@ -394,6 +394,49 @@ img.gif { image-rendering: auto; }
   padding: 2px 7px;
   box-shadow: inset 1px 1px 0 var(--face-dk), inset -1px -1px 0 var(--face-lt);
 }
+
+/* El selector de idioma. El idioma en el que estas no es un enlace, es un boton
+   hundido, porque ya estas ahi. El otro si lo es. Los dos van con el bisel de
+   Windows: en reposo sobresale y al pulsarlo se hunde y el texto baja. */
+.taskbar .idiomas { display: flex; gap: 3px; }
+.taskbar .lang {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 7px 3px 5px;
+  color: var(--txt);
+  background: var(--face);
+  text-decoration: none;
+  box-shadow:
+    inset -1px -1px 0 var(--face-dker),
+    inset  1px  1px 0 var(--face-lt),
+    inset -2px -2px 0 var(--face-dk),
+    inset  2px  2px 0 var(--face);
+}
+/* el a:hover del sitio pinta fondo azul, y aqui eso taparia el boton entero */
+.taskbar .lang:hover,
+.taskbar .lang:visited { background: var(--face); color: var(--txt); }
+.taskbar .lang:active,
+.taskbar .lang.on {
+  padding: 4px 6px 2px 6px;
+  box-shadow:
+    inset  1px  1px 0 var(--face-dker),
+    inset -1px -1px 0 var(--face-lt),
+    inset  2px  2px 0 var(--face-dk),
+    inset -2px -2px 0 var(--face);
+}
+.taskbar .lang.on { font-weight: bold; }
+.taskbar .lang:focus-visible { outline: 1px dotted var(--txt); outline-offset: -4px; }
+
+/* Las dos banderas vienen con tamanos distintos de origen, asi que se dibujan
+   en una caja fija de 22x15 para que no quede una gorda y otra flaca. Van de
+   fondo y no de <img> porque asi el HTML de la barra no lleva rutas. */
+.bandera {
+  width: 22px; height: 15px; flex: 0 0 auto;
+  background-repeat: no-repeat;
+  background-size: 22px 15px;
+  image-rendering: pixelated;
+}
+.bandera.es { background-image: url(/assets/img/bandera-es.gif); }
+.bandera.en { background-image: url(/assets/img/bandera-en.gif); }
 @media (prefers-reduced-motion: reduce) {
   .taskbar .hueco span { animation: none; padding-left: 0; }
 }
