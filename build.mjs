@@ -53,6 +53,15 @@ const V_CSS = sello('assets/css/lab95.css');
 const V_CSS2 = sello('assets/css/lab95-variantes.css');
 const V_JS = sello('assets/js/sitio.js');
 const V_TOOL = sello('assets/css/lab95-tool.css');
+const V_ICO = sello('assets/img/favicon.ico');
+const V_GIF = sello('assets/img/favicon.gif');
+
+/* El favicon es el hamster. Van los dos: el .ico lleva 16 y 32 y lo entiende
+   cualquier navegador, y el .gif de 32 es el mismo dibujo animado, que Firefox
+   si mueve y Chrome deja quieto en el primer fotograma. El gif va el ultimo a
+   proposito, porque a igualdad de tamano gana el ultimo declarado. */
+const FAVICON = `<link rel="icon" href="${V_ICO}" sizes="16x16 32x32">
+  <link rel="icon" type="image/gif" href="${V_GIF}" sizes="32x32">`;
 
 /* El teletipo que va pasando por la barra de abajo. Se cambia aqui y ya esta.
    Termina en separador porque el texto se repite en bucle y si no, se pegan la
@@ -77,8 +86,8 @@ const SECCIONES = {
   pwn:       { titulo: 'Writeups PWN', corto: 'PWN',       color: 'pwn',  desc: 'Writeups de explotación de binarios (PWN) paso a paso, en español.' },
   htb:       { titulo: 'HackTheBox',   corto: 'HTB',       color: 'htb',  desc: 'Resolución de máquinas de HackTheBox, en español.', oculta: true },
   cve:       { titulo: 'CVEs',         corto: 'CVEs',      color: 'cve',  desc: 'Vulnerabilidades (CVE) encontradas y reportadas por mí.' },
-  poc:       { titulo: 'POCs',         corto: 'POCs',      color: 'poc',  desc: 'Proof of Concept de vulnerabilidades conocidas, en C/C++.' },
-  proyectos: { titulo: 'Proyectos',    corto: 'Proyectos', color: 'tool', desc: 'Proyectos personales y herramientas de seguridad.' },
+  poc:       { titulo: 'POCs',         corto: 'POCs',      color: 'poc',  desc: 'Proof of Concept de vulnerabilidades conocidas.' },
+  proyectos: { titulo: 'Proyectos',    corto: 'Proyectos', color: 'tool', desc: 'Proyectos personales.' },
 };
 
 const VISIBLES = Object.keys(SECCIONES).filter(c => !SECCIONES[c].oculta);
@@ -436,7 +445,7 @@ function pagina({ titulo, desc, canonical, tipo = 'website', tags = [], jsonld =
   <link rel="alternate" type="application/rss+xml" title="ub1cu0" href="${SITE}/feed.xml">
   <link rel="stylesheet" href="${V_CSS}">
   <link rel="stylesheet" href="${V_CSS2}">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E🖥%3C/text%3E%3C/svg%3E">
+  ${FAVICON}
   ${ld}
   ${shim ? SHIM : ''}
 </head>
@@ -733,6 +742,9 @@ function build() {
   cpSync(join(SRC, 'assets'), join(DIST, 'assets'), { recursive: true });
   if (existsSync(join(SRC, '.nojekyll'))) cpSync(join(SRC, '.nojekyll'), join(DIST, '.nojekyll'));
 
+  // el navegador pide /favicon.ico solo, sin mirar el <link>, asi que hay copia en la raiz
+  cpSync(join(SRC, 'assets/img/favicon.ico'), join(DIST, 'favicon.ico'));
+
   const porSeccion = {}, cuentas = {};
   let todo = [];
   for (const cat of Object.keys(SECCIONES)) {
@@ -806,7 +818,7 @@ function build() {
   <meta name="twitter:title" content="${esc(nombre)} · ub1cu0">
   <meta name="twitter:description" content="${esc(d)}">
   <meta name="twitter:image" content="${IMG_SOCIAL}">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E🖥%3C/text%3E%3C/svg%3E">
+  ${FAVICON}
 </head>`);
 
     escribe(join(DIST, 'proyectos', t, 'index.html'), html);
