@@ -150,7 +150,7 @@ const T = {
     portadaDesc: 'Writeups de PWN, research de CVE y POCs propios en C/C++. Exploit development y programación a bajo nivel, en español.',
     rol: 'vulnerability researcher &amp; low level programmer',
     intro: `Rompo binarios y luego lo cuento. Aquí subo writeups de PWN, research de
-          CVE y POCs propios en C/C++. Todo en español, paso a paso. Miembro del equipo
+          CVE y POCs. Todo en español, paso a paso. Miembro del equipo
           de CTF <b>Caliphal Hounds</b>.`,
     metasLista: [
       ['x', 'eJPTv2', 'hecho'], ['x', 'CEH', 'hecho'], ['x', 'ROP Emporium al 100%', 'hecho'],
