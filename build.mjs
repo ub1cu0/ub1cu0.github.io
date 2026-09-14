@@ -150,8 +150,8 @@ const T = {
     portadaDesc: 'Writeups de PWN, research de CVE y POCs propios en C/C++. Exploit development y programación a bajo nivel, en español.',
     rol: 'vulnerability researcher &amp; low level programmer',
     intro: `Rompo binarios y luego lo cuento. Aquí subo writeups de PWN, research de
-          CVE y POCs propios en C/C++. Todo en español, paso a paso y con el debugger
-          delante. Miembro del equipo de CTF <b>Caliphal Hounds</b>.`,
+          CVE y POCs propios en C/C++. Todo en español, paso a paso. Miembro del equipo
+          de CTF <b>Caliphal Hounds</b>.`,
     metasLista: [
       ['x', 'eJPTv2', 'hecho'], ['x', 'CEH', 'hecho'], ['x', 'ROP Emporium al 100%', 'hecho'],
       ['x', 'primer CVE propio', '2026'], ['', 'Linux Kernel exploitation', '2026'], ['', 'OSEE', '2027'],
@@ -188,8 +188,8 @@ const T = {
     portadaDesc: 'PWN writeups, CVE research and my own C/C++ proof of concept code. Exploit development and low level programming.',
     rol: 'vulnerability researcher &amp; low level programmer',
     intro: `I break binaries and then write down how. Here go my PWN writeups, CVE
-          research and proof of concept code in C/C++. Every one of them step by step,
-          with the debugger open. Member of the CTF team <b>Caliphal Hounds</b>.`,
+          research and POCs. Every one of them step by step. Member of the CTF team
+          <b>Caliphal Hounds</b>.`,
     metasLista: [
       ['x', 'eJPTv2', 'done'], ['x', 'CEH', 'done'], ['x', 'ROP Emporium 100%', 'done'],
       ['x', 'first CVE of my own', '2026'], ['', 'Linux kernel exploitation', '2026'], ['', 'OSEE', '2027'],
