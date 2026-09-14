@@ -12,6 +12,13 @@
     localStorage.setItem('hits', String(visitas));
   } catch (e) {}
 
+  /* Marca que ya se ha estado aqui, en el idioma que sea. El script que salta a
+     ingles en la primera visita (en build.mjs) mira esta misma marca: en cuanto
+     existe, no vuelve a saltar, ni aunque el idioma que quede marcado sea el
+     español. Va aparte del contador de arriba porque uno cuenta y el otro
+     recuerda una eleccion. */
+  try { localStorage.setItem('ub1cu0-lang', document.documentElement.lang || 'es'); } catch (e) {}
+
   /* Todo lo que depende del contenido va aqui, porque al navegar sin recargar
      hay que volver a montarlo sobre el HTML nuevo. */
   function montaContenido() {

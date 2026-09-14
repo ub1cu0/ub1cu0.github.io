@@ -129,7 +129,7 @@ const T = {
     inicioBarra: 'Inicio', visitas: 'visitas',
     musicaAria: 'Poner o quitar la música', musicaTitulo: 'Música',
     anterior: 'Anterior', siguiente: 'Siguiente', nuevo: 'nuevo',
-    teletipo: 'BUSCO TRABAJO',
+    teletipo: 'PREPARÁNDOME PARA LA OSED',
     idioma: 'Español',
     // ventanas
     indice: 'Índice', links: 'Links', bienvenido: 'Bienvenido', loUltimo: 'Lo último',
@@ -171,7 +171,7 @@ const T = {
     inicioBarra: 'Start', visitas: 'visits',
     musicaAria: 'Play or mute the music', musicaTitulo: 'Music',
     anterior: 'Previous', siguiente: 'Next', nuevo: 'new',
-    teletipo: 'LOOKING FOR WORK',
+    teletipo: 'GETTING READY FOR THE OSED',
     idioma: 'English',
     indice: 'Index', links: 'Links', bienvenido: 'Welcome', loUltimo: 'Latest',
     tags: 'Tags', metas: 'Goals', amigos: 'Friends', ficha: 'Details', noEncontrado: 'Not found',
@@ -419,6 +419,18 @@ const chromeArriba = (esPortada, lang = 'es') => `${NUBES}
    otro si. Solo se dibuja cuando le pasan la direccion de la gemela, asi que una
    pagina sin traducir no ensena el selector y nunca manda a un 404. El español
    va siempre el primero para que los dos botones no bailen al cambiar. */
+/* El primer visitante de siempre entra en ingles. Si ya ha estado (o ha tocado
+   el boton) se respeta lo que haya, para siempre: la marca no caduca y no mira
+   de nuevo el idioma del navegador ni de donde viene. Va lo primero dentro de
+   <head>, antes de las hojas de estilo, para que salte antes de pintar nada.
+   A un buscador nunca se le manda: si su UA lleva "bot", "crawl", "spider" o
+   parecido, se queda leyendo la version española, que es la canonica. */
+const BOTS = 'bot|crawl|spider|slurp|facebookexternalhit|twitter|whatsapp|telegram|discord|linkedinbot|preview|headless';
+const autoIngles = (destino) => destino ? `<script>(function(){try{
+if(!localStorage.getItem('ub1cu0-lang')&&!/${BOTS}/i.test(navigator.userAgent)){
+location.replace(${JSON.stringify(destino)});
+}}catch(e){}})();</script>` : '';
+
 const selector = (lang, gemela) => {
   if (!gemela) return '';
   const otro = lang === 'es' ? 'en' : 'es';
@@ -586,10 +598,14 @@ function pagina({ titulo, desc, canonical, tipo = 'website', tags = [], jsonld =
   <link rel="alternate" hreflang="es" href="${es}">
   <link rel="alternate" hreflang="en" href="${en}">
   <link rel="alternate" hreflang="x-default" href="${es}">` : '';
+  // igual que en el boton del selector: la marca de idioma no distingue entorno,
+  // asi que el salto va relativo, no al dominio de produccion
+  const relEn = lang === 'es' && gemela ? (gemela.startsWith(SITE) ? gemela.slice(SITE.length) : gemela) : '';
   return `<!DOCTYPE html>
 <html lang="${T[lang].codigo}" data-layout="clasico" data-bg="foto" data-pal="estandar" data-grad="azul">
 <head>
   <meta charset="UTF-8">
+  ${autoIngles(relEn)}
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${esc(titulo)}</title>
   <meta name="description" content="${esc(desc)}">
@@ -1019,9 +1035,11 @@ function build() {
         continue;
       }
 
+      const relEn = lang === 'es' && gemela ? `/en/proyectos/${t}/` : '';
       html = html
         .replace('<!--ARRIBA-->', chromeArriba(false, lang))
         .replace(/<!--ABAJO:(.*?)-->/, (m, tarea) => chromeAbajo(tarea, lang, gemela))
+        .replace('<meta charset="UTF-8">', `<meta charset="UTF-8">\n  ${autoIngles(relEn)}`)
         .replace('/assets/css/lab95.css', V_CSS)
         .replace('/assets/css/lab95-variantes.css', V_CSS2)
         .replace('/assets/css/lab95-tool.css', V_TOOL)
