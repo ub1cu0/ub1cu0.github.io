@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es" data-layout="clasico" data-bg="foto" data-pal="estandar" data-grad="azul">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BadCharTsunami — ub1cu0</title>
+  <meta name="description"
+    content="Pega el volcado de WinDbg y te dice por dónde se corta el buffer de bad chars: qué byte desaparece, cuál llega cambiado y desde dónde ya no llega nada.">
+  <link rel="stylesheet" href="/assets/css/lab95.css">
+  <link rel="stylesheet" href="/assets/css/lab95-variantes.css">
+  <link rel="stylesheet" href="/assets/css/lab95-tool.css">
+</head>
+
+<body>
+<!--ARRIBA-->
+  <div class="zones solo tool">
+    <div class="zone zone-b">
+
+      <section class="win">
+        <h1>BadCharTsunami<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h1>
+        <div class="body">
+          <div class="migas"><a href="/">Inicio</a> / <a href="/proyectos/">Proyectos</a> / BadCharTsunami</div>
+          <p style="margin:6px 0 9px">Manda el buffer con los 256 bytes, pega aquí el volcado del depurador y te
+            dice por dónde se corta. Da igual cómo lo saques, un db, un dd, un dc o hex pegado: se parsea solo.
+            El byte que falle se va a la blacklist con un clic y vuelves a tirar.</p>
+
+          <div class="barra">
+            <div class="campo ancho">
+              <label for="badInput">Blacklist</label>
+              <input type="text" class="mono" id="badInput" value="" placeholder="00 0a 0d" spellcheck="false"
+                autocomplete="off">
+            </div>
+
+            <div class="campo">
+              <label for="hostInput">Host</label>
+              <input type="text" class="mono" id="hostInput" value="127.0.0.1" spellcheck="false" autocomplete="off">
+            </div>
+
+            <div class="campo">
+              <label for="portInput">Puerto</label>
+              <input type="text" class="mono" id="portInput" value="9999" spellcheck="false" autocomplete="off">
+            </div>
+
+            <div class="campo">
+              <label for="preInput">Prefijo</label>
+              <input type="text" class="mono" id="preInput" value="" placeholder="COMMAND COPYTEXT "
+                spellcheck="false" autocomplete="off">
+            </div>
+
+            <div class="campo">
+              <label for="sufInput">Sufijo</label>
+              <input type="text" class="mono" id="sufInput" value="\r\n" spellcheck="false" autocomplete="off">
+            </div>
+
+            <button class="btn" id="resetBtn" title="vaciar la blacklist y volver a los 256 bytes">Vaciar</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="win">
+        <h2>Fichero de prueba<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h2>
+        <div class="body">
+          <div class="cabecera">
+            <b>pwntools</b>
+            <span class="mandos"><button class="btn" data-copy="pyScript">Copiar</button></span>
+          </div>
+          <pre class="out-body" id="pyScript"></pre>
+        </div>
+      </section>
+
+      <section class="win">
+        <h2>Volcado del depurador<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h2>
+        <div class="body">
+          <div class="cabecera">
+            <b>db · dd · dw · dq · dc · dds · hex</b>
+            <span class="mandos">
+              <span class="chunk-tag tag-info" id="fmtTag">-</span>
+              <button class="btn" id="clearBtn">Limpiar</button>
+            </span>
+          </div>
+          <textarea id="dumpInput" class="mono" spellcheck="false" autocomplete="off"
+            placeholder="0019f380  00 01 02 03 04 05 06 07-08 09 0b 0c 0e 0f 10 11  ................"></textarea>
+        </div>
+      </section>
+
+      <section class="win">
+        <h2>Dónde se corta<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h2>
+        <div class="body">
+          <div class="cabecera">
+            <b>Bytes que llegan</b>
+            <span class="mandos"><span id="incCount">0/256</span></span>
+          </div>
+          <div class="inc-list" id="incList"></div>
+        </div>
+      </section>
+
+      <section class="win">
+        <h2>Mapa<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h2>
+        <div class="body">
+          <div class="cabecera">
+            <span class="leyenda">
+              <span><i class="celda ok">00</i>llega</span>
+              <span><i class="celda eaten">00</i>comido</span>
+              <span><i class="celda changed">00</i>cambiado</span>
+              <span><i class="celda expanded">00</i>expandido</span>
+              <span><i class="celda cut">00</i>corte</span>
+              <span><i class="celda skip">00</i>fuera</span>
+            </span>
+          </div>
+          <div class="mapa" id="mapa"></div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+<!--ABAJO:BadCharTsunami-->
+<script type="module" src="js/app.js"></script>
+</body>
+
+</html>

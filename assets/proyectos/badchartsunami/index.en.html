@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-layout="clasico" data-bg="foto" data-pal="estandar" data-grad="azul">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BadCharTsunami — ub1cu0</title>
+  <meta name="description"
+    content="Paste a WinDbg dump and it tells you where the bad char buffer breaks: which byte disappears, which one arrives changed, and from where nothing arrives at all.">
+  <link rel="stylesheet" href="/assets/css/lab95.css">
+  <link rel="stylesheet" href="/assets/css/lab95-variantes.css">
+  <link rel="stylesheet" href="/assets/css/lab95-tool.css">
+</head>
+
+<body>
+<!--ARRIBA-->
+  <div class="zones solo tool">
+    <div class="zone zone-b">
+
+      <section class="win">
+        <h1>BadCharTsunami<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h1>
+        <div class="body">
+          <div class="migas"><a href="/en/">Home</a> / <a href="/en/proyectos/">Projects</a> / BadCharTsunami</div>
+          <p style="margin:6px 0 9px">Send the buffer with all 256 bytes, paste the debugger dump here and it tells
+            you where it breaks. It does not matter how you pulled it out, a db, a dd, a dc or plain hex: it parses
+            itself. The byte that fails goes to the blacklist with one click and you fire again.</p>
+
+          <div class="barra">
+            <div class="campo ancho">
+              <label for="badInput">Blacklist</label>
+              <input type="text" class="mono" id="badInput" value="" placeholder="00 0a 0d" spellcheck="false"
+                autocomplete="off">
+            </div>
+
+            <div class="campo">
+              <label for="hostInput">Host</label>
+              <input type="text" class="mono" id="hostInput" value="127.0.0.1" spellcheck="false" autocomplete="off">
+            </div>
+
+            <div class="campo">
+              <label for="portInput">Port</label>
+              <input type="text" class="mono" id="portInput" value="9999" spellcheck="false" autocomplete="off">
+            </div>
+
+            <div class="campo">
+              <label for="preInput">Prefix</label>
+              <input type="text" class="mono" id="preInput" value="" placeholder="COMMAND COPYTEXT "
+                spellcheck="false" autocomplete="off">
+            </div>
+
+            <div class="campo">
+              <label for="sufInput">Suffix</label>
+              <input type="text" class="mono" id="sufInput" value="\r\n" spellcheck="false" autocomplete="off">
+            </div>
+
+            <button class="btn" id="resetBtn" title="empty the blacklist and go back to all 256 bytes">Empty</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="win">
+        <h2>Test file<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h2>
+        <div class="body">
+          <div class="cabecera">
+            <b>pwntools</b>
+            <span class="mandos"><button class="btn" data-copy="pyScript">Copy</button></span>
+          </div>
+          <pre class="out-body" id="pyScript"></pre>
+        </div>
+      </section>
+
+      <section class="win">
+        <h2>Debugger dump<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h2>
+        <div class="body">
+          <div class="cabecera">
+            <b>db · dd · dw · dq · dc · dds · hex</b>
+            <span class="mandos">
+              <span class="chunk-tag tag-info" id="fmtTag">-</span>
+              <button class="btn" id="clearBtn">Clear</button>
+            </span>
+          </div>
+          <textarea id="dumpInput" class="mono" spellcheck="false" autocomplete="off"
+            placeholder="0019f380  00 01 02 03 04 05 06 07-08 09 0b 0c 0e 0f 10 11  ................"></textarea>
+        </div>
+      </section>
+
+      <section class="win">
+        <h2>Where it breaks<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h2>
+        <div class="body">
+          <div class="cabecera">
+            <b>Bytes that arrive</b>
+            <span class="mandos"><span id="incCount">0/256</span></span>
+          </div>
+          <div class="inc-list" id="incList"></div>
+        </div>
+      </section>
+
+      <section class="win">
+        <h2>Map<span class="ctrl" aria-hidden="true"><b>_</b><b>&#9633;</b><b>&#10005;</b></span></h2>
+        <div class="body">
+          <div class="cabecera">
+            <span class="leyenda">
+              <span><i class="celda ok">00</i>arrives</span>
+              <span><i class="celda eaten">00</i>eaten</span>
+              <span><i class="celda changed">00</i>changed</span>
+              <span><i class="celda expanded">00</i>expanded</span>
+              <span><i class="celda cut">00</i>cut</span>
+              <span><i class="celda skip">00</i>out</span>
+            </span>
+          </div>
+          <div class="mapa" id="mapa"></div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+<!--ABAJO:BadCharTsunami-->
+<script type="module" src="js/app.js"></script>
+</body>
+
+</html>

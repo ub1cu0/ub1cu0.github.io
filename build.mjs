@@ -1008,7 +1008,7 @@ function build() {
     escribe(dest('feed.xml'), feed(M.todo, lang));
   }
 
-  /* Las dos herramientas son paginas sueltas dentro de assets: llevan su propio
+  /* Las herramientas son paginas sueltas dentro de assets: llevan su propio
      JavaScript y no pasan por pagina(). Aqui se les pega el marco del sitio, se
      les pone la version a las hojas y se publican en /proyectos/<nombre>/, que
      es una direccion de verdad y no un index.html colgando de assets. El JS y el
@@ -1016,7 +1016,8 @@ function build() {
      contra su propia URL. Si al lado hay un index.en.html, sale tambien en
      /en/proyectos/<nombre>/ y las dos se enlazan entre ellas. En el sitio viejo
      queda un desvio. */
-  for (const [t, nombre] of [['shellcrafter', 'ShellCrafter'], ['endian', 'Endian Converter']]) {
+  for (const [t, nombre] of [['shellcrafter', 'ShellCrafter'], ['endian', 'Endian Converter'],
+                             ['badchartsunami', 'BadCharTsunami']]) {
     const base = join(DIST, 'assets/proyectos', t);
     const tieneEn = existsSync(join(base, 'index.en.html'));
 

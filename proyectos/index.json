@@ -1,5 +1,18 @@
 [
   {
+    "title": "BadCharTsunami",
+    "date": "2026-10-09",
+    "tags": [
+      "badchars",
+      "pwn",
+      "tool"
+    ],
+    "url": "/proyectos/badchartsunami/",
+    "target": "_blank",
+    "slug": "badchartsunami",
+    "words": 0
+  },
+  {
     "title": "ShellCrafter",
     "date": "2026-02-13",
     "tags": [
