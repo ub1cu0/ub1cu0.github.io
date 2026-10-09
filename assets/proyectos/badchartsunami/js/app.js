@@ -10,8 +10,6 @@ const EN = document.documentElement.lang === 'en';
 const t = (es, en) => (EN ? en : es);
 
 const badInput = el('badInput');
-const preInput = el('preInput');
-const sufInput = el('sufInput');
 const pyScript = el('pyScript');
 const dump = el('dumpInput');
 const fmtTag = el('fmtTag');
@@ -155,11 +153,7 @@ function renderFormato(fmt) {
 function update() {
     const badSet = badSetActual();
 
-    pyScript.textContent = pythonScript({
-        prefix: preInput.value,
-        suffix: sufInput.value,
-        badSet,
-    });
+    pyScript.textContent = pythonScript({ badSet });
 
     const r = analyze(dump.value, badSet);
     renderFormato(r.fmt);
@@ -190,7 +184,7 @@ async function copyText(text, btn) {
     setTimeout(() => { btn.textContent = original; }, 1200);
 }
 
-for (const ctl of [badInput, preInput, sufInput, dump]) {
+for (const ctl of [badInput, dump]) {
     ctl.addEventListener('input', update);
 }
 
