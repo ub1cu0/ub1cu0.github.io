@@ -10,8 +10,6 @@ const EN = document.documentElement.lang === 'en';
 const t = (es, en) => (EN ? en : es);
 
 const badInput = el('badInput');
-const hostInput = el('hostInput');
-const portInput = el('portInput');
 const preInput = el('preInput');
 const sufInput = el('sufInput');
 const pyScript = el('pyScript');
@@ -158,8 +156,6 @@ function update() {
     const badSet = badSetActual();
 
     pyScript.textContent = pythonScript({
-        host: hostInput.value || '127.0.0.1',
-        port: portInput.value || '0',
         prefix: preInput.value,
         suffix: sufInput.value,
         badSet,
@@ -194,7 +190,7 @@ async function copyText(text, btn) {
     setTimeout(() => { btn.textContent = original; }, 1200);
 }
 
-for (const ctl of [badInput, hostInput, portInput, preInput, sufInput, dump]) {
+for (const ctl of [badInput, preInput, sufInput, dump]) {
     ctl.addEventListener('input', update);
 }
 

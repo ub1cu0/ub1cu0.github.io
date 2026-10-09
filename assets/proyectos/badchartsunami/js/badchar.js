@@ -37,11 +37,15 @@ export function buildReference(badSet) {
     return ref;
 }
 
-export function pythonScript({ host, port, prefix, suffix, badSet }) {
+/* El host y el puerto van de placeholder y no de campo: son dos cosas que el ya
+   sabe y que no cambian nada de lo que la herramienta mide, asi que como control
+   solo estorban. Y sin comillas en el puerto, el script revienta con un NameError
+   en la primera linea si se te olvida cambiarlo, que es mejor que conectar a
+   cualquier sitio. */
+export function pythonScript({ prefix, suffix, badSet }) {
     const lista = badSet.size
         ? '{' + [...badSet].sort((a, b) => a - b).map(b => `0x${hexByte(b)}`).join(', ') + '}'
         : 'set()';
-    const q = s => String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
     // el prefijo y el sufijo van tal cual entre comillas, que es donde los escribe
     const pre = prefix ? `b"${prefix.replace(/"/g, '\\"')}" + ` : '';
     const suf = suffix ? ` + b"${suffix.replace(/"/g, '\\"')}"` : '';
@@ -51,7 +55,7 @@ blacklist = ${lista}
 
 buffer = bytearray(b for b in range(0x100) if b not in blacklist)
 
-p = remote("${q(host)}", ${String(port).replace(/[^0-9]/g, '') || 0})
+p = remote("HOST", PORT)
 p.send(${pre}buffer${suf})
 `;
 }
