@@ -23,9 +23,12 @@
         var celda = tr.querySelector('.d');
         var hueco = tr.querySelector('td.ic:last-child');
         if (!celda || !hueco) return;
-        var t = celda.textContent.trim().split('/');
+        // ES trae dd/mm/aaaa y EN aaaa-mm-dd
+        var t = celda.textContent.trim().split(/[\/-]/);
         if (t.length !== 3) return;
-        var fecha = new Date(+t[2], +t[1] - 1, +t[0]);
+        var fecha = t[0].length === 4
+          ? new Date(+t[0], +t[1] - 1, +t[2])
+          : new Date(+t[2], +t[1] - 1, +t[0]);
         if (ahora - fecha.getTime() < SEMANA) hueco.appendChild(tpl.content.cloneNode(true));
       });
     }
