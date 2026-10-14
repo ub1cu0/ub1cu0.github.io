@@ -75,9 +75,9 @@ const teletipo = (lang) => `${T[lang].teletipo} &middot; `.repeat(10);
    asi que uno nuevo hay que dejarlo de ese tamano para que no baile: si el suyo
    sale mas alto, hay que crecer el lienzo de todos, no encogerlo a el. */
 const AMIGOS = [
+  { nombre: 'YOSHL', url: 'https://yoshlsec.github.io/', img: '/assets/img/amigo-yoshl.png' },
   { nombre: 'ANFU',  url: 'https://7anfu.github.io/',    img: '/assets/img/amigo-anfu.png' },
   { nombre: 'FOUEN', url: 'https://fouen.blogspot.com/', img: '/assets/img/amigo-fouen.png' },
-  { nombre: 'YOSHL', url: 'https://yoshlsec.github.io/', img: '/assets/img/amigo-yoshl.png' },
   { nombre: 'D3B0',  url: 'https://d3bo.eu/',            img: '/assets/img/amigo-d3b0.png' },
   { nombre: 'MARC',  url: 'https://m2rc.net/',           img: '/assets/img/amigo-marc.png' },
 ];
