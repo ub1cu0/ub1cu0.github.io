@@ -1,22 +1,13 @@
-/* Lo poco que la web necesita en el navegador: el NEW de lo reciente, el reloj
-   y el contador. Sin esto la pagina se lee igual, solo pierde esos tres detalles. */
+/* Lo poco que la web necesita en el navegador: el NEW de lo reciente y el reloj.
+   Sin esto la pagina se lee igual, solo pierde esos dos detalles. */
 
 (function () {
   'use strict';
 
-  /* Contador de visitas de este navegador, que es lo unico que se puede contar
-     sin servidor. No es el numero de visitas del sitio. Solo sube una vez. */
-  var visitas = 1337;
-  try {
-    visitas = parseInt(localStorage.getItem('hits') || '1337', 10) + 1;
-    localStorage.setItem('hits', String(visitas));
-  } catch (e) {}
-
   /* Marca que ya se ha estado aqui, en el idioma que sea. El script que salta a
      ingles en la primera visita (en build.mjs) mira esta misma marca: en cuanto
      existe, no vuelve a saltar, ni aunque el idioma que quede marcado sea el
-     español. Va aparte del contador de arriba porque uno cuenta y el otro
-     recuerda una eleccion. */
+     español. */
   try { localStorage.setItem('ub1cu0-lang', document.documentElement.lang || 'es'); } catch (e) {}
 
   /* Todo lo que depende del contenido va aqui, porque al navegar sin recargar
@@ -38,9 +29,6 @@
         if (ahora - fecha.getTime() < SEMANA) hueco.appendChild(tpl.content.cloneNode(true));
       });
     }
-
-    var v = document.getElementById('visitas');
-    if (v) v.textContent = String(visitas).padStart(6, '0');
 
     /* El selector de colegas. Todos estan ya en el HTML, aqui solo se ensena
        uno y las flechas cambian cual. Si esto no corre se ve el primero, que

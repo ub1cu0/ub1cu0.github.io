@@ -75,11 +75,11 @@ const teletipo = (lang) => `${T[lang].teletipo} &middot; `.repeat(10);
    asi que uno nuevo hay que dejarlo de ese tamano para que no baile: si el suyo
    sale mas alto, hay que crecer el lienzo de todos, no encogerlo a el. */
 const AMIGOS = [
+  { nombre: 'ANFU',  url: 'https://7anfu.github.io/',    img: '/assets/img/amigo-anfu.png' },
   { nombre: 'FOUEN', url: 'https://fouen.blogspot.com/', img: '/assets/img/amigo-fouen.png' },
   { nombre: 'YOSHL', url: 'https://yoshlsec.github.io/', img: '/assets/img/amigo-yoshl.png' },
   { nombre: 'D3B0',  url: 'https://d3bo.eu/',            img: '/assets/img/amigo-d3b0.png' },
   { nombre: 'MARC',  url: 'https://m2rc.net/',           img: '/assets/img/amigo-marc.png' },
-  { nombre: 'ANFU',  url: 'https://7anfu.github.io/',    img: '/assets/img/amigo-anfu.png' },
 ];
 
 /* Cada seccion con su color, que es el mismo del cuadradito del indice.
@@ -126,14 +126,14 @@ const T = {
   es: {
     codigo: 'es',
     // marco
-    inicioBarra: 'Inicio', visitas: 'visitas',
+    inicioBarra: 'Inicio',
     musicaAria: 'Poner o quitar la música', musicaTitulo: 'Música',
     anterior: 'Anterior', siguiente: 'Siguiente', nuevo: 'nuevo',
     teletipo: 'PREPARÁNDOME PARA LA OSED',
     idioma: 'Español',
     // ventanas
     indice: 'Índice', links: 'Links', bienvenido: 'Bienvenido', loUltimo: 'Lo último',
-    tags: 'Tags', metas: 'Metas', amigos: 'Amigos', ficha: 'Ficha', noEncontrado: 'No encontrado',
+    tags: 'Tags', metas: 'Metas', amigos: 'Blogs de ciberseguridad', ficha: 'Ficha', noEncontrado: 'No encontrado',
     // migas
     migaInicio: 'Inicio', migaTags: 'Tags',
     // unidades
@@ -168,13 +168,13 @@ const T = {
   },
   en: {
     codigo: 'en',
-    inicioBarra: 'Start', visitas: 'visits',
+    inicioBarra: 'Start',
     musicaAria: 'Play or mute the music', musicaTitulo: 'Music',
     anterior: 'Previous', siguiente: 'Next', nuevo: 'new',
     teletipo: 'GETTING READY FOR THE OSED',
     idioma: 'English',
     indice: 'Index', links: 'Links', bienvenido: 'Welcome', loUltimo: 'Latest',
-    tags: 'Tags', metas: 'Goals', amigos: 'Friends', ficha: 'Details', noEncontrado: 'Not found',
+    tags: 'Tags', metas: 'Goals', amigos: 'Cybersecurity Blogs', ficha: 'Details', noEncontrado: 'Not found',
     migaInicio: 'Home', migaTags: 'Tags',
     pal: 'w.', palabras: 'words', deLectura: 'read', min: 'min',
     documentos: (n) => `${n} ${n === 1 ? 'document' : 'documents'}`,
@@ -414,7 +414,7 @@ const chromeArriba = (esPortada, lang = 'es') => `${NUBES}
   </header>
 `;
 
-/* El selector de idioma, en la barra de abajo y pegado a las visitas. El idioma
+/* El selector de idioma, en la barra de abajo. El idioma
    en el que estas no es un enlace, es un boton hundido, porque ya estas ahi. El
    otro si. Solo se dibuja cuando le pasan la direccion de la gemela, asi que una
    pagina sin traducir no ensena el selector y nunca manda a un 404. El español
@@ -447,7 +447,6 @@ const chromeAbajo = (tarea, lang = 'es', gemela = '') => `  <footer class="taskb
     <div class="start"><em></em>${T[lang].inicioBarra}</div>
     <div class="tarea">${esc(tarea || 'ub1cu0')}</div>
     <div class="hueco"><span>${teletipo(lang)}</span></div>${selector(lang, gemela)}
-    <div class="visitas">${T[lang].visitas} <span id="visitas">001337</span></div>
     <div class="reloj" id="reloj">--:--</div>
   </footer>
 
